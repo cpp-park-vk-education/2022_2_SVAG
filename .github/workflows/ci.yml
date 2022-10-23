@@ -2,7 +2,18 @@ on: push
 
 jobs:
   check_style:
-    # todo
+    name: Static formatters and analyzers
+    runs-on: ubuntu-latest
+    container: vvinokurshin/project_cpp:v1
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run formatters and analyzers before build
+        run: |
+          chmod -R 755 ./linters && make check_before
+
+      - name: Run formatters and analyzers after build
+        run: |
+          chmod -R 755 ./linters && make check_after
   build:
     # todo
   test:
