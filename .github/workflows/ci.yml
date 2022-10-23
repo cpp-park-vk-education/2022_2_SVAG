@@ -8,4 +8,15 @@ jobs:
   test:
     # todo
   memtest:
-    # todo
+    runs-on: ubuntu-latest
+    container: vvinokurshin/project_cpp:v1
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: artifacts
+          path: .DoIt/build/
+      - name: Run valgrind
+        run: make memtest
