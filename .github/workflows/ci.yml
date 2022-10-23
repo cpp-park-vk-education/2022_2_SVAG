@@ -4,7 +4,19 @@ jobs:
   check_style:
     # todo
   build:
-    # todo
+    runs-on: ubuntu-latest
+    container: vvinokurshin/project_cpp:v1
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build
+        run: make build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: ./DoIt/build/
   test:
     # todo
   memtest:
