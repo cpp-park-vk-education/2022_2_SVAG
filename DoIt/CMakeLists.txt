@@ -1,0 +1,1 @@
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize=memory -fsanitize=leak -fsanitize=undefined -g -OX")
