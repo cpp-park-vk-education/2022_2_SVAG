@@ -1,0 +1,11 @@
+on: push
+
+jobs:
+  check_style:
+    # todo
+  build:
+    # todo
+  test:
+    # todo
+  memtest:
+    # todo
