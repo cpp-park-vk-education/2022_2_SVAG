@@ -1,6 +1,3 @@
-#ifndef DOIT_DATABASE_H_
-#define DOIT_DATABASE_H_
+#pragma once
 
 void print(void);
-
-#endif
