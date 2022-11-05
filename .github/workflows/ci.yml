@@ -9,11 +9,11 @@ jobs:
       - uses: actions/checkout@v3
       - name: Run formatters and analyzers before build
         run: |
-          chmod -R 755 ./linters && make check_before
+          chmod -R 755 ./linters && make check_before_build
 
       - name: Run formatters and analyzers after build
         run: |
-          chmod -R 755 ./linters && make check_after
+          chmod -R 755 ./linters && make check_object_files
   build:
     # todo
   test:

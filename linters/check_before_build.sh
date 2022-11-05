@@ -14,4 +14,11 @@ check_log "cpplint DoIt/main.cpp" "Can't open for reading"
 print_header "RUN cppcheck"
 check_log "cppcheck DoIt/main.cpp -q -j4 --enable=performance,portability,warning --error-exitcode=1" "\(information\)"
 
+print_header "RUN infer"
+cd DoIt
+mkdir build
+cd build
+check_log "infer run -- clang -c ../main.cpp -I ../database/" "Error"
+cd ../..
+
 print_header "SUCCESS"
