@@ -1,12 +1,12 @@
 .PHONY: build test check_before check_after check_coverage memtest_sanitizers memtest_valgrind clean
 
-check:
+check_before_build:
 	./linters/check_before_build.sh
 
 build:
 	./build.sh
 
-check_after: build
+check_object_files: build
 	./linters/check_object_files.sh
 	
 test:
@@ -16,7 +16,7 @@ test:
 	@cd DoIt/build && genhtml -o report coverage.info > coverage_database.txt 
 
 check_coverage:	
-	@./run_coverage.sh
+	@chmod -R 755 run_coverage.sh & ./run_coverage.sh
 
 memtest_valgrind:
 	cd DoIt && mkdir -p build && cd build && cmake .. && cmake --build .
