@@ -29,6 +29,22 @@ jobs:
           name: artifacts
           path: ./DoIt/build/
   test:
-    # todo
+    runs-on: ubuntu-latest
+    container: vvinokurshin/project_cpp:v1
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v3
+      - run: make test
+      - name: Upload code coverage artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: DoIt/build/report
+      - name: Upload coverage to Codecov
+        run: |
+            curl -Os https://uploader.codecov.io/latest/linux/codecov                                                
+            chmod +x codecov
+            ./codecov -t ${{ secrets.CODECOV_TOKEN }}
+      - run: make check_coverage
+
   memtest:
     # todo
