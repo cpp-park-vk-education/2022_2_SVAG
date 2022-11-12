@@ -1,4 +1,4 @@
-.PHONY: build test check_before check_after check_coverage memtest clean
+.PHONY: build test check_before check_after check_coverage memtest_sanitizers memtest_valgrind clean
 
 check:
 	./linters/check_before_build.sh
@@ -18,5 +18,13 @@ test:
 check_coverage:	
 	@./run_coverage.sh
 
+memtest_valgrind:
+	cd DoIt && mkdir -p build && cd build && cmake .. && cmake --build .
+	valgrind --tool=memcheck --leak-check=full --leak-resolution=med --track-origins=yes --xml=yes --xml-file=unit_tests_valgrind.xml ./DoIt/build/tests/test_module
+	./check_valgrind_report.sh
+
+memtest_sanitizers:
+	cd DoIt && mkdir -p build && cd build && cmake -DMEM_MOD=ON .. && cmake --build .
+
 clean:
-	rm -rf DoIt/build
+	rm -rf DoIt/build unit_tests_valgrind.xml

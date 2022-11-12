@@ -47,4 +47,21 @@ jobs:
       - run: make check_coverage
 
   memtest:
-    # todo
+    runs-on: ubuntu-latest
+    container: vvinokurshin/project_cpp:v1
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: artifacts
+          path: .DoIt/build/
+      - name: Run valgrind
+        run: make memtest_valgrind
+      - name: Run sanitizers
+        run: make memtest_sanitizers
+      - name: Upload valgrind arfifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: unit_tests_valgrind.xml
