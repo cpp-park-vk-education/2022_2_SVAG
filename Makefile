@@ -16,7 +16,7 @@ test:
 	@cd DoIt/build && genhtml -o report coverage.info > coverage_database.txt 
 
 check_coverage:	
-	@chmod +x run_coverage.sh & ./run_coverage.sh
+	@chmod +x run_coverage.sh && ./run_coverage.sh
 
 memtest_valgrind:
 	cd DoIt && mkdir -p build && cd build && cmake .. && cmake --build .
