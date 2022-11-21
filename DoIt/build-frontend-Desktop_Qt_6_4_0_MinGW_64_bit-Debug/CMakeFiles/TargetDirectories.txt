@@ -1,0 +1,9 @@
+C:/Users/Aleks Oparin/Desktop/MGTU/5 semester/TechnoPark/C++/2022_2_SVAG/DoIt/build-frontend-Desktop_Qt_6_4_0_MinGW_64_bit-Debug/CMakeFiles/frontend.dir
+C:/Users/Aleks Oparin/Desktop/MGTU/5 semester/TechnoPark/C++/2022_2_SVAG/DoIt/build-frontend-Desktop_Qt_6_4_0_MinGW_64_bit-Debug/CMakeFiles/edit_cache.dir
+C:/Users/Aleks Oparin/Desktop/MGTU/5 semester/TechnoPark/C++/2022_2_SVAG/DoIt/build-frontend-Desktop_Qt_6_4_0_MinGW_64_bit-Debug/CMakeFiles/rebuild_cache.dir
+C:/Users/Aleks Oparin/Desktop/MGTU/5 semester/TechnoPark/C++/2022_2_SVAG/DoIt/build-frontend-Desktop_Qt_6_4_0_MinGW_64_bit-Debug/CMakeFiles/list_install_components.dir
+C:/Users/Aleks Oparin/Desktop/MGTU/5 semester/TechnoPark/C++/2022_2_SVAG/DoIt/build-frontend-Desktop_Qt_6_4_0_MinGW_64_bit-Debug/CMakeFiles/install.dir
+C:/Users/Aleks Oparin/Desktop/MGTU/5 semester/TechnoPark/C++/2022_2_SVAG/DoIt/build-frontend-Desktop_Qt_6_4_0_MinGW_64_bit-Debug/CMakeFiles/install/local.dir
+C:/Users/Aleks Oparin/Desktop/MGTU/5 semester/TechnoPark/C++/2022_2_SVAG/DoIt/build-frontend-Desktop_Qt_6_4_0_MinGW_64_bit-Debug/CMakeFiles/install/strip.dir
+C:/Users/Aleks Oparin/Desktop/MGTU/5 semester/TechnoPark/C++/2022_2_SVAG/DoIt/build-frontend-Desktop_Qt_6_4_0_MinGW_64_bit-Debug/CMakeFiles/frontend_autogen_timestamp_deps.dir
+C:/Users/Aleks Oparin/Desktop/MGTU/5 semester/TechnoPark/C++/2022_2_SVAG/DoIt/build-frontend-Desktop_Qt_6_4_0_MinGW_64_bit-Debug/CMakeFiles/frontend_autogen.dir
