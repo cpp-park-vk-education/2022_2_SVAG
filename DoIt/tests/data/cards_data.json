@@ -1,0 +1,50 @@
+[
+    {
+        "name": "card1",
+        "caption": "card1_cap",
+        "deadline": null,
+        "column_id": 2
+    },
+    {
+        "name": "card2",
+        "caption": "card2_cap",
+        "deadline": null,
+        "column_id": 3
+    },
+    {
+        "name": "card3",
+        "caption": "card3_cap",
+        "deadline": null,
+        "column_id": 1
+    },
+    {
+        "name": "card4",
+        "caption": "card4_cap",
+        "deadline": null,
+        "column_id": 2
+    },
+    {
+        "name": "card5",
+        "caption": "card5_cap",
+        "deadline": null,
+        "column_id": 5
+    },
+    {
+        "name": "card6",
+        "caption": "card6_cap",
+        "deadline": null,
+        "column_id": 3
+    },
+    {
+        "name": "card7",
+        "caption": "card7_cap",
+        "deadline": null,
+        "column_id": 1
+    },
+    {
+        "name": "card8",
+        "caption": "card8_cap",
+        "deadline": null,
+        "column_id": 2
+    }
+]

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(test_module)
+project(test_database)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-fprofile-arcs -ftest-coverage -O0")
@@ -15,7 +15,7 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(${PROJECT_NAME} tests.cpp)
+add_executable(${PROJECT_NAME} tests_database.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC ${DATABASE_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${DATABASE_LIBRARIES} GTest::gtest_main)
 

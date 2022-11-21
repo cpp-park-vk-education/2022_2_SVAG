@@ -11,8 +11,9 @@ check_object_files: build
 	
 test:
 	cd DoIt && mkdir -p build && cd build && cmake -DTEST_MODE=ON .. && cmake --build .
+	cd DoIt/tests/ && chmod +x prepare_db.sh && ./prepare_db.sh
 	cd DoIt/build && ctest
-	@cd DoIt/build && lcov -t "tests/tests.cpp" -o coverage.info -c -d database/> /dev/null
+	@sudo service postgresql restart && cd DoIt/build && lcov -t "tests/tests.cpp" -o coverage.info -c -d database/> /dev/null
 	@cd DoIt/build && genhtml -o report coverage.info > coverage_database.txt 
 
 check_coverage:	
@@ -20,7 +21,7 @@ check_coverage:
 
 memtest_valgrind:
 	cd DoIt && mkdir -p build && cd build && cmake .. && cmake --build .
-	valgrind --tool=memcheck --leak-check=full --leak-resolution=med --track-origins=yes --xml=yes --xml-file=unit_tests_valgrind.xml ./DoIt/build/tests/test_module
+	valgrind --tool=memcheck --leak-check=full --leak-resolution=med --track-origins=yes --xml=yes --xml-file=unit_tests_valgrind.xml ./DoIt/build/tests/test_database
 	./check_valgrind_report.sh
 
 memtest_sanitizers:
