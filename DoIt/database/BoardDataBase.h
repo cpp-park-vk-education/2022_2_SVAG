@@ -10,12 +10,12 @@ class BoardDataBase {
     BoardDataBase() = default;
     BoardDataBase(std::shared_ptr<DataBase> client);
     json addBoard(const json &info) const;
-    json removeBoard(const int id) const;
+    json removeBoard(const size_t id) const;
     json updateBoard(const json &info) const;
-    json getBoardInfo(const int id) const;
-    json getBoardUsers(const int id) const;
-    json getBoardColumns(const int id) const;
-    json getBoardColumn(const int id, const int column_id) const;
+    json getBoardInfo(const size_t id) const;
+    json getBoardUsers(const size_t id) const;
+    json getBoardColumns(const size_t id) const;
+    json getBoardColumn(const size_t id, const size_t column_id) const;
     json addColumn(const json &info) const;
 
  private:

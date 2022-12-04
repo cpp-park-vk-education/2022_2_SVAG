@@ -11,7 +11,7 @@ json BoardDataBase::addBoard(const json &info) const {
     return response;
 }
 
-json BoardDataBase::removeBoard(const int id) const {
+json BoardDataBase::removeBoard(const size_t id) const {
     json response = client->remove({{"id", id}});
     return response;
 }
@@ -21,22 +21,22 @@ json BoardDataBase::updateBoard(const json &info) const {
     return response;
 }
 
-json BoardDataBase::getBoardInfo(const int id) const {
+json BoardDataBase::getBoardInfo(const size_t id) const {
     json response = client->select({{"id", id}});
     return response;
 }
 
-json BoardDataBase::getBoardUsers(const int id) const {
+json BoardDataBase::getBoardUsers(const size_t id) const {
     json response = client->select({{"id", id}});
     return response;
 }
 
-json BoardDataBase::getBoardColumns(const int id) const {
+json BoardDataBase::getBoardColumns(const size_t id) const {
     json response = client->select({{"id", id}});
     return response;
 }
 
-json BoardDataBase::getBoardColumn(const int id, const int column_id) const {
+json BoardDataBase::getBoardColumn(const size_t id, const size_t column_id) const {
     json response = client->select({{"id", id}});
     return response;
 }

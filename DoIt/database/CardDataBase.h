@@ -10,18 +10,18 @@ class CardDataBase {
     CardDataBase() = default;
     CardDataBase(std::shared_ptr<DataBase> client);
     json addCard(const json &info) const;
-    json removeCard(const int id) const;
+    json removeCard(const size_t id) const;
     json updateCard(const json &info) const;
-    json getCardInfo(const int id) const;
-    json getCardCheckLists(const int id) const;
-    json getCardTags(const int id) const;
-    json getCardColumn(const int id) const;
+    json getCardInfo(const size_t id) const;
+    json getCardCheckLists(const size_t id) const;
+    json getCardTags(const size_t id) const;
+    json getCardColumn(const size_t id) const;
     json addTag(const json &info) const;
-    json removeTag(const int id) const;
+    json removeTag(const size_t id) const;
     json addCheckList(const json &info) const;
-    json removeCheckList(const int id) const;
+    json removeCheckList(const size_t id) const;
     json addCheckListItem(const json &info) const;
-    json removeCheckListItem(const int id) const;
+    json removeCheckListItem(const size_t id) const;
 
  private:
     std::shared_ptr<DataBase> client;

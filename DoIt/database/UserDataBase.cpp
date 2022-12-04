@@ -11,12 +11,12 @@ json UserDataBase::addUser(const json &info) const {
     return response;
 }
 
-json UserDataBase::removeUser(const int id) const {
+json UserDataBase::removeUser(const size_t id) const {
     json response = client->remove({{"id", id}});
     return response;
 }
 
-bool UserDataBase::checkUserExists(const int id) const {
+bool UserDataBase::checkUserExists(const size_t id) const {
     json response = client->select({{"id", id}});
     return true;
 }
@@ -26,12 +26,12 @@ json UserDataBase::updateUser(const json &info) const {
     return response;
 }
 
-json UserDataBase::getUserInfo(const int id) const {
+json UserDataBase::getUserInfo(const size_t id) const {
     json response = client->select({{"id", id}});
     return response;
 }
 
-json UserDataBase::getUserBoards(const int id) const {
+json UserDataBase::getUserBoards(const size_t id) const {
     json response = client->select({{"id", id}});
     return response;
 }
