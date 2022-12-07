@@ -4,7 +4,8 @@
 
 PostgreConnectParams::PostgreConnectParams(std::string dbName, std::string user, std::string password,
                                            std::string host, std::string port)
-    : dbName(dbName), user(user), password(password), host(host), port(port) {}
+    : dbName(dbName), user(user), password(password), host(host), port(port) {
+}
 
 std::string PostgreConnectParams::paramsToString() const {
     std::string strParams = "dbname = " + dbName + " ";
@@ -26,7 +27,7 @@ std::string PostgreConnectParams::paramsToString() const {
     return strParams;
 }
 
-PostgreDataBase::PostgreDataBase(std::shared_ptr<PostgreConnectParams> conParams) : connectParams(conParams) {
+PostgreDataBase::PostgreDataBase(std::shared_ptr<PostgreConnectParams> conParams): connectParams(conParams) {
     con = std::make_shared<pqxx::connection>(connectParams->paramsToString());
 
     if ((*con).is_open()) {
@@ -48,20 +49,203 @@ json PostgreDataBase::dropTable(std::string) {
 
 json PostgreDataBase::select(json request) {
     json response = {{STATUS_FIELD, SUCCESS_STATUS}};
+    std::string query = "SELECT ";
+
+    for (size_t i = 0; i < request["SELECT"].size(); ++i) {
+        query += request["SELECT"][i].get<std::string>();
+
+        if (i != request["SELECT"].size() - 1) {
+            query += ", ";
+        }
+    }
+
+    query += " FROM ";
+
+    for (size_t i = 0, j = 0; i < request["FROM"].size(); ++i) {
+        query += request["FROM"][i].get<std::string>();
+
+        if (i > 0) {
+            query += " ON " + request["JOIN ON"][j++].get<std::string>();
+        }
+
+        if (i != request["FROM"].size() - 1) {
+            query += " JOIN ";
+        }
+    }
+
+    if (request["WHERE"].size()) {
+        query += " WHERE ";
+    }
+
+    for (size_t i = 0; i < request["WHERE"].size(); ++i) {
+        query += request["WHERE"][i].get<std::string>();
+
+        if (i != request["WHERE"].size() - 1) {
+            query += " AND ";
+        }
+    }
+
+    std::cout << query << std::endl;
+
+    try {
+        pqxx::work worker(*con);
+        pqxx::result result = worker.exec(query);
+        worker.commit();
+        response["result"] = {};
+
+        for (pqxx::result::const_iterator row = result.begin(); row < result.end(); row++) {
+            json cur = {};
+            size_t i = 0;
+
+            for (pqxx::row::const_iterator field = row->begin(); field != row->end(); ++field) {
+                size_t type = result.column_type(i);
+
+                if (type == 23) {
+                    cur[result.column_name(i++)] = field.as<int>();
+                } else {
+                    cur[result.column_name(i++)] = field.c_str();
+                }
+            }
+
+            response["result"].push_back(cur);
+        }
+    } catch (std::exception& e) {
+        response[STATUS_FIELD] = ERROR_STATUS;
+        response["msg"] = e.what();
+    }
+
     return response;
 }
 
 json PostgreDataBase::insert(json request) {
     json response = {{STATUS_FIELD, SUCCESS_STATUS}};
+
+    std::string query = "INSERT INTO " + request["INTO"].get<std::string>() + "(";
+
+    std::cout << query << std::endl;
+
+    for (size_t i = 0; i < request["columns"].size(); ++i) {
+        query += request["columns"][i].get<std::string>();
+
+        if (i != request["columns"].size() - 1) {
+            query += ", ";
+        }
+    }
+
+    std::cout << query << std::endl;
+
+    query += ") VALUES (";
+
+    for (size_t i = 0; i < request["VALUES"].size(); ++i) {
+        auto cur = request["VALUES"][i];
+        std::string value;
+
+        if (cur.is_null()) {
+            value = "NULL";
+        } else if (cur.is_string()) {
+            value = "\'" + cur.get<std::string>() + "\'";
+        } else {
+            value = cur.get<std::string>();
+        }
+
+        query += value;
+
+        if (i != request["VALUES"].size() - 1) {
+            query += ", ";
+        }
+    }
+
+    query += ")";
+
+    std::cout << query << std::endl;
+
+    try {
+        pqxx::work worker(*con);
+        pqxx::result result = worker.exec(query);
+
+        query = "SELECT currval(\'" + request["INTO"].get<std::string>() + "_id_seq\')";
+        result = worker.exec(query);
+        worker.commit();
+
+        json res = {};
+        response["result"] = result.begin()->begin().as<int>();
+
+    } catch (std::exception& e) {
+        response[STATUS_FIELD] = ERROR_STATUS;
+        response["msg"] = e.what();
+    }
+
     return response;
 }
 
 json PostgreDataBase::remove(json request) {
     json response = {{STATUS_FIELD, SUCCESS_STATUS}};
+
+    std::string query = "DELETE FROM " + request["FROM"].get<std::string>() + " WHERE ";
+
+    for (size_t i = 0; i < request["WHERE"].size(); ++i) {
+        query += request["WHERE"][i].get<std::string>();
+
+        if (i != request["WHERE"].size() - 1) {
+            query += " AND ";
+        }
+    }
+
+    std::cout << query << std::endl;
+
+    try {
+        pqxx::work worker(*con);
+        pqxx::result result = worker.exec(query);
+        worker.commit();
+    } catch (std::exception& e) {
+        response[STATUS_FIELD] = ERROR_STATUS;
+        response["msg"] = e.what();
+    }
+
+    std::cout << response << std::endl;
+
     return response;
 }
 
 json PostgreDataBase::update(json request) {
     json response = {{STATUS_FIELD, SUCCESS_STATUS}};
+
+    std::string query = "UPDATE " + request["table"].get<std::string>() + " SET ";
+
+    std::cout << query << std::endl;
+
+    for (json::const_iterator it = request["SET"].begin(); it != request["SET"].end(); ++it) {
+        std::cout << it.value() << std::endl;
+        query += it.key() + "=";
+
+
+        if (it->is_string()) {
+            query += "\'" + it->get<std::string>() + "\'";
+        } else {
+            query += it->get<std::string>();
+        }
+    }
+
+    query += " WHERE ";
+
+    for (size_t i = 0; i < request["WHERE"].size(); ++i) {
+        query += request["WHERE"][i].get<std::string>();
+
+        if (i != request["WHERE"].size() - 1) {
+            query += " AND ";
+        }
+    }
+
+    std::cout << query << std::endl;
+
+    try {
+        pqxx::work worker(*con);
+        pqxx::result result = worker.exec(query);
+        worker.commit();
+    } catch (std::exception& e) {
+        response[STATUS_FIELD] = ERROR_STATUS;
+        response["msg"] = e.what();
+    }
+
     return response;
 }

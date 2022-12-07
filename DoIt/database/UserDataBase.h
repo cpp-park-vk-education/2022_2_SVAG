@@ -6,16 +6,16 @@
 #include "database.h"
 
 class UserDataBase {
- public:
+  public:
     UserDataBase() = default;
     UserDataBase(std::shared_ptr<DataBase> client);
-    json addUser(const json &info) const;
+    json addUser(const json& info) const;
     json removeUser(const size_t id) const;
     bool checkUserExists(const size_t id) const;
-    json updateUser(const json &info) const;
+    json updateUser(const json& info) const;
     json getUserInfo(const size_t id) const;
     json getUserBoards(const size_t id) const;
 
- private:
+  private:
     std::shared_ptr<DataBase> client;
 };

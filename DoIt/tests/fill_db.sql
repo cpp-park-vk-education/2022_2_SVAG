@@ -13,8 +13,8 @@ CREATE DATABASE db_test;
 
 CREATE TABLE IF NOT EXISTS users (
     id INT PRIMARY KEY GENERATED ALWAYS AS identity,
-    username VARCHAR(30) NOT NULL,
-    email VARCHAR(30) NOT NULL,
+    username VARCHAR(30) UNIQUE NOT NULL,
+    email VARCHAR(30) UNIQUE NOT NULL,
     password VARCHAR(30) NOT NULL,
     avatar VARCHAR(30) DEFAULT NULL
 );
@@ -50,8 +50,8 @@ FROM boards_import;
 SELECT * FROM boards;
 
 CREATE TABLE IF NOT EXISTS users2boards (
-    user_id int NOT NULL REFERENCES users (id),
-    board_id int NOT NULL REFERENCES boards (id)
+    user_id int NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    board_id int NOT NULL REFERENCES boards (id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS users2boards_import;
@@ -68,7 +68,7 @@ SELECT * FROM users2boards;
 CREATE TABLE IF NOT EXISTS columns (
     id INT PRIMARY KEY GENERATED ALWAYS AS identity,
     name VARCHAR(30) NOT NULL,
-    board_id int NOT NULL REFERENCES boards (id)
+    board_id int NOT NULL REFERENCES boards (id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS columns_import;
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS cards (
     name VARCHAR(30) NOT NULL,
     caption VARCHAR(200) DEFAULT NULL,
     deadline date DEFAULT NULL,
-    column_id int NOT NULL REFERENCES columns (id)
+    column_id int NOT NULL REFERENCES columns (id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS cards_import;
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS tags (
     id INT PRIMARY KEY GENERATED ALWAYS AS identity,
     name VARCHAR(20) NOT NULL,
     color VARCHAR(30) NOT NULL,
-    card_id int NOT NULL REFERENCES cards (id)
+    card_id int NOT NULL REFERENCES cards (id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS tags_import;
@@ -122,7 +122,7 @@ SELECT * FROM tags;
 CREATE TABLE IF NOT EXISTS check_lists (
     id INT PRIMARY KEY GENERATED ALWAYS AS identity,
     name VARCHAR(20) NOT NULL,
-    card_id int NOT NULL REFERENCES cards (id)
+    card_id int NOT NULL REFERENCES cards (id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS check_lists_import;
@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS check_lists_items (
     id INT PRIMARY KEY GENERATED ALWAYS AS identity,
     name VARCHAR(20) NOT NULL,
     is_checked bool DEFAULT false,
-    check_list_id int NOT NULL REFERENCES check_lists (id)
+    check_list_id int NOT NULL REFERENCES check_lists (id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS check_lists_items_import;

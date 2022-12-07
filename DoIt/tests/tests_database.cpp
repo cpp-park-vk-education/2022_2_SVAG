@@ -4,23 +4,23 @@
 
 TEST(TestAddUser, newUser) {
     UserDataBase cl = TestEnvironment::getUsersClient();
-    json request = {{"username", "aaaaaa"}, {"email", "123@mail.ru"}, {"password", "1234556"}};
+    json request = {{"username", "aaaaaa"}, {"email", "123@mail.ru"}, {"password", "1234556"}, {"avatar", nullptr}};
     json response = cl.addUser(request);
 
     json users = TestEnvironment::getTestDataUsers();
     size_t id = users.size() + 1;
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["users"][0]["id"], id);
-    EXPECT_EQ(response["users"][0]["username"], request["username"]);
-    EXPECT_EQ(response["users"][0]["email"], request["email"]);
-    EXPECT_EQ(response["users"][0]["password"], request["password"]);
-    EXPECT_EQ(response["users"][0]["avatar"], request["avatar"]);
+    EXPECT_EQ(response["result"][0]["id"], id);
+    EXPECT_EQ(response["result"][0]["username"], request["username"]);
+    EXPECT_EQ(response["result"][0]["email"], request["email"]);
+    EXPECT_EQ(response["result"][0]["password"], request["password"]);
+    EXPECT_EQ(response["result"][0]["avatar"], request["avatar"] != nullptr ? request["avatar"] : "");
 }
 
 TEST(TestAddUser, oldUser) {
     UserDataBase cl = TestEnvironment::getUsersClient();
-    json request = {{"username", "aaaaaa"}, {"email", "123@mail.ru"}, {"password", "1234556"}};
+    json request = {{"username", "aaaaaa"}, {"email", "123@mail.ru"}, {"password", "1234556"}, {"avatar", nullptr}};
     json response = cl.addUser(request);
 
     EXPECT_EQ(response["status"], "error");
@@ -33,11 +33,9 @@ TEST(TestRemoveUser, userExists) {
     json users = TestEnvironment::getTestDataUsers();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["users"][0]["id"], id);
-    EXPECT_EQ(response["users"][0]["username"], users[0]["username"]);
-    EXPECT_EQ(response["users"][0]["email"], users[0]["email"]);
-    EXPECT_EQ(response["users"][0]["password"], users[0]["password"]);
-    EXPECT_EQ(response["users"][0]["avatar"], users[0]["avatar"]);
+
+    bool res = cl.checkUserExists(id);
+    EXPECT_EQ(res, false);
 }
 
 TEST(TestRemoveUser, userNotExists) {
@@ -50,7 +48,7 @@ TEST(TestRemoveUser, userNotExists) {
 
 TEST(TestCheckUserExists, userExists) {
     UserDataBase cl = TestEnvironment::getUsersClient();
-    size_t id = 1;
+    size_t id = 2;
     bool response = cl.checkUserExists(id);
 
     EXPECT_EQ(response, true);
@@ -66,16 +64,13 @@ TEST(TestCheckUserExists, userNotExists) {
 
 TEST(TestUpdateUser, userExists) {
     UserDataBase cl = TestEnvironment::getUsersClient();
-    size_t id = 1;
-    json request = {{"id", id}, {"username", "aaaaaa"}, {"email", "123@mail.ru"}, {"password", "1234556"}};
+    size_t id = 2;
+    json request = {{"id", id}, {"info", {{"password", "2312313"}}}};
     json response = cl.updateUser(request);
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["users"][0]["id"], id);
-    EXPECT_EQ(response["users"][0]["username"], request["username"]);
-    EXPECT_EQ(response["users"][0]["email"], request["email"]);
-    EXPECT_EQ(response["users"][0]["password"], request["password"]);
-    EXPECT_EQ(response["users"][0]["avatar"], request["avatar"]);
+    EXPECT_EQ(response["result"][0]["id"], id);
+    EXPECT_EQ(response["result"][0]["password"], request["info"]["password"]);
 }
 
 TEST(TestUpdateUser, userNotExists) {
@@ -89,16 +84,16 @@ TEST(TestUpdateUser, userNotExists) {
 
 TEST(TestGetUserInfo, userExists) {
     UserDataBase cl = TestEnvironment::getUsersClient();
-    size_t id = 1;
+    size_t id = 3;
     json response = cl.getUserInfo(id);
     json users = TestEnvironment::getTestDataUsers();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["users"][0]["id"], id);
-    EXPECT_EQ(response["users"][0]["username"], users[0]["username"]);
-    EXPECT_EQ(response["users"][0]["email"], users[0]["email"]);
-    EXPECT_EQ(response["users"][0]["password"], users[0]["password"]);
-    EXPECT_EQ(response["users"][0]["avatar"], users[0]["avatar"]);
+    EXPECT_EQ(response["result"][0]["id"], id);
+    EXPECT_EQ(response["result"][0]["username"], users[2]["username"]);
+    EXPECT_EQ(response["result"][0]["email"], users[2]["email"]);
+    EXPECT_EQ(response["result"][0]["password"], users[2]["password"]);
+    EXPECT_EQ(response["result"][0]["avatar"], users[2]["avatar"] != nullptr ? users[0]["avatar"] : "");
 }
 
 TEST(TestGetUserInfo, userNotExists) {
@@ -116,8 +111,8 @@ TEST(TestGetUserBoards, userExists) {
 
     json boards = TestEnvironment::getTestDataBoards();
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["boards"][0]["name"], boards["name"]);
-    EXPECT_EQ(response["boards"][0]["caption"], boards["caption"]);
+    EXPECT_EQ(response["result"][0]["name"], boards[0]["name"]);
+    EXPECT_EQ(response["result"][0]["caption"], boards[0]["caption"]);
 }
 
 TEST(TestGetUserBoards, userNotExists) {
@@ -139,9 +134,9 @@ TEST(TestAddBoard, newBoard) {
     size_t id = boards.size() + 1;
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["boards"][0]["id"], id);
-    EXPECT_EQ(response["boards"][0]["name"], request["name"]);
-    EXPECT_EQ(response["boards"][0]["caption"], request["caption"]);
+    EXPECT_EQ(response["result"]["boards"][0]["id"], id);
+    EXPECT_EQ(response["result"]["boards"][0]["name"], request["name"]);
+    EXPECT_EQ(response["result"]["boards"][0]["caption"], request["caption"]);
 }
 
 TEST(TestRemoveBoard, boardExists) {
@@ -151,9 +146,9 @@ TEST(TestRemoveBoard, boardExists) {
     json boards = TestEnvironment::getTestDataBoards();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["boards"][0]["id"], id);
-    EXPECT_EQ(response["boards"][0]["name"], boards[0]["name"]);
-    EXPECT_EQ(response["boards"][0]["caption"], boards[0]["caption"]);
+    EXPECT_EQ(response["result"]["boards"][0]["id"], id);
+    EXPECT_EQ(response["result"]["boards"][0]["name"], boards[0]["name"]);
+    EXPECT_EQ(response["result"]["boards"][0]["caption"], boards[0]["caption"]);
 }
 
 TEST(TestRemoveBoard, boardNotExists) {
@@ -171,9 +166,9 @@ TEST(TestUpdateBoard, boardExists) {
     json response = cl.updateBoard(request);
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["boards"][0]["id"], id);
-    EXPECT_EQ(response["boards"][0]["name"], request["name"]);
-    EXPECT_EQ(response["boards"][0]["caption"], request["caption"]);
+    EXPECT_EQ(response["result"]["boards"][0]["id"], id);
+    EXPECT_EQ(response["result"]["boards"][0]["name"], request["name"]);
+    EXPECT_EQ(response["result"]["boards"][0]["caption"], request["caption"]);
 }
 
 TEST(TestUpdateBoard, boardNotExists) {
@@ -192,9 +187,9 @@ TEST(TestGetBoardInfo, boardExists) {
     json boards = TestEnvironment::getTestDataBoards();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["boards"][0]["id"], id);
-    EXPECT_EQ(response["boards"][0]["name"], boards[0]["name"]);
-    EXPECT_EQ(response["boards"][0]["caption"], boards[0]["caption"]);
+    EXPECT_EQ(response["result"]["boards"][0]["id"], id);
+    EXPECT_EQ(response["result"]["boards"][0]["name"], boards[0]["name"]);
+    EXPECT_EQ(response["result"]["boards"][0]["caption"], boards[0]["caption"]);
 }
 
 TEST(TestGetBoardInfo, boardNotExists) {
@@ -212,10 +207,10 @@ TEST(TestGetBoardUsers, boardExists) {
     json users = TestEnvironment::getTestDataUsers();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["users"][0]["username"], users[1]["username"]);
-    EXPECT_EQ(response["users"][0]["email"], users[1]["email"]);
-    EXPECT_EQ(response["users"][0]["password"], users[1]["password"]);
-    EXPECT_EQ(response["users"][0]["avatar"], users[1]["avatar"]);
+    EXPECT_EQ(response["result"]["users"][0]["username"], users[1]["username"]);
+    EXPECT_EQ(response["result"]["users"][0]["email"], users[1]["email"]);
+    EXPECT_EQ(response["result"]["users"][0]["password"], users[1]["password"]);
+    EXPECT_EQ(response["result"]["users"][0]["avatar"], users[1]["avatar"] != nullptr ? users[1]["avatar"] : "");
 }
 
 TEST(TestGetBoardUsers, boardNotExists) {
@@ -233,10 +228,10 @@ TEST(TestGetBoardColumns, boardExists) {
     json columns = TestEnvironment::getTestDataColumns();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["columns"][0]["name"], columns[0]["name"]);
-    EXPECT_EQ(response["columns"][0]["board_id"], columns[0]["board_id"]);
-    EXPECT_EQ(response["columns"][1]["name"], columns[2]["name"]);
-    EXPECT_EQ(response["columns"][1]["board_id"], columns[2]["board_id"]);
+    EXPECT_EQ(response["result"]["columns"][0]["name"], columns[0]["name"]);
+    EXPECT_EQ(response["result"]["columns"][0]["board_id"], columns[0]["board_id"]);
+    EXPECT_EQ(response["result"]["columns"][1]["name"], columns[2]["name"]);
+    EXPECT_EQ(response["result"]["columns"][1]["board_id"], columns[2]["board_id"]);
 }
 
 TEST(TestGetBoardColumns, boardNotExists) {
@@ -254,16 +249,16 @@ TEST(TestGetBoardColumn, boardExists) {
     json columns = TestEnvironment::getTestDataColumns(), cards = TestEnvironment::getTestDataCards();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["columns"][0]["name"], columns[0]["name"]);
-    EXPECT_EQ(response["columns"][0]["board_id"], columns[0]["board_id"]);
-    EXPECT_EQ(response["columns"][0]["cards"][0]["name"], cards[2]["name"]);
-    EXPECT_EQ(response["columns"][0]["cards"][0]["caption"], cards[2]["caption"]);
-    EXPECT_EQ(response["columns"][0]["cards"][0]["deadline"], cards[2]["deadline"]);
-    EXPECT_EQ(response["columns"][0]["cards"][0]["column_id"], cards[2]["column_id"]);
-    EXPECT_EQ(response["columns"][0]["cards"][1]["name"], cards[6]["name"]);
-    EXPECT_EQ(response["columns"][0]["cards"][1]["caption"], cards[6]["caption"]);
-    EXPECT_EQ(response["columns"][0]["cards"][1]["deadline"], cards[6]["deadline"]);
-    EXPECT_EQ(response["columns"][0]["cards"][1]["column_id"], cards[6]["column_id"]);
+    EXPECT_EQ(response["result"]["columns"][0]["name"], columns[0]["name"]);
+    EXPECT_EQ(response["result"]["columns"][0]["board_id"], columns[0]["board_id"]);
+    EXPECT_EQ(response["result"]["columns"][0]["cards"][0]["name"], cards[2]["name"]);
+    EXPECT_EQ(response["result"]["columns"][0]["cards"][0]["caption"], cards[2]["caption"]);
+    EXPECT_EQ(response["result"]["columns"][0]["cards"][0]["deadline"], cards[2]["deadline"]);
+    EXPECT_EQ(response["result"]["columns"][0]["cards"][0]["column_id"], cards[2]["column_id"]);
+    EXPECT_EQ(response["result"]["columns"][0]["cards"][1]["name"], cards[6]["name"]);
+    EXPECT_EQ(response["result"]["columns"][0]["cards"][1]["caption"], cards[6]["caption"]);
+    EXPECT_EQ(response["result"]["columns"][0]["cards"][1]["deadline"], cards[6]["deadline"]);
+    EXPECT_EQ(response["result"]["columns"][0]["cards"][1]["column_id"], cards[6]["column_id"]);
 }
 
 TEST(TestGetBoardColumn, boardNotExists) {
@@ -291,9 +286,9 @@ TEST(TestAddColumn, boardExists) {
     size_t id = columns.size() + 1;
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["columns"][0]["id"], id);
-    EXPECT_EQ(response["columns"][0]["name"], request["name"]);
-    EXPECT_EQ(response["columns"][0]["board_id"], request["board_id"]);
+    EXPECT_EQ(response["result"]["columns"][0]["id"], id);
+    EXPECT_EQ(response["result"]["columns"][0]["name"], request["name"]);
+    EXPECT_EQ(response["result"]["columns"][0]["board_id"], request["board_id"]);
 }
 
 TEST(TestAddColumn, boardNotExists) {
@@ -315,11 +310,11 @@ TEST(TestAddCard, columnExists) {
     size_t id = cards.size() + 1;
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["cards"][0]["id"], id);
-    EXPECT_EQ(response["cards"][0]["name"], request["name"]);
-    EXPECT_EQ(response["cards"][0]["caption"], request["caption"]);
-    EXPECT_EQ(response["cards"][0]["deadline"], request["deadline"]);
-    EXPECT_EQ(response["cards"][0]["column_id"], request["column_id"]);
+    EXPECT_EQ(response["result"]["cards"][0]["id"], id);
+    EXPECT_EQ(response["result"]["cards"][0]["name"], request["name"]);
+    EXPECT_EQ(response["result"]["cards"][0]["caption"], request["caption"]);
+    EXPECT_EQ(response["result"]["cards"][0]["deadline"], request["deadline"]);
+    EXPECT_EQ(response["result"]["cards"][0]["column_id"], request["column_id"]);
 }
 
 TEST(TestAddCard, columnNotExists) {
@@ -337,11 +332,11 @@ TEST(TestRemoveCard, cardExists) {
     json cards = TestEnvironment::getTestDataCards();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["cards"][0]["id"], id);
-    EXPECT_EQ(response["cards"][0]["name"], cards["name"]);
-    EXPECT_EQ(response["cards"][0]["caption"], cards["caption"]);
-    EXPECT_EQ(response["cards"][0]["deadline"], cards["deadline"]);
-    EXPECT_EQ(response["cards"][0]["column_id"], cards["column_id"]);
+    EXPECT_EQ(response["result"]["cards"][0]["id"], id);
+    EXPECT_EQ(response["result"]["cards"][0]["name"], cards["name"]);
+    EXPECT_EQ(response["result"]["cards"][0]["caption"], cards["caption"]);
+    EXPECT_EQ(response["result"]["cards"][0]["deadline"], cards["deadline"]);
+    EXPECT_EQ(response["result"]["cards"][0]["column_id"], cards["column_id"]);
 }
 
 TEST(TestRemoveCard, cardNotExists) {
@@ -359,8 +354,8 @@ TEST(TestUpdateCard, cardExists) {
     json response = cl.updateCard(request);
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["cards"][0]["id"], id);
-    EXPECT_EQ(response["cards"][0]["column_id"], request["column_id"]);
+    EXPECT_EQ(response["result"]["cards"][0]["id"], id);
+    EXPECT_EQ(response["result"]["cards"][0]["column_id"], request["column_id"]);
 }
 
 TEST(TestUpdateCard, cardNotExists) {
@@ -388,11 +383,11 @@ TEST(TestGetCardInfo, cardExists) {
     json cards = TestEnvironment::getTestDataCards();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["cards"][0]["id"], id);
-    EXPECT_EQ(response["cards"][0]["name"], cards[0]["name"]);
-    EXPECT_EQ(response["cards"][0]["caption"], cards[0]["caption"]);
-    EXPECT_EQ(response["cards"][0]["deadline"], cards[0]["deadline"]);
-    EXPECT_EQ(response["cards"][0]["column_id"], cards[0]["column_id"]);
+    EXPECT_EQ(response["result"]["cards"][0]["id"], id);
+    EXPECT_EQ(response["result"]["cards"][0]["name"], cards[0]["name"]);
+    EXPECT_EQ(response["result"]["cards"][0]["caption"], cards[0]["caption"]);
+    EXPECT_EQ(response["result"]["cards"][0]["deadline"], cards[0]["deadline"]);
+    EXPECT_EQ(response["result"]["cards"][0]["column_id"], cards[0]["column_id"]);
 }
 
 TEST(TestGetCardInfo, cardNotExists) {
@@ -411,14 +406,14 @@ TEST(TestGetCardCheckLists, cardExists) {
          check_lists_items = TestEnvironment::getTestDataCheckListsItems();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["check_lists"][0]["name"], check_lists[0]["name"]);
-    EXPECT_EQ(response["check_lists"][0]["card_id"], check_lists[0]["card_id"]);
-    EXPECT_EQ(response["check_lists_items"][0]["name"], check_lists_items[3]["name"]);
-    EXPECT_EQ(response["check_lists_items"][0]["is_checked"], check_lists_items[3]["is_checked"]);
-    EXPECT_EQ(response["check_lists_items"][0]["check_list_id"], check_lists_items[3]["check_list_id"]);
-    EXPECT_EQ(response["check_lists_items"][0]["name"], check_lists_items[4]["name"]);
-    EXPECT_EQ(response["check_lists_items"][0]["is_checked"], check_lists_items[4]["is_checked"]);
-    EXPECT_EQ(response["check_lists_items"][0]["check_list_id"], check_lists_items[4]["check_list_id"]);
+    EXPECT_EQ(response["result"]["check_lists"][0]["name"], check_lists[0]["name"]);
+    EXPECT_EQ(response["result"]["check_lists"][0]["card_id"], check_lists[0]["card_id"]);
+    EXPECT_EQ(response["result"]["check_lists_items"][0]["name"], check_lists_items[3]["name"]);
+    EXPECT_EQ(response["result"]["check_lists_items"][0]["is_checked"], check_lists_items[3]["is_checked"]);
+    EXPECT_EQ(response["result"]["check_lists_items"][0]["check_list_id"], check_lists_items[3]["check_list_id"]);
+    EXPECT_EQ(response["result"]["check_lists_items"][0]["name"], check_lists_items[4]["name"]);
+    EXPECT_EQ(response["result"]["check_lists_items"][0]["is_checked"], check_lists_items[4]["is_checked"]);
+    EXPECT_EQ(response["result"]["check_lists_items"][0]["check_list_id"], check_lists_items[4]["check_list_id"]);
 }
 
 TEST(TestGetCardCheckLists, cardNotExists) {
@@ -436,9 +431,9 @@ TEST(TestGetCardTags, cardExists) {
     json tags = TestEnvironment::getTestDataTags();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["tags"][0]["name"], tags[2]["name"]);
-    EXPECT_EQ(response["tags"][0]["color"], tags[2]["color"]);
-    EXPECT_EQ(response["tags"][0]["card_id"], tags[2]["card_id"]);
+    EXPECT_EQ(response["result"]["tags"][0]["name"], tags[2]["name"]);
+    EXPECT_EQ(response["result"]["tags"][0]["color"], tags[2]["color"]);
+    EXPECT_EQ(response["result"]["tags"][0]["card_id"], tags[2]["card_id"]);
 }
 
 TEST(TestGetCardTags, cardNotExists) {
@@ -456,7 +451,7 @@ TEST(TestGetCardColumn, cardExists) {
     json cards = TestEnvironment::getTestDataTags();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["cards"][0]["column_id"], cards[0]["column_id"]);
+    EXPECT_EQ(response["result"]["cards"][0]["column_id"], cards[0]["column_id"]);
 }
 
 TEST(TestGetCardColumn, cardNotExists) {
@@ -476,10 +471,10 @@ TEST(TestAddTag, cardExists) {
     size_t tag_id = tags.size() + 1;
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["tags"][0]["id"], tag_id);
-    EXPECT_EQ(response["tags"][0]["name"], request["name"]);
-    EXPECT_EQ(response["tags"][0]["color"], request["color"]);
-    EXPECT_EQ(response["tags"][0]["card_id"], request["card_id"]);
+    EXPECT_EQ(response["result"]["tags"][0]["id"], tag_id);
+    EXPECT_EQ(response["result"]["tags"][0]["name"], request["name"]);
+    EXPECT_EQ(response["result"]["tags"][0]["color"], request["color"]);
+    EXPECT_EQ(response["result"]["tags"][0]["card_id"], request["card_id"]);
 }
 
 TEST(TestAddTag, cardNotExists) {
@@ -498,10 +493,10 @@ TEST(TestRemoveTag, tagExists) {
     json tags = TestEnvironment::getTestDataTags();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["tags"][0]["id"], id);
-    EXPECT_EQ(response["tags"][0]["name"], tags[0]["name"]);
-    EXPECT_EQ(response["tags"][0]["color"], tags[0]["color"]);
-    EXPECT_EQ(response["tags"][0]["card_id"], tags[0]["tags"]);
+    EXPECT_EQ(response["result"]["tags"][0]["id"], id);
+    EXPECT_EQ(response["result"]["tags"][0]["name"], tags[0]["name"]);
+    EXPECT_EQ(response["result"]["tags"][0]["color"], tags[0]["color"]);
+    EXPECT_EQ(response["result"]["tags"][0]["card_id"], tags[0]["tags"]);
 }
 
 TEST(TestRemoveTag, tagNotExists) {
@@ -521,9 +516,9 @@ TEST(TestAddCheckList, cardExists) {
     size_t check_list_id = check_lists.size() + 1;
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["check_lists"][0]["id"], check_list_id);
-    EXPECT_EQ(response["check_lists"][0]["name"], request["name"]);
-    EXPECT_EQ(response["check_lists"][0]["card_id"], request["card_id"]);
+    EXPECT_EQ(response["result"]["check_lists"][0]["id"], check_list_id);
+    EXPECT_EQ(response["result"]["check_lists"][0]["name"], request["name"]);
+    EXPECT_EQ(response["result"]["check_lists"][0]["card_id"], request["card_id"]);
 }
 
 TEST(TestAddCheckList, cardNotExists) {
@@ -542,10 +537,10 @@ TEST(TestRemoveCheckList, checkListExists) {
     json check_lists = TestEnvironment::getTestDataCheckLists();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["check_lists"][0]["id"], id);
-    EXPECT_EQ(response["check_lists"][0]["name"], check_lists[0]["name"]);
-    EXPECT_EQ(response["check_lists"][0]["color"], check_lists[0]["color"]);
-    EXPECT_EQ(response["check_lists"][0]["card_id"], check_lists[0]["card_id"]);
+    EXPECT_EQ(response["result"]["check_lists"][0]["id"], id);
+    EXPECT_EQ(response["result"]["check_lists"][0]["name"], check_lists[0]["name"]);
+    EXPECT_EQ(response["result"]["check_lists"][0]["color"], check_lists[0]["color"]);
+    EXPECT_EQ(response["result"]["check_lists"][0]["card_id"], check_lists[0]["card_id"]);
 }
 
 TEST(TestRemoveCheckList, checkListNotExists) {
@@ -565,10 +560,10 @@ TEST(TestAddCheckListItem, checkListExists) {
     size_t check_lists_item_id = check_lists_items.size() + 1;
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["check_lists_items"][0]["id"], check_lists_item_id);
-    EXPECT_EQ(response["check_lists_items"][0]["name"], request["name"]);
-    EXPECT_EQ(response["check_lists_items"][0]["is_checked"], request["is_checked"]);
-    EXPECT_EQ(response["check_lists_items"][0]["check_list_id"], request["check_list_id"]);
+    EXPECT_EQ(response["result"]["check_lists_items"][0]["id"], check_lists_item_id);
+    EXPECT_EQ(response["result"]["check_lists_items"][0]["name"], request["name"]);
+    EXPECT_EQ(response["result"]["check_lists_items"][0]["is_checked"], request["is_checked"]);
+    EXPECT_EQ(response["result"]["check_lists_items"][0]["check_list_id"], request["check_list_id"]);
 }
 
 TEST(TestAddCheckListItem, checkListNotExists) {
@@ -587,10 +582,10 @@ TEST(TestRemoveCheckListItem, checkListItemExists) {
     json check_lists_items = TestEnvironment::getTestDataCheckListsItems();
 
     EXPECT_EQ(response["status"], "ok");
-    EXPECT_EQ(response["check_lists"][0]["id"], id);
-    EXPECT_EQ(response["check_lists_items"][0]["name"], check_lists_items[0]["name"]);
-    EXPECT_EQ(response["check_lists_items"][0]["is_checked"], check_lists_items[0]["is_checked"]);
-    EXPECT_EQ(response["check_lists_items"][0]["check_list_id"], check_lists_items[0]["check_list_id"]);
+    EXPECT_EQ(response["result"]["check_lists"][0]["id"], id);
+    EXPECT_EQ(response["result"]["check_lists_items"][0]["name"], check_lists_items[0]["name"]);
+    EXPECT_EQ(response["result"]["check_lists_items"][0]["is_checked"], check_lists_items[0]["is_checked"]);
+    EXPECT_EQ(response["result"]["check_lists_items"][0]["check_list_id"], check_lists_items[0]["check_list_id"]);
 }
 
 TEST(TestRemoveCheckListItem, checkListItemNotExists) {
