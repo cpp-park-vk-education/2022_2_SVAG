@@ -21,7 +21,7 @@ struct PostgreConnectParams {
 };
 
 class PostgreDataBase : public DataBase {
- public:
+  public:
     PostgreDataBase() = default;
     PostgreDataBase(std::shared_ptr<PostgreConnectParams> conParams);
 
@@ -32,7 +32,7 @@ class PostgreDataBase : public DataBase {
     json select(json) override;
     json remove(json) override;
 
- private:
+  private:
     std::shared_ptr<PostgreConnectParams> connectParams;
     std::shared_ptr<pqxx::connection> con;
 };

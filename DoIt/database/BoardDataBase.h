@@ -6,18 +6,19 @@
 #include "database.h"
 
 class BoardDataBase {
- public:
+  public:
     BoardDataBase() = default;
     BoardDataBase(std::shared_ptr<DataBase> client);
-    json addBoard(const json &info) const;
+    json addBoard(const json& info) const;
     json removeBoard(const size_t id) const;
-    json updateBoard(const json &info) const;
+    bool checkBoardExists(const size_t id) const;
+    json updateBoard(const json& info) const;
     json getBoardInfo(const size_t id) const;
     json getBoardUsers(const size_t id) const;
     json getBoardColumns(const size_t id) const;
     json getBoardColumn(const size_t id, const size_t column_id) const;
-    json addColumn(const json &info) const;
+    json addColumn(const json& info) const;
 
- private:
+  private:
     std::shared_ptr<DataBase> client;
 };

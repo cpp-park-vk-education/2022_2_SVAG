@@ -46,5 +46,17 @@
         "caption": "card8_cap",
         "deadline": null,
         "column_id": 2
+    },
+    {
+        "name": "card9",
+        "caption": "card9_cap",
+        "deadline": null,
+        "column_id": 6
+    },
+    {
+        "name": "card10",
+        "caption": "card10_cap",
+        "deadline": null,
+        "column_id": 6
     }
 ]

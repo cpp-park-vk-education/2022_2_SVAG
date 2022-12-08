@@ -52,12 +52,7 @@ json UserDataBase::updateUser(const json& info) const {
         return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "User doesn't exists"}};
     }
 
-    std::cout << info["info"] << std::endl;
-
-    json request = {{"table", userTableName},
-                    {"SET", info["info"]},
-                    {"WHERE", {"id=" + std::to_string(id)}}};
-
+    json request = {{"table", userTableName}, {"SET", info["info"]}, {"WHERE", {"id=" + std::to_string(id)}}};
     json response = client->update(request);
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS) {
@@ -74,8 +69,6 @@ json UserDataBase::getUserInfo(const size_t id) const {
                     {"WHERE", {"id=" + std::to_string(id)}}};
 
     json response = client->select(request);
-    
-    std::cout << response << std::endl;
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS && response["result"] == nullptr) {
         return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "User doesn't exists"}};

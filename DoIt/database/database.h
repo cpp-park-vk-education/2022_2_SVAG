@@ -11,7 +11,7 @@ const std::string SUCCESS_STATUS = "ok";
 using json = nlohmann::json;
 
 class DataBase {
- public:
+  public:
     virtual json createTable(json) = 0;
     virtual json dropTable(std::string) = 0;
     virtual json select(json) = 0;

@@ -85,8 +85,6 @@ json PostgreDataBase::select(json request) {
         }
     }
 
-    std::cout << query << std::endl;
-
     try {
         pqxx::work worker(*con);
         pqxx::result result = worker.exec(query);
@@ -102,6 +100,8 @@ json PostgreDataBase::select(json request) {
 
                 if (type == 23) {
                     cur[result.column_name(i++)] = field.as<int>();
+                } else if (type == 16) {
+                    cur[result.column_name(i++)] = field.as<bool>();
                 } else {
                     cur[result.column_name(i++)] = field.c_str();
                 }
@@ -122,8 +122,6 @@ json PostgreDataBase::insert(json request) {
 
     std::string query = "INSERT INTO " + request["INTO"].get<std::string>() + "(";
 
-    std::cout << query << std::endl;
-
     for (size_t i = 0; i < request["columns"].size(); ++i) {
         query += request["columns"][i].get<std::string>();
 
@@ -131,8 +129,6 @@ json PostgreDataBase::insert(json request) {
             query += ", ";
         }
     }
-
-    std::cout << query << std::endl;
 
     query += ") VALUES (";
 
@@ -144,8 +140,14 @@ json PostgreDataBase::insert(json request) {
             value = "NULL";
         } else if (cur.is_string()) {
             value = "\'" + cur.get<std::string>() + "\'";
+        } else if (cur.is_boolean()) {
+            if (cur.get<bool>()) {
+                value = "true";
+            } else {
+                value = "false";
+            }
         } else {
-            value = cur.get<std::string>();
+            value = std::to_string(cur.get<int>());
         }
 
         query += value;
@@ -156,8 +158,6 @@ json PostgreDataBase::insert(json request) {
     }
 
     query += ")";
-
-    std::cout << query << std::endl;
 
     try {
         pqxx::work worker(*con);
@@ -191,8 +191,6 @@ json PostgreDataBase::remove(json request) {
         }
     }
 
-    std::cout << query << std::endl;
-
     try {
         pqxx::work worker(*con);
         pqxx::result result = worker.exec(query);
@@ -202,8 +200,6 @@ json PostgreDataBase::remove(json request) {
         response["msg"] = e.what();
     }
 
-    std::cout << response << std::endl;
-
     return response;
 }
 
@@ -212,17 +208,13 @@ json PostgreDataBase::update(json request) {
 
     std::string query = "UPDATE " + request["table"].get<std::string>() + " SET ";
 
-    std::cout << query << std::endl;
-
     for (json::const_iterator it = request["SET"].begin(); it != request["SET"].end(); ++it) {
-        std::cout << it.value() << std::endl;
         query += it.key() + "=";
-
 
         if (it->is_string()) {
             query += "\'" + it->get<std::string>() + "\'";
         } else {
-            query += it->get<std::string>();
+            query += std::to_string(it->get<int>());
         }
     }
 
@@ -235,8 +227,6 @@ json PostgreDataBase::update(json request) {
             query += " AND ";
         }
     }
-
-    std::cout << query << std::endl;
 
     try {
         pqxx::work worker(*con);
