@@ -4,7 +4,7 @@ jobs:
   check_style:
     name: Static formatters and analyzers
     runs-on: ubuntu-latest
-    container: vvinokurshin/project_cpp:v2
+    container: vvinokurshin/project_cpp:v3
     steps:
       - uses: actions/checkout@v3
       - name: Run formatters and analyzers before build
@@ -16,7 +16,7 @@ jobs:
           chmod -R 755 ./linters && make check_object_files
   build:
     runs-on: ubuntu-latest
-    container: vvinokurshin/project_cpp:v2
+    container: vvinokurshin/project_cpp:v3
     steps:
       - uses: actions/checkout@v3
 
@@ -30,7 +30,7 @@ jobs:
           path: ./DoIt/build/
   test:
     runs-on: ubuntu-latest
-    container: vvinokurshin/project_cpp:v2
+    container: vvinokurshin/project_cpp:v3
     needs: [build]
     steps:
       - uses: actions/checkout@v3
@@ -48,7 +48,7 @@ jobs:
 
   memtest:
     runs-on: ubuntu-latest
-    container: vvinokurshin/project_cpp:v2
+    container: vvinokurshin/project_cpp:v3
     needs: [build]
     steps:
       - uses: actions/checkout@v3
