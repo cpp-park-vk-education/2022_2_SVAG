@@ -1,6 +1,6 @@
 #!/bin/bash
 
-xml_file="unit_tests_valgrind.xml"
+xml_file="DoIt/build/unit_tests_valgrind.xml"
 
 if [ ! -f "$xml_file" ]; then
     echo "[ FAILED ]: $xml_file does not exist."
