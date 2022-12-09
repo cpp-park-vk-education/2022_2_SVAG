@@ -102,7 +102,9 @@ class TestEnvironment : public ::testing::Environment {
     }
 
     static std::string testsPath() {
-        if (std::filesystem::current_path() == "/home/github/2022_2_SVAG/DoIt/build/tests") {
+        std::string path = std::filesystem::current_path();
+
+        if (path.find("build/tests") != std::string::npos) {
             return "../../tests/";
         }
         
