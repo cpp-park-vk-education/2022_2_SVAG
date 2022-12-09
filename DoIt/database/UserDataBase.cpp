@@ -3,8 +3,7 @@
 #include "UserDataBase.h"
 #include "allDataBasesInfo.h"
 
-UserDataBase::UserDataBase(std::shared_ptr<DataBase> cl) {
-    client = cl;
+UserDataBase::UserDataBase(std::shared_ptr<DataBase> cl): client(cl) {
 }
 
 json UserDataBase::addUser(const json& info) const {

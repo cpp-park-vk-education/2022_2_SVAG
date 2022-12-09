@@ -2,8 +2,9 @@
 
 #include <iostream>
 
-PostgreConnectParams::PostgreConnectParams(std::string dbName, std::string user, std::string password,
-                                           std::string host, std::string port)
+PostgreConnectParams::PostgreConnectParams(const std::string& dbName, const std::string& user,
+                                           const std::string& password, const std::string& host,
+                                           const std::string& port)
     : dbName(dbName), user(user), password(password), host(host), port(port) {
 }
 
@@ -35,16 +36,6 @@ PostgreDataBase::PostgreDataBase(std::shared_ptr<PostgreConnectParams> conParams
     } else {
         std::cout << "Can't open database" << std::endl;
     }
-}
-
-json PostgreDataBase::createTable(json request) {
-    json response = {{STATUS_FIELD, SUCCESS_STATUS}};
-    return response;
-}
-
-json PostgreDataBase::dropTable(std::string) {
-    json response = {{STATUS_FIELD, SUCCESS_STATUS}};
-    return response;
 }
 
 json PostgreDataBase::select(json request) {
@@ -169,7 +160,6 @@ json PostgreDataBase::insert(json request) {
 
         json res = {};
         response["result"] = result.begin()->begin().as<int>();
-
     } catch (std::exception& e) {
         response[STATUS_FIELD] = ERROR_STATUS;
         response["msg"] = e.what();

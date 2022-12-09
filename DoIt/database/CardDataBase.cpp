@@ -3,8 +3,7 @@
 #include "CardDataBase.h"
 #include "allDataBasesInfo.h"
 
-CardDataBase::CardDataBase(std::shared_ptr<DataBase> cl) {
-    client = cl;
+CardDataBase::CardDataBase(std::shared_ptr<DataBase> cl): client(cl) {
 }
 
 json CardDataBase::addCard(const json& info) const {

@@ -9,7 +9,7 @@
 #include "UserDataBase.h"
 
 class TestEnvironment : public ::testing::Environment {
- public:
+  public:
     static std::shared_ptr<PostgreDataBase> getPgClient() {
         static std::shared_ptr<PostgreConnectParams> conParams =
             std::make_shared<PostgreConnectParams>("db_test", "postgres");
@@ -38,7 +38,7 @@ class TestEnvironment : public ::testing::Environment {
     }
 
     static json getTestDataUsers() {
-        std::ifstream input("../../tests/data/users_data.json");
+        std::ifstream input(testsPath() + "data/users_data.json");
         json users;
         input >> users;
 
@@ -46,7 +46,7 @@ class TestEnvironment : public ::testing::Environment {
     }
 
     static json getTestDataBoards() {
-        std::ifstream input("../../tests/data/boards_data.json");
+        std::ifstream input(testsPath() + "data/boards_data.json");
         json boards;
         input >> boards;
 
@@ -54,7 +54,7 @@ class TestEnvironment : public ::testing::Environment {
     }
 
     static json getTestDataCards() {
-        std::ifstream input("../../tests/data/cards_data.json");
+        std::ifstream input(testsPath() + "data/cards_data.json");
         json cards;
         input >> cards;
 
@@ -62,7 +62,7 @@ class TestEnvironment : public ::testing::Environment {
     }
 
     static json getTestDataColumns() {
-        std::ifstream input("../../tests/data/columns_data.json");
+        std::ifstream input(testsPath() + "data/columns_data.json");
         json columns;
         input >> columns;
 
@@ -70,7 +70,7 @@ class TestEnvironment : public ::testing::Environment {
     }
 
     static json getTestDataTags() {
-        std::ifstream input("../../tests/data/tags_data.json");
+        std::ifstream input(testsPath() + "data/tags_data.json");
         json tags;
         input >> tags;
 
@@ -78,7 +78,7 @@ class TestEnvironment : public ::testing::Environment {
     }
 
     static json getTestDataCheckLists() {
-        std::ifstream input("../../tests/data/check_lists_data.json");
+        std::ifstream input(testsPath() + "data/check_lists_data.json");
         json check_lists;
         input >> check_lists;
 
@@ -86,7 +86,7 @@ class TestEnvironment : public ::testing::Environment {
     }
 
     static json getTestDataCheckListsItems() {
-        std::ifstream input("../../tests/data/check_lists_items_data.json");
+        std::ifstream input(testsPath() + "data/check_lists_items_data.json");
         json check_lists_items;
         input >> check_lists_items;
 
@@ -94,10 +94,18 @@ class TestEnvironment : public ::testing::Environment {
     }
 
     static json getTestDataUser2Boards() {
-        std::ifstream input("../../tests/data/users2boards_data.json");
+        std::ifstream input(testsPath() + "data/users2boards_data.json");
         json users2boards;
         input >> users2boards;
 
         return users2boards;
+    }
+
+    static std::string testsPath() {
+        if (std::filesystem::current_path() == "/home/github/2022_2_SVAG/DoIt/build/tests") {
+            return "../../tests/";
+        }
+        
+        return "../tests/";
     }
 };

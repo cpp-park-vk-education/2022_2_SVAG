@@ -678,4 +678,6 @@ TEST(TestCheckCheckListItemExists, checkListItemNotExists) {
     bool response = cl.checkCheckListItemExists(id);
 
     EXPECT_EQ(response, false);
+
+    std::cout << TestEnvironment::testsPath() << std::endl;
 }

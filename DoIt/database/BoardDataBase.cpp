@@ -3,8 +3,7 @@
 #include "BoardDataBase.h"
 #include "allDataBasesInfo.h"
 
-BoardDataBase::BoardDataBase(std::shared_ptr<DataBase> cl) {
-    client = cl;
+BoardDataBase::BoardDataBase(std::shared_ptr<DataBase> cl): client(cl) {
 }
 
 json BoardDataBase::addBoard(const json& info) const {
