@@ -21,27 +21,21 @@ public:
 
     ~NetWorker() = default;
 
-    void connect() {
-        _sock.connect(_ep);
+    // возвращает код ошибки, 0 - успех, 1 - не удалось подключиться к серверу
+    int connect() {
+       return 0;
     }
 
     void disconnect() {
-        _sock.close();
+
     }
 
-    void sendRequest(const std::string &request) {
-        _sock.connect(_ep);
-        _sock.write_some(asio::buffer(request));
-        _sock.close();
+    int sendMessage(const std::string &request) {
+        return 0;
     }
 
-    void sendFile(const std::string &fileName) {
-        std::ifstream input(fileName, std::ios::binary);
-        std::string buf(std::istreambuf_iterator<char>(input), {});
-        connect();
-        _sock.write_some(asio::buffer(buf.data(), buf.size()));
-        disconnect();
-        input.close();
+    int sendFile(const std::string &fileName) {
+        return 0;
     }
 
 private:

@@ -21,20 +21,21 @@ option(USE_COVERAGE_FLAGS "Use coverage flags" ON)
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 find_package(Boost COMPONENTS system thread REQUIRED)
 
-include_directories(
+set(INCS
         ${Boost_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui
         ${CMAKE_CURRENT_SOURCE_DIR}/Workers
         ${CMAKE_CURRENT_SOURCE_DIR}/Data
         ${CMAKE_CURRENT_SOURCE_DIR}/GuiData
         ${CMAKE_CURRENT_SOURCE_DIR}/Lib
-)
+        )
 
 set(SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/Gui/mainwindow.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/Gui/mainwindow.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/mainwindow.ui
+        ${CMAKE_CURRENT_SOURCE_DIR}/Gui/mainwindow.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/Gui/mainwindow.cpp
         )
 
 # setup
@@ -54,6 +55,8 @@ if (USE_SANITIZER_FLAGS)
 endif ()
 
 add_executable(${CMAKE_PROJECT_NAME} ${SRCS})
+
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${INCS})
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
         Qt5::Core Qt5::Gui Qt5::Widgets

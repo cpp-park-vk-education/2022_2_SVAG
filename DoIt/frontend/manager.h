@@ -15,7 +15,7 @@ using json = nlohmann::json;
 class Manager : public QObject {
 Q_OBJECT
 public:
-    explicit Manager(QObject *parent) : QObject(parent) {
+    explicit Manager(QObject *parent = nullptr) : QObject(parent) {
         // connect from gui worker
         // object
         connect(&_guiWorker, &GuiWorker::addObjectSignal, this, &Manager::addObjectSlot);
@@ -40,12 +40,16 @@ public:
 
 public slots:
 
-    void addObjectSlot(const Object &obj, ObjType objType) {
+    // запросы на сервер
+    // добавить объект типа objType
+    void addObjectSlot(Object &obj, ObjType objType) {
     }
 
+    // удалить объект с id типа objType
     void deleteObjectSlot(size_t id, ObjType objType) {
     }
 
+    // обновить объект типа objType
     void updateObjectSlot(Object &obj, ObjType objType) {
     }
 
