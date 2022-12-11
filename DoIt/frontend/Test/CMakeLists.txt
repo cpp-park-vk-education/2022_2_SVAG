@@ -24,7 +24,6 @@ find_package(Boost COMPONENTS system thread REQUIRED)
 
 add_executable(${PROJECT_NAME}
         test_net_worker.cpp
-        test_manager.cpp
         ${SRC}
         )
 

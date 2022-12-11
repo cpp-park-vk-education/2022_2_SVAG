@@ -9,6 +9,7 @@
 #include <QMainWindow>
 #include <QDebug>
 #include <QPushButton>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -23,6 +24,24 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
 
     ~MainWindow() override;
+
+signals:
+
+    // user
+    void authUserSignal(User &);
+
+    void registerUserSignal(User &);
+
+    void addUserSignal(User &, const size_t board_id);
+
+    void logoutSignal();
+
+    // object
+    void addObjectSignal(Object &, ObjType);
+
+    void delObjectSignal(size_t, ObjType);
+
+    void updateObjectSignal(Object &, ObjType);
 
 public slots:
 
@@ -149,24 +168,6 @@ public slots:
         User user("Пользователь 1", "password_1", "email_1@yandex.ru", "avatar_1.jpg");
         emit registerUserSignal(user);
     }
-
-signals:
-
-    // user
-    void authUserSignal(User &);
-
-    void registerUserSignal(User &);
-
-    void addUserSignal(User &, const size_t board_id);
-
-    void logoutSignal();
-
-    // object
-    void addObjectSignal(Object &, ObjType);
-
-    void delObjectSignal(size_t, ObjType);
-
-    void updateObjectSignal(Object &, ObjType);
 
 
 private:

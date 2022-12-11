@@ -33,6 +33,8 @@ set(INCS
 
 set(SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/manager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Workers/gui_worker.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/mainwindow.ui
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/mainwindow.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/mainwindow.cpp
