@@ -1,17 +1,10 @@
 #include <QApplication>
 
-#include "main_manager.h"
+#include "manager.h"
 
 int main(int argc, char *argv[]) {
   QApplication a(argc, argv);
-
-  MainManager mm;
-
-  std::cout << "App started.." << std::endl;
-
-  a.exec();
-
-  std::cout << "Exit.." << std::endl;
-
+  Manager manager;
+  QApplication::exec();
   return 0;
 }
