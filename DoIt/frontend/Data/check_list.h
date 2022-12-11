@@ -28,5 +28,3 @@ struct CheckList : public Object {
 
     size_t cardId;
 };
-
-

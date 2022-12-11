@@ -12,5 +12,3 @@ struct GuiCheckListItem {
 
     size_t checkListId;
 };
-
-

@@ -28,5 +28,3 @@ struct CheckListItem : public Object {
 
     size_t checkListId;
 };
-
-
