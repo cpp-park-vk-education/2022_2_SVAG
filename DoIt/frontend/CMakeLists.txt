@@ -1,71 +1,82 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.14)
+project(frontend)
 
-project(frontend VERSION 0.1 LANGUAGES CXX)
-
+# variables
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif ()
 
-set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        main_interfaces.h
-        menu.cpp
-        menu.h
-        board.h
-        board.cpp
-        user.h
-        user.cpp
-        action_models.h
-        action_models.cpp
+# options
+option(BUILD_TESTS "Build the unit tests" ON)
+option(USE_SANITIZER_FLAGS "Use sanitizer flags" ON)
+option(USE_COVERAGE_FLAGS "Use coverage flags" ON)
+
+find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
+find_package(Boost COMPONENTS system thread REQUIRED)
+
+set(INCS
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui
+        ${CMAKE_CURRENT_SOURCE_DIR}/Workers
+        ${CMAKE_CURRENT_SOURCE_DIR}/Data
+        )
+
+include_directories(
+        ${Boost_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui
+        ${CMAKE_CURRENT_SOURCE_DIR}/Workers
+        ${CMAKE_CURRENT_SOURCE_DIR}/Data
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(frontend
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-    )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET frontend APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
-else()
-    if(ANDROID)
-        add_library(frontend SHARED
-            ${PROJECT_SOURCES}
+set(SRCS
+        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/manager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Workers/gui_worker.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Workers/net_worker.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/mainwindow.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/mainwindow.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/mainwindow.ui
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/board.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/column.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/card.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/comment.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/update.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/user.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/menu.cpp
         )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-    else()
-        add_executable(frontend
-            ${PROJECT_SOURCES}
+
+# setup
+if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -DDEBUG")
+    #    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wpedantic -Wextra -Werror")
+else ()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g0 -DNDEBUG")
+    set(USE_SANITIZER_FLAGS OFF)
+    set(USE_COVERAGE_FLAGS OFF)
+endif ()
+
+if (USE_SANITIZER_FLAGS)
+    #    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined,leak -fno-sanitize-recover=all -fsanitize-undefined-trap-on-error")
+endif ()
+
+add_executable(${PROJECT_NAME} ${SRCS})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+        Qt5::Core Qt5::Gui Qt5::Widgets
+        ${Boost_LIBRARIES}
         )
-    endif()
-endif()
 
-target_link_libraries(frontend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-
-set_target_properties(frontend PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
-)
-
-install(TARGETS frontend
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(frontend)
-endif()
+# tests
+if (BUILD_TESTS)
+   enable_testing()
+   add_subdirectory(Test)
+endif ()
