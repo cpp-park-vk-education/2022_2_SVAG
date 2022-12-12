@@ -22,29 +22,37 @@ find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 find_package(Boost COMPONENTS system thread REQUIRED)
 
 set(INCS
-        ${Boost_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/Gui
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui
         ${CMAKE_CURRENT_SOURCE_DIR}/Workers
         ${CMAKE_CURRENT_SOURCE_DIR}/Data
-        ${CMAKE_CURRENT_SOURCE_DIR}/GuiData
-        ${CMAKE_CURRENT_SOURCE_DIR}/Lib
         )
+
+include_directories(
+        ${Boost_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui
+        ${CMAKE_CURRENT_SOURCE_DIR}/Workers
+        ${CMAKE_CURRENT_SOURCE_DIR}/Data
+)
 
 set(SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Workers/gui_worker.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/Gui/mainwindow.ui
-        ${CMAKE_CURRENT_SOURCE_DIR}/Gui/mainwindow.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/Gui/mainwindow.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Workers/net_worker.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/mainwindow.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/mainwindow.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/mainwindow.ui
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/window.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/window.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/window.ui
         )
 
 # setup
 if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -DDEBUG")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wpedantic -Wextra")
+    #    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wpedantic -Wextra -Werror")
 else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g0 -DNDEBUG")
@@ -53,14 +61,12 @@ else ()
 endif ()
 
 if (USE_SANITIZER_FLAGS)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined,leak -fno-sanitize-recover=all -fsanitize-undefined-trap-on-error")
+    #    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined,leak -fno-sanitize-recover=all -fsanitize-undefined-trap-on-error")
 endif ()
 
-add_executable(${CMAKE_PROJECT_NAME} ${SRCS})
+add_executable(${PROJECT_NAME} ${SRCS})
 
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${INCS})
-
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
+target_link_libraries(${PROJECT_NAME} PRIVATE
         Qt5::Core Qt5::Gui Qt5::Widgets
         ${Boost_LIBRARIES}
         )

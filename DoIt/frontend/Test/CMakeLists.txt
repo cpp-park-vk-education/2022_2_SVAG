@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(unit_test)
 
-enable_testing()
-
 # variables
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
@@ -21,20 +19,19 @@ if (USE_COVERAGE_FLAGS)
 endif ()
 
 find_package(GTest REQUIRED)
-find_package(Boost COMPONENTS system thread REQUIRED)
+find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 
 add_executable(${PROJECT_NAME}
         test_net_worker.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../Ui/mainwindow.cpp
         )
-
 target_include_directories(${PROJECT_NAME} PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/../
         ${CMAKE_CURRENT_SOURCE_DIR}/../Workers
-        ${CMAKE_CURRENT_SOURCE_DIR}/../Lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/../Ui
         )
-
-target_link_libraries(${PROJECT_NAME}
-        GTest::gtest_main
-        ${Boost_LIBRARIES}
+target_link_libraries(${PROJECT_NAME} GTest::gtest_main
+        Qt5::Core Qt5::Gui Qt5::Widgets
         )
 
 gtest_discover_tests(${PROJECT_NAME})

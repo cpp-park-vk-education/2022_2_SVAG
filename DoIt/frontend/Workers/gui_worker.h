@@ -3,15 +3,27 @@
 #include <QtWidgets>
 
 #include "mainwindow.h"
+#include "window.h"
 
-#include "user.h"
 #include "object.h"
-#include "board.h"
+#include "qboard.h"
 
 class GuiWorker : public QObject {
 Q_OBJECT
 public:
-    explicit GuiWorker(QObject *parent = nullptr);
+    explicit GuiWorker(QObject *parent = nullptr) : QObject(parent) {
+//        _mainWindow.showMaximized();
+        _window.showMaximized();
+
+        // to window
+        connect(this, &GuiWorker::sendBoardsSignal, &_window, &Window::getBoardsSlot);
+        connect(this, &GuiWorker::sendColumnsSignal, &_window, &Window::getColumnsSlot);
+        connect(this, &GuiWorker::sendCardsSignal, &_window, &Window::getCardsSlot);
+
+        // from window
+        connect(&_window, &Window::getColumnSignal, this, &GuiWorker::getColumnSignal);
+        connect(&_window, &Window::getCardsSignal, this, &GuiWorker::getCardsSignal);
+    }
 
     GuiWorker(const GuiWorker &) = delete;
 
@@ -22,28 +34,25 @@ public:
     GuiWorker &operator=(GuiWorker &&) = delete;
 
     ~GuiWorker() override {
-        _mainWindow.close();
+//        qDebug() << "~GuiWorker()";
+//        _mainWindow.close();
+        _window.close();
     }
+
 
 signals:
 
-    // user
-    void authUserSignal(User &);
+    void sendBoardsSignal(std::vector<QBoard> &boards);
 
-    void registerUserSignal(User &);
+    void sendColumnsSignal(std::vector<QColumn> &columns);
 
-    void addUserSignal(User &, const size_t);
+    void sendCardsSignal(std::vector<QCard> &cards);
 
-    void logoutSignal();
+    void getColumnSignal(size_t);
 
-    // object
-    void addObjectSignal(Object &, ObjType);
-
-    void delObjectSignal(size_t, ObjType);
-
-    void updateObjectSignal(Object &, ObjType);
-
+    void getCardsSignal(size_t);
 
 private:
     MainWindow _mainWindow;
+    Window _window;
 };

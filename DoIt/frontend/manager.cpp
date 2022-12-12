@@ -1,15 +1,21 @@
 #include "manager.h"
 
 Manager::Manager(QObject *parent) : QObject(parent) {
-    // connect from gui worker
-    // object
-    connect(&_guiWorker, &GuiWorker::addObjectSignal, this, &Manager::addObjectSlot);
-    connect(&_guiWorker, &GuiWorker::delObjectSignal, this, &Manager::deleteObjectSlot);
-    connect(&_guiWorker, &GuiWorker::updateObjectSignal, this, &Manager::updateObjectSlot);
+    connect(this, &Manager::sendBoardsSignal, &_guiWorker, &GuiWorker::sendBoardsSignal);
+    connect(this, &Manager::sendColumnsSignal, &_guiWorker, &GuiWorker::sendColumnsSignal);
+    connect(this, &Manager::sendCardsSignal, &_guiWorker, &GuiWorker::sendCardsSignal);
 
-    // user
-    connect(&_guiWorker, &GuiWorker::authUserSignal, this, &Manager::authUserSlot);
-    connect(&_guiWorker, &GuiWorker::registerUserSignal, this, &Manager::registerUserSlot);
-    connect(&_guiWorker, &GuiWorker::logoutSignal, this, &Manager::logoutSlot);
-    connect(&_guiWorker, &GuiWorker::addUserSignal, this, &Manager::addUserSlot);
+    // from gui worker
+    connect(&_guiWorker, &GuiWorker::getColumnSignal, this, &Manager::getColumnsSlot);
+    connect(&_guiWorker, &GuiWorker::getCardsSignal, this, &Manager::getCardsSlot);
+
+    getBoards();
+    getColumns();
+    getCards();
+
+    emit sendBoardsSignal(_boards);
+}
+
+Manager::~Manager() {
+    _netWorker.disconnect();
 }

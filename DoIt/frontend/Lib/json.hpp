@@ -570,7 +570,7 @@ file.
 
 Exceptions have ids 1xx.
 
-name / id                      | example message | description
+name / id                      | example message | caption
 ------------------------------ | --------------- | -------------------------
 json.exception.parse_error.101 | parse error at 2: unexpected end of input; expected string literal | This error indicates a syntax error while deserializing a JSON text. The error message describes that an unexpected token (character) was encountered, and the member @a byte indicates the error position.
 json.exception.parse_error.102 | parse error at 14: missing or wrong low surrogate | JSON uses the `\uxxxx` format to describe Unicode characters. Code points above above 0xFFFF are split into two `\uxxxx` entries ("surrogate pairs"). This error indicates that the surrogate pair is incomplete or contains an invalid code point.
@@ -644,7 +644,7 @@ the expected semantics.
 
 Exceptions have ids 2xx.
 
-name / id                           | example message | description
+name / id                           | example message | caption
 ----------------------------------- | --------------- | -------------------------
 json.exception.invalid_iterator.201 | iterators are not compatible | The iterators passed to constructor @ref basic_json(InputIT first, InputIT last) are not compatible, meaning they do not belong to the same container. Therefore, the range (@a first, @a last) is invalid.
 json.exception.invalid_iterator.202 | iterator does not fit current value | In an erase or insert function, the passed iterator @a pos does not belong to the JSON value for which the function was called. It hence does not define a valid position for the deletion/insertion.
@@ -695,7 +695,7 @@ executed on a JSON value whose type does not match the expected semantics.
 
 Exceptions have ids 3xx.
 
-name / id                     | example message | description
+name / id                     | example message | caption
 ----------------------------- | --------------- | -------------------------
 json.exception.type_error.301 | cannot create object from initializer list | To create an object from an initializer list, the initializer list must consist only of a list of pairs whose first element is a string. When this constraint is violated, an array is created instead.
 json.exception.type_error.302 | type must be object, but is array | During implicit or explicit value conversion, the JSON type must be compatible to the target type. For instance, a JSON string can only be converted into string types, but not into numbers or boolean types.
@@ -747,7 +747,7 @@ indices or nonexisting object keys.
 
 Exceptions have ids 4xx.
 
-name / id                       | example message | description
+name / id                       | example message | caption
 ------------------------------- | --------------- | -------------------------
 json.exception.out_of_range.401 | array index 3 is out of range | The provided array index @a i is larger than @a size-1.
 json.exception.out_of_range.402 | array index '-' (3) is out of range | The special array index `-` in a JSON Pointer never describes a valid element of the array, but the index past the end. That is, it can only be used to add elements at this position, but not to read it.
@@ -791,7 +791,7 @@ other exception types.
 
 Exceptions have ids 5xx.
 
-name / id                      | example message | description
+name / id                      | example message | caption
 ------------------------------ | --------------- | -------------------------
 json.exception.other_error.501 | unsuccessful: {"op":"test","path":"/baz", "value":"bar"} | A JSON Patch operation 'test' failed. The unsuccessful operation is also printed.
 
@@ -2053,7 +2053,7 @@ class lexer
             token_type::parse_error otherwise
 
     @note In case of errors, variable error_message contains a textual
-          description.
+          caption.
     */
     token_type scan_string()
     {
@@ -3095,7 +3095,7 @@ scan_number_done:
     /// buffer for variable-length tokens (numbers, strings)
     std::string token_buffer {};
 
-    /// a description of occurred lexer errors
+    /// a caption of occurred lexer errors
     const char* error_message = "";
 
     // number values
@@ -7152,7 +7152,7 @@ http://florian.loitsch.com/publications (bench.tar.gz).
 
 The code is distributed under the MIT license, Copyright (c) 2009 Florian Loitsch.
 
-For a detailed description of the algorithm see:
+For a detailed caption of the algorithm see:
 
 [1] Loitsch, "Printing Floating-Point Numbers Quickly and Accurately with
     Integers", Proceedings of the ACM SIGPLAN 2010 Conference on Programming
@@ -9878,7 +9878,7 @@ class basic_json
     including the version number and information on the platform and compiler.
 
     @return JSON object holding version information
-    key         | description
+    key         | caption
     ----------- | ---------------
     `compiler`  | Information on the used compiler. It is an object with the following keys: `c++` (the used C++ standard), `family` (the compiler family; possible values are `clang`, `icc`, `gcc`, `ilecpp`, `msvc`, `pgcpp`, `sunpro`, and `unknown`), and `version` (the compiler version).
     `copyright` | The copyright line for the library as string.
@@ -10196,7 +10196,7 @@ class basic_json
     > cannot be represented in the grammar below (such as Infinity and NaN)
     > are not permitted.
 
-    This description includes both integer and floating-point numbers.
+    This caption includes both integer and floating-point numbers.
     However, C++ allows more precise storage if it is known whether the number
     is a signed integer, an unsigned integer or a floating-point number.
     Therefore, three different types, @ref number_integer_t, @ref
@@ -10268,7 +10268,7 @@ class basic_json
     > cannot be represented in the grammar below (such as Infinity and NaN)
     > are not permitted.
 
-    This description includes both integer and floating-point numbers.
+    This caption includes both integer and floating-point numbers.
     However, C++ allows more precise storage if it is known whether the number
     is a signed integer, an unsigned integer or a floating-point number.
     Therefore, three different types, @ref number_integer_t, @ref
@@ -10339,7 +10339,7 @@ class basic_json
     > cannot be represented in the grammar below (such as Infinity and NaN)
     > are not permitted.
 
-    This description includes both integer and floating-point numbers.
+    This caption includes both integer and floating-point numbers.
     However, C++ allows more precise storage if it is known whether the number
     is a signed integer, an unsigned integer or a floating-point number.
     Therefore, three different types, @ref number_integer_t, @ref
@@ -10660,7 +10660,7 @@ class basic_json
     callback function can be called. The following table describes the values
     of the parameters @a depth, @a event, and @a parsed.
 
-    parameter @a event | description | parameter @a depth | parameter @a parsed
+    parameter @a event | caption | parameter @a depth | parameter @a parsed
     ------------------ | ----------- | ------------------ | -------------------
     parse_event_t::object_start | the parser read `{` and started to process a JSON object | depth of the parent of the JSON object | a JSON value with type discarded
     parse_event_t::key | the parser read a key of a value in an object | depth of the currently parsed JSON object | a JSON string containing the key
@@ -11100,7 +11100,7 @@ class basic_json
 
     @pre Range `[first, last)` is valid. Usually, this precondition cannot be
          checked efficiently. Only certain edge cases are detected; see the
-         description of the exceptions below. A violation of this precondition
+         caption of the exceptions below. A violation of this precondition
          yields undefined behavior.
 
     @warning A precondition is enforced with a runtime assertion that will

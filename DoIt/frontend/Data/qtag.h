@@ -1,9 +1,11 @@
 #pragma once
 
+#include <QString>
+
 #include "object.h"
 
-struct Tag : public Object {
-    Tag(const std::string &n, const std::string &c, size_t ci) : name(n), color(c), cardId(ci) {
+struct QTag : public Object {
+    QTag(const std::string &n, const std::string &c, size_t ci) : name(n), color(c), cardId(ci) {
     }
 
 
@@ -16,11 +18,8 @@ struct Tag : public Object {
         return result;
     }
 
-    void fromJson(json data) override {
-        id = data["id"];
-        name = data["name"];
-        color = data["color"];
-        cardId = data["card_id"];
+    void fromJson(json) override {
+
     }
 
     std::string name;

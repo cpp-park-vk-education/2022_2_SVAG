@@ -1,16 +1,18 @@
 #pragma once
 
+#include <QString>
+
 #include <cstddef>
 #include <utility>
 
 #include "object.h"
-#include "column.h"
+#include "qcolumn.h"
 
-struct User : public Object {
-    User(const std::string &un, const std::string &p = "")
+struct QUser : public Object {
+    QUser(const std::string &un, const std::string &p = "")
             : username(un), password(p) {}
 
-    User(const std::string &un, const std::string &p, const std::string &e, const std::string &ap)
+    QUser(const std::string &un, const std::string &p, const std::string &e, const std::string &ap)
             : username(un), password(p), email(e), avatarPath(ap) {}
 
     json toJson() override {
@@ -23,12 +25,8 @@ struct User : public Object {
         return result;
     }
 
-    void fromJson(json data) override {
-        id = data["id"];
-        username = data["username"];
-        password = data["password"];
-        email = data["email"];
-        avatarPath = data["avatarPath"];
+    void fromJson(json) override {
+
     }
 
     std::string username;
