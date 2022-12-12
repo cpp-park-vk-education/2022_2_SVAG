@@ -15,7 +15,8 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(${PROJECT_NAME} tests.cpp)
+# add_executable(${PROJECT_NAME} tests.cpp)
+add_executable(${PROJECT_NAME} test_frontend.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC ${DATABASE_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${DATABASE_LIBRARIES} GTest::gtest_main)
 
