@@ -7,7 +7,7 @@ class IDraw {
 public:
     virtual ~IDraw() = default;
 
-    virtual void Draw() const = 0;
+    virtual QWidget* Draw() const = 0;
 };
 
 

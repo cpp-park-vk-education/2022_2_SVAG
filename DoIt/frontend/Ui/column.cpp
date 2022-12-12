@@ -64,6 +64,23 @@ bool operator==(const Column& l, const Column& r) {
 }
 
 
-void Column::Draw() const {
+QWidget* Column::Draw() const {
+    QWidget *widget = new QWidget();
+    widget->setMaximumWidth(300);
+    widget->setMinimumWidth(300);
 
+    QVBoxLayout* layout = new QVBoxLayout(widget);
+
+    QLineEdit *lineEdit = new QLineEdit(name);
+    lineEdit->setMinimumSize(QSize(0, 30));
+
+    layout->addWidget(lineEdit);
+
+    for (int i = 0; i < cards.size(); ++i)
+        layout->addWidget(qobject_cast<QTextEdit*>(cards[i].Draw()));
+
+    QSpacerItem *spacerItem = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    layout->addItem(spacerItem);
+
+    return widget;
 }

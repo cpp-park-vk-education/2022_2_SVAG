@@ -131,6 +131,12 @@ bool operator==(const Card& l, const Card& r) {
 }
 
 
-void Card::Draw() const {
+QWidget* Card::Draw() const {
+    QTextEdit* textEdit = new QTextEdit();
 
+    textEdit->setText(title);
+    textEdit->setReadOnly(true);
+    textEdit->setMaximumSize(QSize(16777215, 80));
+
+    return textEdit;
 }

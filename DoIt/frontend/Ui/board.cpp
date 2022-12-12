@@ -104,8 +104,26 @@ bool operator==(const Board& l, const Board& r) {
 }
 
 
-void Board::Draw() const {
+QWidget* Board::Draw() const {
+    QWidget *widget = new QWidget();
 
+    QLineEdit *boardName = new QLineEdit(name);
+    boardName->setMinimumSize(QSize(200, 30));
+    boardName->setMaximumSize(QSize(200, 30));
+
+    QVBoxLayout *vlayout = new QVBoxLayout(widget);
+    vlayout->addWidget(boardName);
+
+    QHBoxLayout *hlayout = new QHBoxLayout();
+
+    for (int i = 0; i < columns.size(); ++i) {
+        QWidget *tmpWidget = columns[i].Draw();
+        tmpWidget->setObjectName(QString("hBoxWidget_%1").arg(i + 1));
+        hlayout->addWidget(tmpWidget);
+    }
+    vlayout->addLayout(hlayout);
+
+    return widget;
 }
 
 

@@ -33,3 +33,4 @@
 .vscode
 
 build/
+DoIt/frontend/build_frontend

@@ -28,7 +28,7 @@ public:
 
     Menu CreateMenu();
 
-    void Draw() const override;
+    QWidget* Draw() const override;
 
 private:
     Ui::MainWindow *_ui;
@@ -36,4 +36,6 @@ private:
     Menu *navbar;
     Menu *menu;
     BoardManager boardManager;
+
+    void setStyleSheet(QWidget *widget) const;
 };

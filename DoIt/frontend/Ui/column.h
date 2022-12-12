@@ -26,7 +26,7 @@ public:
 
     friend bool operator==(const Column& l, const Column& r);
 
-    virtual void Draw() const override;
+    virtual QWidget* Draw() const override;
 
 private:
     QString name;

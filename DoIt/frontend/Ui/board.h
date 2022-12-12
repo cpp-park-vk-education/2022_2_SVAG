@@ -32,7 +32,7 @@ public:
     int columnCount() const;
 
 
-    virtual void Draw() const override;
+    virtual QWidget* Draw() const override;
 
 private:
     QString name;

@@ -39,7 +39,7 @@ public:
 
     friend bool operator==(const Card& l, const Card& r);
 
-    virtual void Draw() const override;
+    virtual QWidget* Draw() const override;
 
 private:
     QString title;
