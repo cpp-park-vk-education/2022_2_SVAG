@@ -2,7 +2,7 @@
 
 /* ============ TEST UserDataBase ================ */
 
-TEST(TestAddUser, newUser) {
+TEST(TestAddUser, DISABLED_newUser) {
     UserDataBase cl = TestEnvironment::getUsersClient();
     json request = {{"username", "aaaaaa"}, {"email", "123@mail.ru"}, {"password", "1234556"}};
     json response = cl.addUser(request);
@@ -18,7 +18,7 @@ TEST(TestAddUser, newUser) {
     EXPECT_EQ(response["users"][0]["avatar"], request["avatar"]);
 }
 
-TEST(TestAddUser, oldUser) {
+TEST(TestAddUser, DISABLED_oldUser) {
     UserDataBase cl = TestEnvironment::getUsersClient();
     json request = {{"username", "aaaaaa"}, {"email", "123@mail.ru"}, {"password", "1234556"}};
     json response = cl.addUser(request);
@@ -26,7 +26,7 @@ TEST(TestAddUser, oldUser) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestRemoveUser, userExists) {
+TEST(TestRemoveUser, DISABLED_userExists) {
     UserDataBase cl = TestEnvironment::getUsersClient();
     size_t id = 1;
     json response = cl.removeUser(id);
@@ -40,7 +40,7 @@ TEST(TestRemoveUser, userExists) {
     EXPECT_EQ(response["users"][0]["avatar"], users[0]["avatar"]);
 }
 
-TEST(TestRemoveUser, userNotExists) {
+TEST(TestRemoveUser, DISABLED_userNotExists) {
     UserDataBase cl = TestEnvironment::getUsersClient();
     size_t id = 10;
     json response = cl.removeUser(id);
@@ -48,7 +48,7 @@ TEST(TestRemoveUser, userNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestCheckUserExists, userExists) {
+TEST(TestCheckUserExists, DISABLED_userExists) {
     UserDataBase cl = TestEnvironment::getUsersClient();
     size_t id = 1;
     bool response = cl.checkUserExists(id);
@@ -56,7 +56,7 @@ TEST(TestCheckUserExists, userExists) {
     EXPECT_EQ(response, true);
 }
 
-TEST(TestCheckUserExists, userNotExists) {
+TEST(TestCheckUserExists, DISABLED_userNotExists) {
     UserDataBase cl = TestEnvironment::getUsersClient();
     size_t id = 10;
     bool response = cl.checkUserExists(id);
@@ -64,7 +64,7 @@ TEST(TestCheckUserExists, userNotExists) {
     EXPECT_EQ(response, false);
 }
 
-TEST(TestUpdateUser, userExists) {
+TEST(TestUpdateUser, DISABLED_userExists) {
     UserDataBase cl = TestEnvironment::getUsersClient();
     size_t id = 1;
     json request = {{"id", id}, {"username", "aaaaaa"}, {"email", "123@mail.ru"}, {"password", "1234556"}};
@@ -78,7 +78,7 @@ TEST(TestUpdateUser, userExists) {
     EXPECT_EQ(response["users"][0]["avatar"], request["avatar"]);
 }
 
-TEST(TestUpdateUser, userNotExists) {
+TEST(TestUpdateUser, DISABLED_userNotExists) {
     UserDataBase cl = TestEnvironment::getUsersClient();
     size_t id = 10;
     json request = {{"id", id}, {"username", "aaaaaa"}, {"email", "123@mail.ru"}, {"password", "1234556"}};
@@ -87,7 +87,7 @@ TEST(TestUpdateUser, userNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestGetUserInfo, userExists) {
+TEST(TestGetUserInfo, DISABLED_userExists) {
     UserDataBase cl = TestEnvironment::getUsersClient();
     size_t id = 1;
     json response = cl.getUserInfo(id);
@@ -101,7 +101,7 @@ TEST(TestGetUserInfo, userExists) {
     EXPECT_EQ(response["users"][0]["avatar"], users[0]["avatar"]);
 }
 
-TEST(TestGetUserInfo, userNotExists) {
+TEST(TestGetUserInfo, DISABLED_userNotExists) {
     UserDataBase cl = TestEnvironment::getUsersClient();
     size_t id = 10;
     json response = cl.getUserInfo(id);
@@ -109,7 +109,7 @@ TEST(TestGetUserInfo, userNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestGetUserBoards, userExists) {
+TEST(TestGetUserBoards, DISABLED_userExists) {
     UserDataBase cl = TestEnvironment::getUsersClient();
     size_t id = 2;
     json response = cl.getUserBoards(id);
@@ -120,7 +120,7 @@ TEST(TestGetUserBoards, userExists) {
     EXPECT_EQ(response["boards"][0]["caption"], boards["caption"]);
 }
 
-TEST(TestGetUserBoards, userNotExists) {
+TEST(TestGetUserBoards, DISABLED_userNotExists) {
     UserDataBase cl = TestEnvironment::getUsersClient();
     size_t id = 10;
     json response = cl.getUserBoards(id);
@@ -130,7 +130,7 @@ TEST(TestGetUserBoards, userNotExists) {
 
 /* ============ TEST BoardDataBase ================ */
 
-TEST(TestAddBoard, newBoard) {
+TEST(TestAddBoard, DISABLED_newBoard) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     json request = {{"user_id", 3}, {"name", "aaaaaa"}, {"caption", "bbbbbbbb"}};
     json response = cl.addBoard(request);
@@ -144,7 +144,7 @@ TEST(TestAddBoard, newBoard) {
     EXPECT_EQ(response["boards"][0]["caption"], request["caption"]);
 }
 
-TEST(TestRemoveBoard, boardExists) {
+TEST(TestRemoveBoard, DISABLED_boardExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     size_t id = 1;
     json response = cl.removeBoard(id);
@@ -156,7 +156,7 @@ TEST(TestRemoveBoard, boardExists) {
     EXPECT_EQ(response["boards"][0]["caption"], boards[0]["caption"]);
 }
 
-TEST(TestRemoveBoard, boardNotExists) {
+TEST(TestRemoveBoard, DISABLED_boardNotExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     size_t id = 10;
     json response = cl.removeBoard(id);
@@ -164,7 +164,7 @@ TEST(TestRemoveBoard, boardNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestUpdateBoard, boardExists) {
+TEST(TestUpdateBoard, DISABLED_boardExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     size_t id = 1;
     json request = {{"id", id}, {"name", "123a"}, {"caption", "dafkadk"}};
@@ -176,7 +176,7 @@ TEST(TestUpdateBoard, boardExists) {
     EXPECT_EQ(response["boards"][0]["caption"], request["caption"]);
 }
 
-TEST(TestUpdateBoard, boardNotExists) {
+TEST(TestUpdateBoard, DISABLED_boardNotExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     size_t id = 10;
     json request = {{"id", id}, {"name", "123a"}, {"caption", "dafkadk"}};
@@ -185,7 +185,7 @@ TEST(TestUpdateBoard, boardNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestGetBoardInfo, boardExists) {
+TEST(TestGetBoardInfo, DISABLED_boardExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     size_t id = 1;
     json response = cl.getBoardInfo(id);
@@ -197,7 +197,7 @@ TEST(TestGetBoardInfo, boardExists) {
     EXPECT_EQ(response["boards"][0]["caption"], boards[0]["caption"]);
 }
 
-TEST(TestGetBoardInfo, boardNotExists) {
+TEST(TestGetBoardInfo, DISABLED_boardNotExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     size_t id = 10;
     json response = cl.getBoardInfo(id);
@@ -205,7 +205,7 @@ TEST(TestGetBoardInfo, boardNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestGetBoardUsers, boardExists) {
+TEST(TestGetBoardUsers, DISABLED_boardExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     size_t id = 1;
     json response = cl.getBoardUsers(id);
@@ -218,7 +218,7 @@ TEST(TestGetBoardUsers, boardExists) {
     EXPECT_EQ(response["users"][0]["avatar"], users[1]["avatar"]);
 }
 
-TEST(TestGetBoardUsers, boardNotExists) {
+TEST(TestGetBoardUsers, DISABLED_boardNotExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     size_t id = 10;
     json response = cl.getBoardUsers(id);
@@ -226,7 +226,7 @@ TEST(TestGetBoardUsers, boardNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestGetBoardColumns, boardExists) {
+TEST(TestGetBoardColumns, DISABLED_boardExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     size_t id = 1;
     json response = cl.getBoardColumns(id);
@@ -239,7 +239,7 @@ TEST(TestGetBoardColumns, boardExists) {
     EXPECT_EQ(response["columns"][1]["board_id"], columns[2]["board_id"]);
 }
 
-TEST(TestGetBoardColumns, boardNotExists) {
+TEST(TestGetBoardColumns, DISABLED_boardNotExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     size_t id = 10;
     json response = cl.getBoardUsers(id);
@@ -247,7 +247,7 @@ TEST(TestGetBoardColumns, boardNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestGetBoardColumn, boardExists) {
+TEST(TestGetBoardColumn, DISABLED_boardExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     size_t id = 1, column_id = 1;
     json response = cl.getBoardColumn(id, column_id);
@@ -266,7 +266,7 @@ TEST(TestGetBoardColumn, boardExists) {
     EXPECT_EQ(response["columns"][0]["cards"][1]["column_id"], cards[6]["column_id"]);
 }
 
-TEST(TestGetBoardColumn, boardNotExists) {
+TEST(TestGetBoardColumn, DISABLED_boardNotExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     size_t id = 10, column_id = 1;
     json response = cl.getBoardColumn(id, column_id);
@@ -274,7 +274,7 @@ TEST(TestGetBoardColumn, boardNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestGetBoardColumn, ColumnNotExists) {
+TEST(TestGetBoardColumn, DISABLED_ColumnNotExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     size_t id = 1, column_id = 2;
     json response = cl.getBoardColumn(id, column_id);
@@ -282,7 +282,7 @@ TEST(TestGetBoardColumn, ColumnNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestAddColumn, boardExists) {
+TEST(TestAddColumn, DISABLED_boardExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     json request = {{"name", "aaaaaa"}, {"board_id", 1}};
     json response = cl.addColumn(request);
@@ -296,7 +296,7 @@ TEST(TestAddColumn, boardExists) {
     EXPECT_EQ(response["columns"][0]["board_id"], request["board_id"]);
 }
 
-TEST(TestAddColumn, boardNotExists) {
+TEST(TestAddColumn, DISABLED_boardNotExists) {
     BoardDataBase cl = TestEnvironment::getBoardClient();
     json request = {{"name", "aaaaaa"}, {"board_id", 11}};
     json response = cl.addColumn(request);
@@ -306,7 +306,7 @@ TEST(TestAddColumn, boardNotExists) {
 
 /* ============ TEST CardDataBase ================ */
 
-TEST(TestAddCard, columnExists) {
+TEST(TestAddCard, DISABLED_columnExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     json request = {{"name", "first"}, {"caption", "second"}, {"deadline", nullptr}, {"column_id", 1}};
     json response = cl.addCard(request);
@@ -322,7 +322,7 @@ TEST(TestAddCard, columnExists) {
     EXPECT_EQ(response["cards"][0]["column_id"], request["column_id"]);
 }
 
-TEST(TestAddCard, columnNotExists) {
+TEST(TestAddCard, DISABLED_columnNotExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     json request = {{"name", "first"}, {"caption", "second"}, {"deadline", nullptr}, {"column_id", 1}};
     json response = cl.addCard(request);
@@ -330,7 +330,7 @@ TEST(TestAddCard, columnNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestRemoveCard, cardExists) {
+TEST(TestRemoveCard, DISABLED_cardExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 1;
     json response = cl.removeCard(id);
@@ -344,7 +344,7 @@ TEST(TestRemoveCard, cardExists) {
     EXPECT_EQ(response["cards"][0]["column_id"], cards["column_id"]);
 }
 
-TEST(TestRemoveCard, cardNotExists) {
+TEST(TestRemoveCard, DISABLED_cardNotExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 111;
     json response = cl.removeCard(id);
@@ -352,7 +352,7 @@ TEST(TestRemoveCard, cardNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestUpdateCard, cardExists) {
+TEST(TestUpdateCard, DISABLED_cardExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 1;
     json request = {{"id", id}, {"column_id", 4}};
@@ -363,7 +363,7 @@ TEST(TestUpdateCard, cardExists) {
     EXPECT_EQ(response["cards"][0]["column_id"], request["column_id"]);
 }
 
-TEST(TestUpdateCard, cardNotExists) {
+TEST(TestUpdateCard, DISABLED_cardNotExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 111;
     json request = {{"id", id}, {"column_id", 4}};
@@ -372,7 +372,7 @@ TEST(TestUpdateCard, cardNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestUpdateCard, columnNotExists) {
+TEST(TestUpdateCard, DISABLED_columnNotExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 1;
     json request = {{"id", id}, {"column_id", 1111}};
@@ -381,7 +381,7 @@ TEST(TestUpdateCard, columnNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestGetCardInfo, cardExists) {
+TEST(TestGetCardInfo, DISABLED_cardExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 1;
     json response = cl.getCardInfo(id);
@@ -395,7 +395,7 @@ TEST(TestGetCardInfo, cardExists) {
     EXPECT_EQ(response["cards"][0]["column_id"], cards[0]["column_id"]);
 }
 
-TEST(TestGetCardInfo, cardNotExists) {
+TEST(TestGetCardInfo, DISABLED_cardNotExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 111;
     json response = cl.getCardInfo(id);
@@ -403,7 +403,7 @@ TEST(TestGetCardInfo, cardNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestGetCardCheckLists, cardExists) {
+TEST(TestGetCardCheckLists, DISABLED_cardExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 1;
     json response = cl.getCardCheckLists(id);
@@ -421,7 +421,7 @@ TEST(TestGetCardCheckLists, cardExists) {
     EXPECT_EQ(response["check_lists_items"][0]["check_list_id"], check_lists_items[4]["check_list_id"]);
 }
 
-TEST(TestGetCardCheckLists, cardNotExists) {
+TEST(TestGetCardCheckLists, DISABLED_cardNotExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 111;
     json response = cl.getCardCheckLists(id);
@@ -429,7 +429,7 @@ TEST(TestGetCardCheckLists, cardNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestGetCardTags, cardExists) {
+TEST(TestGetCardTags, DISABLED_cardExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 1;
     json response = cl.getCardTags(id);
@@ -441,7 +441,7 @@ TEST(TestGetCardTags, cardExists) {
     EXPECT_EQ(response["tags"][0]["card_id"], tags[2]["card_id"]);
 }
 
-TEST(TestGetCardTags, cardNotExists) {
+TEST(TestGetCardTags, DISABLED_cardNotExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 1111;
     json response = cl.getCardTags(id);
@@ -449,7 +449,7 @@ TEST(TestGetCardTags, cardNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestGetCardColumn, cardExists) {
+TEST(TestGetCardColumn, DISABLED_cardExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 1;
     json response = cl.getCardColumn(id);
@@ -459,7 +459,7 @@ TEST(TestGetCardColumn, cardExists) {
     EXPECT_EQ(response["cards"][0]["column_id"], cards[0]["column_id"]);
 }
 
-TEST(TestGetCardColumn, cardNotExists) {
+TEST(TestGetCardColumn, DISABLED_cardNotExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 1111;
     json response = cl.getCardColumn(id);
@@ -467,7 +467,7 @@ TEST(TestGetCardColumn, cardNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestAddTag, cardExists) {
+TEST(TestAddTag, DISABLED_cardExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t card_id = 1;
     json request = {{"name", "abc"}, {"color", "blue"}, {"card_id", card_id}};
@@ -482,7 +482,7 @@ TEST(TestAddTag, cardExists) {
     EXPECT_EQ(response["tags"][0]["card_id"], request["card_id"]);
 }
 
-TEST(TestAddTag, cardNotExists) {
+TEST(TestAddTag, DISABLED_cardNotExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 1111;
     json request = {{"name", "abc"}, {"color", "blue"}, {"card_id", id}};
@@ -491,7 +491,7 @@ TEST(TestAddTag, cardNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestRemoveTag, tagExists) {
+TEST(TestRemoveTag, DISABLED_tagExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 1;
     json response = cl.removeTag(id);
@@ -504,7 +504,7 @@ TEST(TestRemoveTag, tagExists) {
     EXPECT_EQ(response["tags"][0]["card_id"], tags[0]["tags"]);
 }
 
-TEST(TestRemoveTag, tagNotExists) {
+TEST(TestRemoveTag, DISABLED_tagNotExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 1;
     json response = cl.removeTag(id);
@@ -512,7 +512,7 @@ TEST(TestRemoveTag, tagNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestAddCheckList, cardExists) {
+TEST(TestAddCheckList, DISABLED_cardExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t card_id = 1;
     json request = {{"name", "for me"}, {"card_id", card_id}};
@@ -526,7 +526,7 @@ TEST(TestAddCheckList, cardExists) {
     EXPECT_EQ(response["check_lists"][0]["card_id"], request["card_id"]);
 }
 
-TEST(TestAddCheckList, cardNotExists) {
+TEST(TestAddCheckList, DISABLED_cardNotExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t card_id = 11111;
     json request = {{"name", "for me"}, {"card_id", card_id}};
@@ -535,7 +535,7 @@ TEST(TestAddCheckList, cardNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestRemoveCheckList, checkListExists) {
+TEST(TestRemoveCheckList, DISABLED_checkListExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 1;
     json response = cl.addCheckList(id);
@@ -548,7 +548,7 @@ TEST(TestRemoveCheckList, checkListExists) {
     EXPECT_EQ(response["check_lists"][0]["card_id"], check_lists[0]["card_id"]);
 }
 
-TEST(TestRemoveCheckList, checkListNotExists) {
+TEST(TestRemoveCheckList, DISABLED_checkListNotExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 11111;
     json response = cl.addCheckList(id);
@@ -556,7 +556,7 @@ TEST(TestRemoveCheckList, checkListNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestAddCheckListItem, checkListExists) {
+TEST(TestAddCheckListItem, DISABLED_checkListExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t check_list_id = 1;
     json request = {{"name", "done"}, {"is_checked", false}, {"check_list_id", check_list_id}};
@@ -571,7 +571,7 @@ TEST(TestAddCheckListItem, checkListExists) {
     EXPECT_EQ(response["check_lists_items"][0]["check_list_id"], request["check_list_id"]);
 }
 
-TEST(TestAddCheckListItem, checkListNotExists) {
+TEST(TestAddCheckListItem, DISABLED_checkListNotExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t check_list_id = 11111;
     json request = {{"name", "done"}, {"is_checked", false}, {"check_list_id", check_list_id}};
@@ -580,7 +580,7 @@ TEST(TestAddCheckListItem, checkListNotExists) {
     EXPECT_EQ(response["status"], "error");
 }
 
-TEST(TestRemoveCheckListItem, checkListItemExists) {
+TEST(TestRemoveCheckListItem, DISABLED_checkListItemExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 1;
     json response = cl.removeCheckListItem(id);
@@ -593,7 +593,7 @@ TEST(TestRemoveCheckListItem, checkListItemExists) {
     EXPECT_EQ(response["check_lists_items"][0]["check_list_id"], check_lists_items[0]["check_list_id"]);
 }
 
-TEST(TestRemoveCheckListItem, checkListItemNotExists) {
+TEST(TestRemoveCheckListItem, DISABLED_checkListItemNotExists) {
     CardDataBase cl = TestEnvironment::getCardsClient();
     size_t id = 11111;
     json response = cl.removeCheckListItem(id);

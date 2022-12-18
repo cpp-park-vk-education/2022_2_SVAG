@@ -11,10 +11,10 @@ check_object_files: build
 	
 test:
 	cd DoIt && mkdir -p build && cd build && cmake -DTEST_MODE=ON .. && cmake --build .
-	cd DoIt/tests/ && chmod +x prepare_db.sh && ./prepare_db.sh
-	cd DoIt/build && ctest
-	@sudo service postgresql restart && cd DoIt/build && lcov -t "tests/tests.cpp" -o coverage.info -c -d database/> /dev/null
-	@cd DoIt/build && genhtml -o report coverage.info > coverage_database.txt 
+	@sudo service postgresql start && cd DoIt/tests/ && chmod +x prepare_db.sh && ./prepare_db.sh
+	cd DoIt/build && ctest -V
+	@cd DoIt/build && lcov -t "tests/tests_database.cpp" -o coverage.info -c -d database/> /dev/null && lcov -r coverage.info "/usr*" $(CUR_DIR)/DoIt/database/json.hpp -o coverage.info > /dev/null
+	@cd DoIt/build && genhtml -o report coverage.info > coverage_database.txt
 
 check_coverage:	
 	@chmod +x run_coverage.sh && ./run_coverage.sh
