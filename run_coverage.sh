@@ -6,7 +6,7 @@ for file in DoIt/build/coverage_*.txt
 
 do
     echo $file
-    python3 check_coverage.py "$file"
+    python3 check_coverage.py "$file" "disabled"
     rc=$?
   
     if [ $rc -ne 0 ]

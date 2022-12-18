@@ -5,6 +5,11 @@ COLOR_RED = '\033[31m'
 COLOR_GREEN = '\033[32m'
 
 filename = sys.argv[1]
+mode = sys.argv[2]
+
+if mode == 'disabled':
+    print('Checking code coverage are disabled')
+    exit(0)
 
 with open(filename, 'r') as f:
     strings = f.readlines()
