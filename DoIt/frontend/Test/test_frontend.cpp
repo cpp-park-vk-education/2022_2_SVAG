@@ -20,7 +20,7 @@ TEST(TestCard, SettersAndGetters) {
     EXPECT_EQ(cardWithTags.getCaption(), "Caption CardWithTags");
     EXPECT_EQ(cardWithTags.getDeadline().toString(), "Sun Dec 11 12:30:00 2022");
 
-    for (int i = 0; i < card.getTags().size(); ++i) {
+    for (size_t i = 0; i < card.getTags().size(); ++i) {
         EXPECT_EQ(card.getTags()[i], tags[i]);
     }
 }
