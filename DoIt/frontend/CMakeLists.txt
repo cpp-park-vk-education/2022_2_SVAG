@@ -18,41 +18,32 @@ option(BUILD_TESTS "Build the unit tests" ON)
 option(USE_SANITIZER_FLAGS "Use sanitizer flags" ON)
 option(USE_COVERAGE_FLAGS "Use coverage flags" ON)
 
-find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
+find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Boost COMPONENTS system thread REQUIRED)
+
+message(Qt${QT_VERSION_MAJOR})
 
 set(INCS
         ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/Ui
-        ${CMAKE_CURRENT_SOURCE_DIR}/Workers
+        ${CMAKE_CURRENT_SOURCE_DIR}/Managers
         ${CMAKE_CURRENT_SOURCE_DIR}/Data
         )
 
-include_directories(
-        ${Boost_INCLUDE_DIRS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/Ui
-        ${CMAKE_CURRENT_SOURCE_DIR}/Workers
-        ${CMAKE_CURRENT_SOURCE_DIR}/Data
-)
+include_directories(${INCS})
 
 set(SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/manager.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/Workers/gui_worker.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/Workers/net_worker.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/mainwindow.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/mainwindow.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/mainwindow.ui
-        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/window.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/window.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/Ui/window.ui
+        ${CMAKE_CURRENT_SOURCE_DIR}/Managers/main_manager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Managers/gui_manager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Managers/net_manager.cpp
         )
 
 # setup
 if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -DDEBUG")
-    #    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wpedantic -Wextra -Werror")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wpedantic -Wextra")
 else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g0 -DNDEBUG")
@@ -61,13 +52,13 @@ else ()
 endif ()
 
 if (USE_SANITIZER_FLAGS)
-    #    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined,leak -fno-sanitize-recover=all -fsanitize-undefined-trap-on-error")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined,leak -fno-sanitize-recover=all -fsanitize-undefined-trap-on-error")
 endif ()
 
 add_executable(${PROJECT_NAME} ${SRCS})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-        Qt5::Core Qt5::Gui Qt5::Widgets
+        Qt${QT_VERSION_MAJOR}::Widgets
         ${Boost_LIBRARIES}
         )
 

@@ -2,15 +2,15 @@
 
 #include <QString>
 
+#include "check_list_item.h"
 #include "object.h"
-#include "qcheck_list_item.h"
 
 struct QCheckList : public Object {
     QCheckList(const std::string &t, size_t ci) : title(t), cardId(ci) {
     }
 
 
-    json toJson() override {
+    json toJson() const override {
         json result;
         result["id"] = id;
         result["name"] = title;

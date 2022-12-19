@@ -5,23 +5,23 @@
 #include <cstddef>
 #include <utility>
 
+#include "column.h"
 #include "object.h"
-#include "qcolumn.h"
 
-struct QUser : public Object {
-    QUser(const std::string &un, const std::string &p = "")
+struct User : public Object {
+  User(const std::string &un="", const std::string &p = "")
             : username(un), password(p) {}
 
-    QUser(const std::string &un, const std::string &p, const std::string &e, const std::string &ap)
+  User(const std::string &un, const std::string &p, const std::string &e, const std::string &ap)
             : username(un), password(p), email(e), avatarPath(ap) {}
 
-    json toJson() override {
+    json toJson() const override {
         json result;
         result["id"] = id;
         result["username"] = username;
         result["password"] = password;
         result["email"] = email;
-        result["avatarPath"] = avatarPath;
+        result["avatar"] = avatarPath;
         return result;
     }
 

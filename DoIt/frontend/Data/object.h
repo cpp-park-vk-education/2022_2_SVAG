@@ -1,24 +1,22 @@
 #pragma once
 
-#include <cstddef>
 #include "Lib/json.hpp"
+#include <cstddef>
 
 using json = nlohmann::json;
 
-enum ObjType {
-    BOARD, COLUMN, CARD, TAG, CHECK_LIST, CHECK_LIST_ITEM
-};
+enum ObjType { BOARD, COLUMN, CARD, TAG, CHECK_LIST, CHECK_LIST_ITEM };
 
 struct Object {
-    size_t id;
+  size_t id;
 
-    Object() : id(0) {}
+  Object() : id(0) {}
 
-    Object(size_t i) : id(i) {}
+  Object(size_t i) : id(i) {}
 
-    virtual ~Object() = default;
+  virtual ~Object() = default;
 
-    virtual json toJson() = 0;
+  virtual json toJson() const = 0;
 
-    virtual void fromJson(json) = 0;
+  virtual void fromJson(json) = 0;
 };

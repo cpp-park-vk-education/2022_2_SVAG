@@ -2,13 +2,13 @@
 
 #include <QString>
 
+#include "card.h"
 #include "object.h"
-#include "qcard.h"
 
-struct QColumn : public Object {
-    QColumn(std::string n = "", size_t di = 0) : name(n), boardId(di) {}
+struct Column : public Object {
+    Column(std::string n = "", size_t di = 0) : name(n), boardId(di) {}
 
-    json toJson() override {
+    json toJson() const override {
         json result;
         result["id"] = id;
         result["name"] = name;
@@ -24,7 +24,7 @@ struct QColumn : public Object {
 
     std::string name;
 
-    std::vector<QCard> cards;
+    std::vector<Card> cards;
 
     size_t boardId;
 };

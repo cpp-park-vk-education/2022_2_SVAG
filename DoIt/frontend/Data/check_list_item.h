@@ -9,7 +9,7 @@ struct QCheckListItem : public Object {
                                                                           checkListId(cli) {
     }
 
-    json toJson() override {
+    json toJson() const override   {
         json result;
         result["id"] = id;
         result["name"] = title;

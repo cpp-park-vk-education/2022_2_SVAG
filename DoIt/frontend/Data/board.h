@@ -1,20 +1,18 @@
 #pragma once
 
-#include <QString>
-
 #include <cstddef>
 #include <utility>
 #include <iostream>
 
+#include "column.h"
 #include "object.h"
-#include "qcolumn.h"
 
-struct QBoard : public Object {
-    QBoard(const std::string &n = "", const std::string &desc = "", const std::string &bg = "") : name(n),
+struct Board : public Object {
+    Board(const std::string &n = "", const std::string &desc = "", const std::string &bg = "") : name(n),
                                                                                                   caption(desc),
                                                                                                   background(bg) {}
 
-    json toJson() override {
+    json toJson()const override {
         json result;
         result["id"] = id;
         result["name"] = name;
@@ -33,5 +31,5 @@ struct QBoard : public Object {
     std::string name;
     std::string caption;
     std::string background;
-    std::vector<QColumn> columns;
+    std::vector<Column> columns;
 };

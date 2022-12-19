@@ -2,20 +2,20 @@
 
 #include <QString>
 
+#include "check_list.h"
 #include "object.h"
-#include "qtag.h"
-#include "qcheck_list.h"
+#include "tag.h"
 
-struct QCard : public Object {
-    QCard(const std::string &t = "", const std::string &d = "", size_t ci = 0) : name(t), description(d),
-                                                                                 columnId(ci) {
+struct Card : public Object {
+    Card(const std::string &t = "", const std::string &d = "", size_t col_id = 0) : name(t), caption(d),
+                                                                                 columnId(col_id) {
     }
 
-    json toJson() override {
+    json toJson() const override {
         json result;
         result["id"] = id;
         result["name"] = name;
-        result["caption"] = description;
+        result["caption"] = caption;
         result["column_id"] = columnId;
         return result;
     }
@@ -23,12 +23,12 @@ struct QCard : public Object {
     void fromJson(json jsCard) override {
         id = jsCard["id"];
         name = jsCard["name"];
-        description = jsCard["caption"];
+        caption = jsCard["caption"];
         columnId = jsCard["column_id"];
     }
 
     std::string name;
-    std::string description;
+    std::string caption;
     size_t columnId;
 
     std::vector<QTag> tags;

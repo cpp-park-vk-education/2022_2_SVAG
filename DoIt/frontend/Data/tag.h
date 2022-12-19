@@ -9,7 +9,7 @@ struct QTag : public Object {
     }
 
 
-    json toJson() override {
+    json toJson() const override {
         json result;
         result["id"] = id;
         result["name"] = name;
