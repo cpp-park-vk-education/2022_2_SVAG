@@ -14,6 +14,7 @@ test:
 	cd DoIt/build && ctest
 	@cd DoIt/build && lcov -t "tests/tests.cpp" -o coverage.info -c -d database/> /dev/null
 	@cd DoIt/build && genhtml -o report coverage.info > coverage_database.txt 
+	./test_frontend.sh
 
 check_coverage:	
 	@chmod +x run_coverage.sh && ./run_coverage.sh
