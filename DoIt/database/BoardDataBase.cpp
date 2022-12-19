@@ -31,7 +31,7 @@ json BoardDataBase::addBoard(const json& info) const {
 
 json BoardDataBase::removeBoard(const size_t id) const {
     if (!checkBoardExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exist"}};
     }
 
     json request = {{"FROM", boardTableName}, {"WHERE", {"id=" + std::to_string(id)}}};
@@ -57,7 +57,7 @@ json BoardDataBase::updateBoard(const json& info) const {
     size_t id = info["id"];
 
     if (!checkBoardExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exist"}};
     }
 
     json request = {
@@ -81,7 +81,7 @@ json BoardDataBase::getBoardInfo(const size_t id) const {
     json response = client->select(request);
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS && response["result"] == nullptr) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exist"}};
     }
 
     return response;
@@ -89,7 +89,7 @@ json BoardDataBase::getBoardInfo(const size_t id) const {
 
 json BoardDataBase::getBoardUsers(const size_t id) const {
     if (!checkBoardExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exist"}};
     }
 
     json request = {{"SELECT", {"board_id", "user_id", "username", "email", "password", "avatar"}},
@@ -109,7 +109,7 @@ json BoardDataBase::getBoardUsers(const size_t id) const {
 
 json BoardDataBase::getBoardColumns(const size_t id) const {
     if (!checkBoardExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exist"}};
     }
 
     json request = {{"SELECT", {"*"}},
@@ -129,7 +129,7 @@ json BoardDataBase::getBoardColumns(const size_t id) const {
 
 json BoardDataBase::getBoardColumn(const size_t id, const size_t column_id) const {
     if (!checkBoardExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exist"}};
     }
 
     json request = {{"SELECT", {"*"}},
@@ -141,7 +141,7 @@ json BoardDataBase::getBoardColumn(const size_t id, const size_t column_id) cons
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS) {
         if (response["result"] == nullptr) {
-            return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Column doesn't exists"}};
+            return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Column doesn't exist"}};
         }
 
         json nested_request = {{"SELECT", {"*"}},
@@ -167,7 +167,7 @@ json BoardDataBase::getBoardColumn(const size_t id, const size_t column_id) cons
 
 json BoardDataBase::addColumn(const json& info) const {
     if (!checkBoardExists(info["board_id"])) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exist"}};
     }
 
     json request = {{"INTO", columnsTableName},

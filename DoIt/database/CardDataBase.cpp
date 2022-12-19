@@ -22,7 +22,7 @@ json CardDataBase::addCard(const json& info) const {
 
 json CardDataBase::removeCard(const size_t id) const {
     if (!checkCardExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exist"}};
     }
 
     json request = {{"FROM", cardsTableName}, {"WHERE", {"id=" + std::to_string(id)}}};
@@ -48,7 +48,7 @@ json CardDataBase::updateCard(const json& info) const {
     size_t id = info["id"];
 
     if (!checkCardExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exist"}};
     }
 
     json request = {
@@ -72,7 +72,7 @@ json CardDataBase::getCardInfo(const size_t id) const {
     json response = client->select(request);
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS && response["result"] == nullptr) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exist"}};
     }
 
     return response;
@@ -80,7 +80,7 @@ json CardDataBase::getCardInfo(const size_t id) const {
 
 json CardDataBase::getCardCheckLists(const size_t id) const {
     if (!checkCardExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exist"}};
     }
 
     json request = {{"SELECT", {"*"}},
@@ -100,7 +100,7 @@ json CardDataBase::getCardCheckLists(const size_t id) const {
 
 json CardDataBase::getCardCheckList(const size_t id, const size_t check_list_id) const {
     if (!checkCardExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exist"}};
     }
 
     json request = {{"SELECT", {"*"}},
@@ -112,7 +112,7 @@ json CardDataBase::getCardCheckList(const size_t id, const size_t check_list_id)
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS) {
         if (response["result"] == nullptr) {
-            return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Check list doesn't exists"}};
+            return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Check list doesn't exist"}};
         }
 
         json nested_request = {{"SELECT", {"*"}},
@@ -138,7 +138,7 @@ json CardDataBase::getCardCheckList(const size_t id, const size_t check_list_id)
 
 json CardDataBase::getCardTags(const size_t id) const {
     if (!checkCardExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exist"}};
     }
 
     json request = {{"SELECT", {"*"}},
@@ -158,7 +158,7 @@ json CardDataBase::getCardTags(const size_t id) const {
 
 json CardDataBase::getCardColumn(const size_t id) const {
     if (!checkCardExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exist"}};
     }
 
     json request = {{"SELECT", {"column_id"}},
@@ -173,7 +173,7 @@ json CardDataBase::getCardColumn(const size_t id) const {
 
 json CardDataBase::addTag(const json& info) const {
     if (!checkCardExists(info["card_id"])) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exist"}};
     }
 
     json request = {{"INTO", tagsTableName},
@@ -191,7 +191,7 @@ json CardDataBase::addTag(const json& info) const {
 
 json CardDataBase::removeTag(const size_t id) const {
     if (!checkTagExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Tag doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Tag doesn't exist"}};
     }
 
     json request = {{"FROM", tagsTableName}, {"WHERE", {"id=" + std::to_string(id)}}};
@@ -215,7 +215,7 @@ bool CardDataBase::checkTagExists(const size_t id) const {
 
 json CardDataBase::addCheckList(const json& info) const {
     if (!checkCardExists(info["card_id"])) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exist"}};
     }
 
     json request = {{"INTO", checkListTableName},
@@ -233,7 +233,7 @@ json CardDataBase::addCheckList(const json& info) const {
 
 json CardDataBase::removeCheckList(const size_t id) const {
     if (!checkCheckListExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Check list doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Check list doesn't exist"}};
     }
 
     json request = {{"FROM", checkListTableName}, {"WHERE", {"id=" + std::to_string(id)}}};
@@ -257,7 +257,7 @@ bool CardDataBase::checkCheckListExists(const size_t id) const {
 
 json CardDataBase::addCheckListItem(const json& info) const {
     if (!checkCheckListExists(info["check_list_id"])) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Check list doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Check list doesn't exist"}};
     }
 
     json request = {{"INTO", checkListItemTableName},
@@ -275,7 +275,7 @@ json CardDataBase::addCheckListItem(const json& info) const {
 
 json CardDataBase::removeCheckListItem(const size_t id) const {
     if (!checkCheckListItemExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Check list item doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Check list item doesn't exist"}};
     }
 
     json request = {{"FROM", checkListItemTableName}, {"WHERE", {"id=" + std::to_string(id)}}};

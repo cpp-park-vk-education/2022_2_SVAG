@@ -22,11 +22,28 @@ json UserDataBase::addUser(const json& info) const {
 
 json UserDataBase::removeUser(const size_t id) const {
     if (!checkUserExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "User doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "User doesn't exist"}};
     }
 
     json request = {{"FROM", userTableName}, {"WHERE", {"id=" + std::to_string(id)}}};
     json response = client->remove(request);
+    return response;
+}
+
+json UserDataBase::checkUserValidation(const json& info) const {
+    json request = {{"SELECT", {"id"}},
+                    {"FROM", {userTableName}},
+                    {"JOIN ON", {}},
+                    {"WHERE",
+                     {"username=\'" + info["username"].get<std::string>() + "\'",
+                      "password=\'" + info["password"].get<std::string>() + "\'"}}};
+
+    json response = client->select(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS && !response["result"].size()) {
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Validation failed"}};
+    }
+
     return response;
 }
 
@@ -48,7 +65,7 @@ json UserDataBase::updateUser(const json& info) const {
     size_t id = info["id"];
 
     if (!checkUserExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "User doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "User doesn't exist"}};
     }
 
     json request = {{"table", userTableName}, {"SET", info["info"]}, {"WHERE", {"id=" + std::to_string(id)}}};
@@ -70,7 +87,7 @@ json UserDataBase::getUserInfo(const size_t id) const {
     json response = client->select(request);
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS && response["result"] == nullptr) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "User doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "User doesn't exist"}};
     }
 
     return response;
@@ -78,7 +95,7 @@ json UserDataBase::getUserInfo(const size_t id) const {
 
 json UserDataBase::getUserBoards(const size_t id) const {
     if (!checkUserExists(id)) {
-        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "User doesn't exists"}};
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "User doesn't exist"}};
     }
 
     json request = {{"SELECT", {"user_id", "board_id", "name", "caption", "background"}},
