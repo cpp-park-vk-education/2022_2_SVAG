@@ -6,7 +6,7 @@ class Server : public boost::enable_shared_from_this<Server>, boost::noncopyable
 public:
     typedef Server self_type;
     typedef boost::shared_ptr<Server> ptr;
-    Server() : acceptor(service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8001)), status(false)
+    Server() : acceptor(service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)), status(false)
     {}
     static ptr new_() {
         ptr new_(new Server);
@@ -24,4 +24,5 @@ public:
 private:
     boost::asio::ip::tcp::acceptor acceptor;
     bool status;
+    int port = 8001;
 };

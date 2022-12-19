@@ -28,69 +28,34 @@ void TalkToClient::on_read(const error_code& err, size_t bytes) {
     if (err) stop();
     if (!started()) return;
     std::string msg(read_buffer_, bytes);
-    if (msg.find("login ") == 8) on_login(msg);
-    else if (msg.find("ping") == 8) on_ping();
-    else if (msg.find("get") == 8) on_get_content(msg);
-    else on_invalid_msg(msg);
-}
-void TalkToClient::on_invalid_msg(const std::string& msg)
-{
-    json result;
-    result["response"] = "invalid msg";
-    std::string response = result.dump();
-    response = response + '\n';
-    do_write(response);
+    json msg_json = json::parse(msg);
+    if (msg_json["cmd"] == "login") on_login(msg_json);
+    else if (msg_json["cmd"] == "ping") on_ping();
+    else on_work_with_database(msg_json);;
 }
 void TalkToClient::on_login(const std::string& msg) 
 {
-    std::istringstream in(msg);
-    in >> username_ >> username_;
-    std::cout << username_ << " logged in" << std::endl;
+    std::cout << msg_json["data"] << " logged in" << std::endl;
     json result;
     result["response"] = "login ok";
-    std::string response = result.dump();
-    response = response + '\n';
+    do_write(convert(result));
+}
+void on_work_with_database(json msg_json)
+{
+    std::string response = interactor.analyze_msg(msg_json);
     do_write(response);
 }
-void TalkToClient::on_register() 
-{
-}
-
-void TalkToClient::on_get_content(const std::string& msg) 
-{
-    json result = getBoardInfo(0);
-    std::string response = result.dump();
-    response = response + '\n';
-    do_write(response);
-}
-
-void TalkToClient::on_create_content() 
-{
-}
-
-void TalkToClient::on_change_content() 
-{
-}
-
-void TalkToClient::on_delete_content() 
-{
-}
-
 void TalkToClient::on_ping() 
 {
     json result;
     result["response"] = "ping ok";
-    std::string response = result.dump();
-    response = response + '\n';
-    do_write(response);
+    do_write(convert(result));
 }
 
 void TalkToClient::do_ping() {
-        json result;
-        result["response"] = "ping";
-        std::string response = result.dump();
-        response = response + '\n';
-        do_write(response);
+    json result;
+    result["response"] = "ping";
+    do_write(convert(result));
 }
 
 void TalkToClient::on_check_ping() 
