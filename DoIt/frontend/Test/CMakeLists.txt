@@ -22,7 +22,6 @@ find_package(GTest REQUIRED)
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 
 add_executable(${PROJECT_NAME}
-        test_net_worker.cpp
         test_frontend.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../Ui/mainwindow.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../Ui/board.cpp
@@ -35,7 +34,7 @@ add_executable(${PROJECT_NAME}
         )
 target_include_directories(${PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/../
-        ${CMAKE_CURRENT_SOURCE_DIR}/../Workers
+        ${CMAKE_CURRENT_SOURCE_DIR}/../Managers
         ${CMAKE_CURRENT_SOURCE_DIR}/../Ui
         )
 target_link_libraries(${PROJECT_NAME} GTest::gtest_main
