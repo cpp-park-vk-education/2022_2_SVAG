@@ -20,7 +20,7 @@ option(USE_COVERAGE_FLAGS "Use coverage flags" ON)
 
 find_package(QT NAMES Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-# find_package(Boost COMPONENTS system thread REQUIRED)
+find_package(Boost COMPONENTS system thread REQUIRED)
 
 message(Qt${QT_VERSION_MAJOR})
 
@@ -63,15 +63,15 @@ if (USE_SANITIZER_FLAGS)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined,leak -fno-sanitize-recover=all -fsanitize-undefined-trap-on-error")
 endif ()
 
-# add_executable(${PROJECT_NAME} ${SRCS})
+add_executable(${PROJECT_NAME} ${SRCS})
 
-# target_link_libraries(${PROJECT_NAME} PRIVATE
-#         Qt${QT_VERSION_MAJOR}::Widgets
-#         ${Boost_LIBRARIES}
-#         )
+target_link_libraries(${PROJECT_NAME} PRIVATE
+        Qt${QT_VERSION_MAJOR}::Widgets
+        ${Boost_LIBRARIES}
+        )
 
 # tests
-# if (BUILD_TESTS)
+if (BUILD_TESTS)
     enable_testing()
     add_subdirectory(Test)
-# endif ()
+endif ()
