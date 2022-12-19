@@ -16,11 +16,11 @@ percent_funcs, info_funcs = float(funcs[3][:-1]), ' '.join(funcs[4:])[:-1]
 
 msg = ''
 
-if percent_lines < 90:
+if percent_lines < 80:
     msg += f'\nInsufficient coverage of code lines: '
     msg += f'{COLOR_RED}{percent_lines}% of 100% {info_lines}{COLOR_DEFAULT}'
 
-if percent_funcs < 90:
+if percent_funcs < 80:
     msg += f'\nInsufficient coverage of functions: '
     msg += f'{COLOR_RED}{percent_funcs}% of 100% {info_funcs}{COLOR_DEFAULT}'
 
