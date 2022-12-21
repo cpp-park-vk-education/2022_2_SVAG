@@ -33,5 +33,25 @@
         "name": "school",
         "color": "white",
         "card_id": 4
+    },
+    {
+        "name": "hot",
+        "color": "red",
+        "card_id": 11
+    },
+    {
+        "name": "warning",
+        "color": "yellow",
+        "card_id": 11
+    },
+    {
+        "name": "daily",
+        "color": "white",
+        "card_id": 13
+    },
+    {
+        "name": "weekly",
+        "color": "green",
+        "card_id": 14
     }
 ]

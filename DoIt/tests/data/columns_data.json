@@ -26,5 +26,29 @@
     {
         "name": "in process",
         "board_id": 3
+    },
+    {
+        "name": "in process",
+        "board_id": 5
+    },
+    {
+        "name": "in process",
+        "board_id": 4
+    },
+    {
+        "name": "homework",
+        "board_id": 5
+    },
+    {
+        "name": "to do",
+        "board_id": 4
+    },
+    {
+        "name": "electives",
+        "board_id": 5
+    },
+    {
+        "name": "wishes",
+        "board_id": 5
     }
 ]
