@@ -1,4 +1,11 @@
 
+std::string DatabaseInteraction::on_login(json msg_json)
+{
+    json result;
+    json result = cl.checkUserValidation(msg_json);
+    return convert(result);
+}
+
 std::string DatabaseInteraction::analyze_msg(json msg_json)
     {
         if (msg_json["cmd"] == "database_get") return on_get_content(msg_json);

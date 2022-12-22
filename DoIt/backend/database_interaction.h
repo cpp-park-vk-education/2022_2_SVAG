@@ -17,6 +17,7 @@ class DatabaseInteraction
 public:
     DatabaseInteraction(): cl(getBoardClient()) {}
     std::string analyze_msg(json msg_json);
+    std::string on_login(json msg_json);
 private:
     std::string on_get_content(json msg_json);
     std::string on_create_content(json msg_json);
