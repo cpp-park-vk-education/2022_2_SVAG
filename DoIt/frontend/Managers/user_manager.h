@@ -9,6 +9,10 @@
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 
+#include "net_manager.h"
+
+#include "user.h"
+
 #include "Lib/json.hpp"
 
 using json = nlohmann::json;
@@ -20,38 +24,11 @@ public:
 
   ~UserManager() = default;
 
-  size_t userId() const { return _userId; }
+  size_t userId() const;
 
-  void authUser(const User &user) {
-    json data;
-    data["cmd"] = "login";
-    data["data"] = user.toJson();
-    std::string request = data.dump();
+  void authUser(const User &user);
 
-    int err = 0;
-    _netManager.connect();
-    _netManager.sendMessage(request + "\n", err);
-    std::string response = _netManager.getMessage(err);
-    json resp = json::parse(response);
-    _netManager.disconnect();
-
-    _userId = resp["result"][0]["id"];
-  }
-
-  void regUser(const User &user) {
-    json data = user.toJson();
-    data["cmd"] = "register";
-    std::string request = data.dump();
-
-    int err = 0;
-    _netManager.connect();
-    _netManager.sendMessage(request + "\n", err);
-    std::string response = _netManager.getMessage(err);
-    json resp = json::parse(response);
-    _netManager.disconnect();
-
-    _userId = resp["result"][0]["id"];
-  }
+  void regUser(const User &user);
 
 private:
   NetManager &_netManager;

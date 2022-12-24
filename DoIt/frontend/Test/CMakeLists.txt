@@ -24,11 +24,12 @@ find_package(GTest REQUIRED)
 find_package(Boost COMPONENTS system thread REQUIRED)
 
 add_executable(${PROJECT_NAME}
-        test_net_worker.cpp
+        test_net_manager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../Managers/net_manager.cpp
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/../Workers
+        ${CMAKE_CURRENT_SOURCE_DIR}/../Managers
         ${CMAKE_CURRENT_SOURCE_DIR}/../Lib
         )
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <QtWidgets>
-
 #include <iostream>
 #include <thread>
 
@@ -17,242 +15,51 @@
 using json = nlohmann::json;
 
 class MainManager : public QObject {
-    Q_OBJECT
-  public:
-    MainManager(QObject* parent = nullptr);
+Q_OBJECT
+public:
+    explicit MainManager(QObject *parent = nullptr);
 
     ~MainManager() override = default;
 
-    void ping() {
-        try {
-            _netManager.pingLoop();
-        } catch (boost::system::system_error& err) { std::cout << "Failed to do ping\n"; }
-    }
+    void ping();
 
-    void getAllUserData() {
-        _boards.clear();
-        getUserBoards();
-        getColumns();
-        getCards();
+    void getAllUserData();
 
-        showBoardsSignal();
-    }
+    void getUserBoards();
 
-    void getUserBoards() {
-        json data;
-        data["cmd"] = "database_get";
-        data["content"] = "user_boards";
-        data["user_id"] = _userManager.userId();
-        std::string request = data.dump();
+    void getColumns();
 
-        int err = 0;
-        _netManager.connect();
-        _netManager.sendMessage(request + "\n", err);
-        std::string response = _netManager.getMessage(err);
-        _netManager.disconnect();
+    void getCards();
 
-        json resp = json::parse(response);
+public slots:
 
-        Board board;
-        for (auto jsBoard : resp["result"]) {
-            jsBoard["id"] = jsBoard["board_id"];
-            jsBoard["board_id"] = nullptr;
-            board.fromJson(jsBoard);
-            _boards.push_back(board);
-        }
-    }
+    void authSlot(const User &user);
 
-    void getBoards() {
-        json data;
-        data["cmd"] = "get board_info";
-        data["board_id"] = 5;
-        std::string request = data.dump();
+    void regSlot(const User &user);
 
-        int err = 0;
-        _netManager.connect();
-        _netManager.sendMessage(request + "\n", err);
-        std::string response = _netManager.getMessage(err);
-        _netManager.disconnect();
+    void showBoardsSlot();
 
-        json resp = json::parse(response);
+    void addObjectSlot(Object &obj, ObjType objType);
 
-        Board board;
-        for (auto jsBoard : resp["result"]) {
-            board.fromJson(jsBoard);
-            _boards.push_back(board);
-        }
-    }
+    void deleteObjectSlot(size_t id, ObjType objType);
 
-    void getColumns() {
-        json data;
-        data["cmd"] = "database_get";
-        data["content"] = "board_columns";
-        for (auto& board : _boards) {
-            data["board_id"] = board.id;
-            std::string request = data.dump();
-            int err = 0;
-            _netManager.connect();
-            _netManager.sendMessage(request + "\n", err);
-            std::string response = _netManager.getMessage(err);
-            json resp = json::parse(response);
-            _netManager.disconnect();
+    void updateObjectSlot(Object &obj, ObjType objType);
 
-            Column col;
-            for (auto jsCol : resp["result"]) {
-                col.fromJson(jsCol);
-                board.columns.push_back(col);
-            }
-        }
-    }
+    void logoutSlot();
 
-    // using net worker
-    void getCards() {
-        json data;
-        data["cmd"] = "database_get";
-        data["content"] = "board_column";
-        for (auto& board : _boards) {
-            for (auto& column : board.columns) {
-                data["board_id"] = board.id;
-                data["column_id"] = column.id;
-                std::string request = data.dump();
-                int err = 0;
-                _netManager.connect();
-                _netManager.sendMessage(request + "\n", err);
-                std::string response = _netManager.getMessage(err);
-                json resp = json::parse(response);
-                _netManager.disconnect();
+    void addUserSlot(User &user, const size_t boardId);
 
-                Card card;
-                for (auto jsCard : resp["result"][0]["cards"]) {
-                    card.fromJson(jsCard);
-                    column.cards.push_back(card);
-                }
-            }
-        }
-    }
-
-  public slots:
-    void authSlot(const User& user) {
-        _userManager.authUser(user);
-
-        // пользователь авторизовался, показываем на ui виджет загрузки данных пользователя
-        _guiManager.showLoadAllData();
-
-        // в отдельном потоке получаем данные пользователя
-        std::thread thr_first_get_boards([&]() { getAllUserData(); });
-        thr_first_get_boards.detach();
-    }
-
-    void regSlot(const User& user) {
-        _userManager.regUser(user);
-
-        _guiManager.showLoadAllData();
-
-        std::thread thr_first_get_boards([&]() { getAllUserData(); });
-        thr_first_get_boards.detach();
-    }
-
-    void showBoardsSlot() {
-        _guiManager.showBoards(_boards);
-    };
-
-    void addObjectSlot(Object& obj, ObjType objType) {
-        json data;
-        data["cmd"] = "database_create";
-        data["content"] = _objType2Str(objType);
-        data["data"] = obj.toJson();
-        data["data"]["user_id"] = _userManager.userId();
-
-        std::string request = data.dump();
-        int err = 0;
-        _netManager.connect();
-        _netManager.sendMessage(request + "\n", err);
-        std::string response = _netManager.getMessage(err);
-        json resp = json::parse(response);
-        _netManager.disconnect();
-
-        obj.id = resp["result"][0]["id"];  // set id for new object
-
-        if (objType == BOARD) {
-            Board& board = dynamic_cast<Board&>(obj);
-            _boards.push_back(board);
-        } else if (objType == COLUMN) {
-            Column& col = dynamic_cast<Column&>(obj);
-            for (auto& board : _boards) {
-                if (board.id == col.boardId) {
-                    board.columns.push_back(col);
-                }
-            }
-        } else if (objType == CARD) {
-            Card& card = dynamic_cast<Card&>(obj);
-            for (auto& board : _boards) {
-                for (auto& column : board.columns) {
-                    if (column.id == card.columnId) {
-                        column.cards.push_back(card);
-                    }
-                }
-            }
-        }
-        _guiManager.showBoards(_boards);
-    }
-
-    void deleteObjectSlot(size_t id, ObjType objType) {
-        json data;
-        data["cmd"] = "del " + _objType2Str(objType);
-        data["id"] = id;
-        std::string request = data.dump();
-
-        int err = 0;
-        _netManager.sendMessage(request + '\n', err);
-        if (objType == BOARD) {
-            for (auto it = _boards.begin(); it != _boards.end(); ++it) {
-                if ((*it).id == id) {
-                    _boards.erase(it);
-                    break;
-                }
-            }
-            emit sendBoardsSignal(_boards);
-        } else if (objType == COLUMN) {
-        }
-    }
-
-    void updateObjectSlot(Object& obj, ObjType objType) {
-        json data = obj.toJson();
-        data["cmd"] = "update " + _objType2Str(objType);
-        std::string request = data.dump();
-
-        int err = 0;
-        _netManager.sendMessage(request + '\n', err);
-    }
-
-    void logoutSlot() {
-        json data;
-        data["cmd"] = "logout";
-        std::string request = data.dump();
-
-        int err = 0;
-        _netManager.sendMessage(request + '\n', err);
-    }
-
-    void addUserSlot(User& user, const size_t boardId) {
-        json data = user.toJson();
-        data["cmd"] = "add user to board";
-        data["board_id"] = boardId;
-        std::string request = data.dump();
-
-        int err = 0;
-        _netManager.sendMessage(request + '\n', err);
-    }
-
-  signals:
+signals:
 
     void showBoardsSignal();
 
-    void sendBoardsSignal(std::vector<Board>& boards);
-    void sendColumnsSignal(std::vector<Column>& columns);
-    void sendCardsSignal(std::vector<Card>& cards);
+    void sendBoardsSignal(std::vector<Board> &boards);
 
-  private:
+    void sendColumnsSignal(std::vector<Column> &columns);
+
+    void sendCardsSignal(std::vector<Card> &cards);
+
+private:
     static std::string _objType2Str(ObjType objType) {
         switch (objType) {
             case BOARD:
@@ -271,7 +78,7 @@ class MainManager : public QObject {
         return "";
     }
 
-  private:
+private:
     NetManager _netManager;
     GuiManager _guiManager;
     UserManager _userManager;

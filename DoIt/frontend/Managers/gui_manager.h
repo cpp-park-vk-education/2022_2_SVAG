@@ -11,66 +11,39 @@
 #include "board.h"
 
 class GuiManager : public QObject {
-    Q_OBJECT
-  public:
-    explicit GuiManager(QObject* parent = nullptr): QObject(parent) {
-        _authWindow.show();
+Q_OBJECT
+public:
+    explicit GuiManager(QObject *parent = nullptr);
 
-        // connections
-        // from main window
-        connect(&_mainWindow, &MainWindow::addObjectSignal, this, &GuiManager::addObjectSignal);
+    GuiManager(const GuiManager &) = delete;
 
-        // from auth window
-        connect(&_authWindow, &AuthWindow::authSignal, this, &GuiManager::authSignal);
+    GuiManager(GuiManager &&) = delete;
 
-        // from reg window
-        connect(&_regWindow, &RegWindow::regSignal, this, &GuiManager::regSignal);
-        connect(&_authWindow, &AuthWindow::openRegSignal, this, &GuiManager::openRegSlot);
-        connect(&_regWindow, &RegWindow::openAuthSignal, this, &GuiManager::openAuthSlot);
-    }
+    GuiManager &operator=(const GuiManager &) = delete;
 
-    GuiManager(const GuiManager&) = delete;
+    GuiManager &operator=(GuiManager &&) = delete;
 
-    GuiManager(GuiManager&&) = delete;
+    ~GuiManager() override;
 
-    GuiManager& operator=(const GuiManager&) = delete;
+    void showBoards(const std::vector<Board> &boards);
 
-    GuiManager& operator=(GuiManager&&) = delete;
+    void showLoadAllData();
 
-    ~GuiManager() override {
-        _mainWindow.close();
-        _authWindow.close();
-        _regWindow.close();
-    }
+public slots:
 
-    void showBoards(const std::vector<Board>& boards) {
-        _mainWindow.showBoards(boards);
-    }
+    void openRegSlot();
 
-    void showLoadAllData() {
-        _authWindow.close();
-        _regWindow.close();
-        _mainWindow.show();
-        _mainWindow.showLoadAllData();
-    }
+    void openAuthSlot();
 
-  public slots:
-    void openRegSlot() {
-        _authWindow.close();
-        _regWindow.show();
-    }
+signals:
 
-    void openAuthSlot() {
-        _regWindow.close();
-        _authWindow.show();
-    }
+    void authSignal(const User &);
 
-  signals:
-    void authSignal(const User&);
-    void regSignal(const User&);
-    void addObjectSignal(Object&, ObjType);
+    void regSignal(const User &);
 
-  private:
+    void addObjectSignal(Object &, ObjType);
+
+private:
     MainWindow _mainWindow;
     AuthWindow _authWindow;
     RegWindow _regWindow;

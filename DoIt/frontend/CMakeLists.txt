@@ -37,6 +37,7 @@ set(SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/Managers/main_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Managers/gui_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Managers/net_manager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Managers/user_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/mainwindow.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/reg_window.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/auth_window.cpp
