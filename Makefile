@@ -18,6 +18,8 @@ test:
 	@cd DoIt/build && lcov -t "tests/tests_database.cpp" -o coverage.info -c -d database/> /dev/null && lcov -r coverage.info "/usr*" $(CUR_DIR)/DoIt/database/json.hpp -o coverage.info > /dev/null
 	@cd DoIt/build && genhtml -o report coverage.info > coverage_database.txt 
 	sudo service postgresql stop;
+	
+	./test_frontend.sh;
 
 check_coverage:	
 	@chmod +x run_coverage.sh && ./run_coverage.sh
