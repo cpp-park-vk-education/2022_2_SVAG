@@ -34,7 +34,7 @@ json BoardDataBase::removeBoard(const size_t id) const {
         return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exist"}};
     }
 
-    json request = {{"FROM", boardTableName}, {"WHERE", {"id=" + std::to_string(id)}}};
+    json request = {{"FROM", boardTableName}, {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
     json response = client->remove(request);
     return response;
 }
@@ -43,7 +43,7 @@ bool BoardDataBase::checkBoardExists(const size_t id) const {
     json request = {{"SELECT", {"id"}},
                     {"FROM", {boardTableName}},
                     {"JOIN ON", {}},
-                    {"WHERE", {"id=" + std::to_string(id)}}};
+                    {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
     json response = client->select(request);
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS) {
@@ -60,8 +60,9 @@ json BoardDataBase::updateBoard(const json& info) const {
         return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exist"}};
     }
 
-    json request = {
-        {"table", boardTableName}, {"SET", info["info"]}, {"WHERE", {"id=" + std::to_string(id)}}};
+    json request = {{"table", boardTableName},
+                    {"SET", info["info"]},
+                    {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
 
     json response = client->update(request);
 
@@ -76,7 +77,7 @@ json BoardDataBase::getBoardInfo(const size_t id) const {
     json request = {{"SELECT", {"*"}},
                     {"FROM", {boardTableName}},
                     {"JOIN ON", {}},
-                    {"WHERE", {"id=" + std::to_string(id)}}};
+                    {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
 
     json response = client->select(request);
 
@@ -92,10 +93,11 @@ json BoardDataBase::getBoardUsers(const size_t id) const {
         return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Board doesn't exist"}};
     }
 
-    json request = {{"SELECT", {"board_id", "user_id", "username", "email", "password", "avatar"}},
-                    {"FROM", {users2boardsTableName, userTableName}},
-                    {"JOIN ON", {users2boardsTableName + ".user_id=" + userTableName + ".id"}},
-                    {"WHERE", {users2boardsTableName + ".board_id=" + std::to_string(id)}}};
+    json request = {
+        {"SELECT", {"board_id", "user_id", "username", "email", "password", "avatar"}},
+        {"FROM", {users2boardsTableName, userTableName}},
+        {"JOIN ON", {users2boardsTableName + ".user_id=" + userTableName + ".id"}},
+        {"WHERE", {{{"field", users2boardsTableName + ".board_id"}, {"value", std::to_string(id)}}}}};
 
     json response = client->select(request);
 
@@ -115,7 +117,7 @@ json BoardDataBase::getBoardColumns(const size_t id) const {
     json request = {{"SELECT", {"*"}},
                     {"FROM", {columnsTableName}},
                     {"JOIN ON", {}},
-                    {"WHERE", {"board_id=" + std::to_string(id)}}};
+                    {"WHERE", {{{"field", "board_id"}, {"value", std::to_string(id)}}}}};
 
     json response = client->select(request);
 
@@ -135,7 +137,9 @@ json BoardDataBase::getBoardColumn(const size_t id, const size_t column_id) cons
     json request = {{"SELECT", {"*"}},
                     {"FROM", {columnsTableName}},
                     {"JOIN ON", {}},
-                    {"WHERE", {"id=" + std::to_string(column_id), "board_id=" + std::to_string(id)}}};
+                    {"WHERE",
+                     {{{"field", "id"}, {"value", std::to_string(column_id)}},
+                      {{"field", "board_id"}, {"value", std::to_string(id)}}}}};
 
     json response = client->select(request);
 
@@ -147,7 +151,7 @@ json BoardDataBase::getBoardColumn(const size_t id, const size_t column_id) cons
         json nested_request = {{"SELECT", {"*"}},
                                {"FROM", {cardsTableName}},
                                {"JOIN ON", {}},
-                               {"WHERE", {"column_id=" + std::to_string(column_id)}}};
+                               {"WHERE", {{{"field", "column_id"}, {"value", std::to_string(column_id)}}}}};
 
         json nested_response = client->select(nested_request);
 
