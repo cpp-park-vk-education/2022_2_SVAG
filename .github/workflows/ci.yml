@@ -22,7 +22,7 @@ jobs:
 
       - name: Install Boost
         run: |
-          apt-get install libboost-all-dev
+          apt-get install -y libboost-all-dev
 
       - name: Build
         run: make build
