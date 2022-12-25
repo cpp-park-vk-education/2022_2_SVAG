@@ -26,6 +26,9 @@ class AuthWindow : public QDialog {
         user.username = username->text().toStdString();
         user.password = password->text().toStdString();
 
+//        user.username = "kolya";
+//        user.password = "12345678";
+
         emit authSignal(user);
     }
 

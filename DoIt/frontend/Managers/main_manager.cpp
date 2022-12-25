@@ -5,20 +5,23 @@ MainManager::MainManager(QObject *parent)
     // connections
     connect(this, &MainManager::showBoardsSignal, this, &MainManager::showBoardsSlot);
 
-    // from gui worker
+    // from gui manager
     connect(&_guiManager, &GuiManager::authSignal, this, &MainManager::authSlot);
     connect(&_guiManager, &GuiManager::regSignal, this, &MainManager::regSlot);
     connect(&_guiManager, &GuiManager::addObjectSignal, this, &MainManager::addObjectSlot);
 
-    // TODO: implement ping
-    //    std::thread thr_ping([&]() { ping(); });
-    //    thr_ping.detach();
+    // from net manager
+    connect(&_netManager, &NetManager::updateDataSignal, this, &MainManager::updateDataSlot);
 }
 
 void MainManager::ping() {
     try {
-        _netManager.pingLoop();
-    } catch (boost::system::system_error &err) { std::cout << "Failed to do ping\n"; }
+        _netManager.pingLoop(_userManager.userId());
+    } catch (boost::system::system_error &err) {
+        std::cout << "Failed to do ping\n";
+        std::cout << "Try to reconnect\n";
+        ping();
+    }
 }
 
 void MainManager::getAllUserData() {
@@ -111,6 +114,11 @@ void MainManager::authSlot(const User &user) {
     // в отдельном потоке получаем данные пользователя
     std::thread thr_first_get_boards([&]() { getAllUserData(); });
     thr_first_get_boards.detach();
+
+    // Также начинаем опрашивать сервер об изменениях
+    // TODO: implement ping
+    std::thread thr_ping([&]() { ping(); });
+    thr_ping.detach();
 }
 
 void MainManager::regSlot(const User &user) {
@@ -118,6 +126,11 @@ void MainManager::regSlot(const User &user) {
 
     _guiManager.showLoadAllData();
 
+    std::thread thr_first_get_boards([&]() { getAllUserData(); });
+    thr_first_get_boards.detach();
+}
+
+void MainManager::updateDataSlot() {
     std::thread thr_first_get_boards([&]() { getAllUserData(); });
     thr_first_get_boards.detach();
 }

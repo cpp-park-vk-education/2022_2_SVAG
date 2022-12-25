@@ -37,6 +37,8 @@ public slots:
 
     void regSlot(const User &user);
 
+    void updateDataSlot();
+
     void showBoardsSlot();
 
     void addObjectSlot(Object &obj, ObjType objType);

@@ -1,26 +1,40 @@
 #include "net_manager.h"
 
-void NetManager::pingLoop() {
+void NetManager::pingLoop(size_t user_id) {
     try {
         _ping_sock.connect(_ep);
     } catch (boost::system::system_error &err) {
         std::cout << "Ping Connect failed\n";
         return;
     }
-    while (started_) {
-        json js_ping;
-        int err = 0;
-        js_ping["cmd"] = "ping";
-        asio::write(_ping_sock, asio::buffer(js_ping.dump() + "\n"),
-                    asio::transfer_all());
-        size_t bytes = boost::asio::read(
-                _ping_sock, asio::buffer(_buff_ping),
-                boost::bind(&NetManager::read_complete, _buff_ping, _1, _2));
-        std::string response(_buff_ping, bytes - 1); // -1 to remove \n
+    try {
+        while (started_) {
+            json js_ping;
+            int err = 0;
+            js_ping["cmd"] = "ping";
+            js_ping["user_id"] = user_id;
+            asio::write(_ping_sock, asio::buffer(js_ping.dump() + "\n"),
+                        asio::transfer_all());
+            size_t bytes = boost::asio::read(
+                    _ping_sock, asio::buffer(_buff_ping),
+                    boost::bind(&NetManager::read_complete, _buff_ping, _1, _2));
+            std::string response(_buff_ping, bytes - 1); // -1 to remove \n
 
-        json resp = json::parse(response);
+            json resp = json::parse(response);
 
-        boost::this_thread::sleep(boost::posix_time::millisec(3000));
+            std::cout << "Ping got: " << resp << std::endl;
+
+            if (resp["response"] == "has changes") {
+                updateDataSignal();
+            }
+
+            boost::this_thread::sleep(boost::posix_time::millisec(2000));
+        }
+    }
+    catch (boost::system::system_error &err) {
+        std::cout << "Ping Failed\n";
+        _ping_sock.close();
+        throw err;
     }
 
     _ping_sock.close();
@@ -72,7 +86,7 @@ void NetManager::sendFile(const std::string &fileName, int &err_code) {
 }
 
 size_t NetManager::read_complete(char *buff, const system::error_code &err,
-                            size_t bytes) {
+                                 size_t bytes) {
     if (err)
         return 0;
     bool found = std::find(buff, buff + bytes, '\n') < buff + bytes;

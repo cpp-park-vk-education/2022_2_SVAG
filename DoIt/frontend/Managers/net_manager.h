@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QObject>
+
 #include <fstream>
 #include <iostream>
 
@@ -12,18 +14,20 @@
 using json = nlohmann::json;
 using namespace boost;
 
-class NetManager {
+class NetManager : public QObject {
+Q_OBJECT
+
     const std::string ip_address = "127.0.0.1"; // server address
     const unsigned int port = 8001;
 
 public:
-    NetManager()
-            : _service(), _ep(asio::ip::address::from_string(ip_address), port),
-              _sock(_service), _ping_sock(_service), started_(true) {}
+    explicit NetManager(QObject *parent = nullptr) : QObject(parent), _service(),
+                                                     _ep(asio::ip::address::from_string(ip_address), port),
+                                                     _sock(_service), _ping_sock(_service), started_(true) {}
 
     ~NetManager() = default;
 
-    void pingLoop();
+    void pingLoop(size_t user_id);
 
     void connect();
 
@@ -38,6 +42,10 @@ public:
 private:
     static size_t read_complete(char *buff, const system::error_code &err,
                                 size_t bytes);
+
+signals:
+
+    void updateDataSignal();
 
 private:
     asio::io_service _service;
