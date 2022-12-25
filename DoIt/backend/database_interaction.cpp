@@ -1,8 +1,11 @@
+#include "database_interaction.h"
 
 std::string DatabaseInteraction::on_login(json msg_json)
 {
-    json result;
-    json result = cl.checkUserValidation(msg_json);
+    std::cout << "on_login()\n";
+    std::cout << "Got json: " << msg_json << std::endl;
+    std::cout << "Got json data: " << msg_json["data"] << std::endl;
+    json result = clUser.checkUserValidation(msg_json["data"]);
     return convert(result);
 }
 
@@ -36,81 +39,81 @@ std::string DatabaseInteraction::on_get_content(json msg_json)
     }
     else if (msg_json["content"] == "user_info")
     {
-        result = cl.getUserInfo(msg_json["user_id"]);
+        result = clUser.getUserInfo(msg_json["user_id"]);
     }
     else if (msg_json["content"] == "user_boards")
     {
-        result = cl.getUserBoards(msg_json["user_id"]);
+        result = clUser.getUserBoards(msg_json["user_id"]);
     }
     else if (msg_json["content"] == "card_info")
     {
-        result = cl.getCardInfo(msg_json["card_id"]);
+        result = clCard.getCardInfo(msg_json["card_id"]);
     }
     else if (msg_json["content"] == "card_checklists")
     {
-        result = cl.getCardCheckLists(msg_json["card_id"]);
+        result = clCard.getCardCheckLists(msg_json["card_id"]);
     }
     else if (msg_json["content"] == "card_tags")
     {
-        result = cl.getCardTags(msg_json["card_id"]);
+        result = clCard.getCardTags(msg_json["card_id"]);
     }
     else if (msg_json["content"] == "card_column")
     {
-        result = cl.getCardColumn(msg_json["card_id"]);
+        result = clCard.getCardColumn(msg_json["card_id"]);
     }
     return convert(result);
 }
 
 std::string DatabaseInteraction::on_create_content(json msg_json)
 {
-    json data = json::parse(msg_json["data"]);
+    json data = msg_json["data"];
     json result;
     if (msg_json["content"] == "board")
     {
-        result = cl.addboard(data);
+        result = cl.addBoard(data);
     }
     else if (msg_json["content"] == "user")
     {
-        result = cl.adduser(data);
+        result = clUser.addUser(data);
     }
     else if (msg_json["content"] == "column")
     {
-        result = cl.addcolumn(data);
+        result = cl.addColumn(data);
     }
     else if (msg_json["content"] == "card")
     {
-        result = cl.addcard(data);
+        result = clCard.addCard(data);
     }
     else if (msg_json["content"] == "tag")
     {
-        result = cl.addtag(data);
+        result = clCard.addTag(data);
     }
     else if (msg_json["content"] == "checklist")
     {
-        result = cl.addchecklist(data);
+        result = clCard.addCheckList(data);
     }
-    else if (msg_json["content"] == "checklist")
+    else if (msg_json["content"] == "checklist_item")
     {
-        result = cl.addchecklistitem(data);
+        result = clCard.addCheckListItem(data);
     }
     return convert(result);
 }
 
 std::string DatabaseInteraction::on_change_content(json msg_json)
 {
-    json data = json::parse(msg_json["data"]);
+    json data = msg_json["data"];
     json result;
     if (msg_json["content"] == "board")
     {
-        result = cl.updateboard(data);
+        result = cl.updateBoard(data);
     }
     else if (msg_json["content"] == "user")
     {
-        result = cl.updateuser(data);
+        result = clUser.updateUser(data);
     }
     else if (msg_json["content"] == "card")
     {
-        result = cl.updatecard(data);
+        result = clCard.updateCard(data);
     }
     return convert(result);
 }
@@ -120,27 +123,27 @@ std::string DatabaseInteraction::on_delete_content(json msg_json)
     json result;
     if (msg_json["content"] == "board")
     {
-        result = cl.removeboard(msg_json["board_id"]);
+        result = cl.removeBoard(msg_json["board_id"]);
     }
     else if (msg_json["content"] == "user")
     {
-        result = cl.removeuser(msg_json["user_id"]);
+        result = clUser.removeUser(msg_json["user_id"]);
     }
     else if (msg_json["content"] == "card")
     {
-        result = cl.removecard(msg_json["card_id"]);
+        result = clCard.removeCard(msg_json["card_id"]);
     }
     else if (msg_json["content"] == "tag")
     {
-        result = cl.removetag(msg_json["tag_id"]);
+        result = clCard.removeTag(msg_json["tag_id"]);
     }
     else if (msg_json["content"] == "checklist")
     {
-        result = cl.removechecklist(msg_json["checklist_id"]);
+        result = clCard.removeCheckList(msg_json["checklist_id"]);
     }
     else if (msg_json["content"] == "checklist")
     {
-        result = cl.removechecklistitem(msg_json["checklist_item_id"]);
+        result = clCard.removeCheckListItem(msg_json["checklist_item_id"]);
     }
     return convert(result);
 }

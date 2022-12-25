@@ -37,7 +37,7 @@ public:
         acceptor.async_accept(new_client->sock(), boost::bind(&Server::handle_accept, shared_from_this(), new_client, _1));
     }
 private:
+    const int port = 8001;
     boost::asio::ip::tcp::acceptor acceptor;
     bool status;
-    int port = 8001;
 };

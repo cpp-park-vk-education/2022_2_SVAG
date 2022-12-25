@@ -14,3 +14,15 @@ BoardDataBase getBoardClient() {
     static BoardDataBase cl(pg);
     return cl;
 }
+
+UserDataBase getUserClient() {
+    static std::shared_ptr<DataBase> pg = getPgClient();
+    static UserDataBase cl(pg);
+    return cl;
+}
+
+CardDataBase getCardClient() {
+    static std::shared_ptr<DataBase> pg = getPgClient();
+    static CardDataBase cl(pg);
+    return cl;
+}
