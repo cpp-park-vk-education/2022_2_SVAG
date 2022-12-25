@@ -117,8 +117,8 @@ void MainManager::authSlot(const User &user) {
 
     // Также начинаем опрашивать сервер об изменениях
     // TODO: implement ping
-    std::thread thr_ping([&]() { ping(); });
-    thr_ping.detach();
+//    std::thread thr_ping([&]() { ping(); });
+//    thr_ping.detach();
 }
 
 void MainManager::regSlot(const User &user) {

@@ -23,11 +23,11 @@ class AuthWindow : public QDialog {
         QLineEdit* username = findChild<QLineEdit*>("userNameEdit");
         QLineEdit* password = findChild<QLineEdit*>("passwordEdit");
         User user;
-        user.username = username->text().toStdString();
-        user.password = password->text().toStdString();
+//        user.username = username->text().toStdString();
+//        user.password = password->text().toStdString();
 
-//        user.username = "kolya";
-//        user.password = "12345678";
+        user.username = "valera";
+        user.password = "12345678";
 
         emit authSignal(user);
     }

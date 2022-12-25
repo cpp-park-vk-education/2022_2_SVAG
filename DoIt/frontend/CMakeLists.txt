@@ -41,13 +41,15 @@ set(SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/mainwindow.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/reg_window.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/auth_window.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/Gui/menu.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/board_widget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/column_widget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/card_widget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/comment.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/update.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Gui/menu.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Gui/navbar.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Gui/gui_user.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Gui/boardwidgetmanager.cpp
         )
 
 # setup

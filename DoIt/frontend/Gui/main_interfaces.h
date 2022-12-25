@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QWidget>
+
 #include <QTime>
 
 #include <QVBoxLayout>
@@ -10,6 +12,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QComboBox>
+#include <QDateTimeEdit>
 
 #include <QScrollArea>
 #include <QScrollBar>
@@ -18,7 +21,7 @@ class IDraw {
 public:
     virtual ~IDraw() = default;
 
-    virtual QWidget* Draw() const = 0;
+    virtual void Draw() = 0;
 };
 
 
@@ -32,7 +35,7 @@ public:
 
 
 class IDate {
-    public:
+public:
     virtual ~IDate() = default;
 
     virtual void SetDate(QDateTime _date) = 0;
