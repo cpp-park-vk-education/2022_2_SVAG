@@ -24,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 }
 
 MainWindow::~MainWindow() {
-    delete curWidget;
 }
 
 void MainWindow::Draw() {
@@ -56,7 +55,7 @@ void MainWindow::Draw() {
     // Add to Main Layout
     menu->Draw();
     mainLayout->addWidget(menu, Qt::AlignLeft);
-    mainLayout->addWidget(curWidget, Qt::AlignLeft);
+//    mainLayout->addWidget(curWidget, Qt::AlignLeft);
 
     setCentralWidget(centralWidget);
 
@@ -84,21 +83,22 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 }
 
 void MainWindow::resize() {
+    std::cout << "resize" << std::endl;
     // For Scroll Columns //
     QWidget *centralWidget = findChild<QWidget *>("centralWidget");
     QWidget *navbarWidget = findChild<QWidget *>("navbarWidget");
     QWidget *menuWidget = findChild<QWidget *>("menuWidget");
 
-    QWidget *headerBoardWidget = findChild<QWidget *>("headerBoardWidget");
+    QVector<QWidget *> headerBoardWidgets = findChildren<QWidget *>("headerBoardWidget");
 
-    QScrollArea *scrollAreaBoard = findChild<QScrollArea *>("scrollAreaBoard");
+    QVector<QScrollArea *> scrollAreaBoards = findChildren<QScrollArea *>("scrollAreaBoard");
 
-    if (scrollAreaBoard) {
+    for (int i = 0; i < scrollAreaBoards.size(); ++i) {
         int height =
-                centralWidget->size().height() - navbarWidget->size().height() - headerBoardWidget->size().height();
+                centralWidget->size().height() - navbarWidget->size().height() - headerBoardWidgets[i]->size().height();
         int width = centralWidget->size().width() - menuWidget->size().width();
 
-        scrollAreaBoard->resize(width, height);
+        scrollAreaBoards[i]->resize(width, height);
 
 
         // For Each Column Size //
@@ -126,5 +126,6 @@ void MainWindow::resize() {
                     }
                 }
             }
+
     }
 }

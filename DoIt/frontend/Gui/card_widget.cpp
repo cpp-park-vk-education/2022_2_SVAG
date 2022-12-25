@@ -37,7 +37,7 @@ CardWidget::CardWidget(size_t _ID, size_t _columnID, QString _title, QString _ca
 }
 
 
-CardWidget::CardWidget(size_t _ID, size_t _columnID, QString _title, QString _caption, QVector <QString> _tags) :
+CardWidget::CardWidget(size_t _ID, size_t _columnID, QString _title, QString _caption, QVector<QString> _tags) :
         ID(_ID),
         columnID(_columnID),
         title(_title),
@@ -60,7 +60,7 @@ CardWidget::CardWidget(size_t _ID, size_t _columnID, QString _title, QString _ca
 }
 
 
-CardWidget::CardWidget(size_t _ID, size_t _columnID, QString _title, QString _caption, QVector <QString> _tags,
+CardWidget::CardWidget(size_t _ID, size_t _columnID, QString _title, QString _caption, QVector<QString> _tags,
                        QString _deadline) :
         ID(_ID),
         columnID(_columnID),
@@ -93,12 +93,12 @@ QString CardWidget::getCaption() const {
 }
 
 
-void CardWidget::addTags(QVector <QString> _tags) {
+void CardWidget::addTags(QVector<QString> _tags) {
     tags.append(_tags);
 }
 
 
-QVector <QString> CardWidget::getTags() const {
+QVector<QString> CardWidget::getTags() const {
     return tags;
 }
 
@@ -150,10 +150,7 @@ void CardWidget::Draw() {
 
 
 void CardWidget::mouseReleaseEvent(QMouseEvent *event) {
-    qInfo() << "Clicked on card with ID" << getID();
-
-    CardWindow *cardWindow = new CardWindow(this);
-    cardWindow->show();
+    sSignal();
 }
 
 
@@ -286,16 +283,16 @@ CardWindow::CardWindow(CardWidget *_card, QWidget *parent)
         tagsLayout->addWidget(tagsLabel);
         tagsLayout->addItem(spacer);
 
-        foreach(QString
-        strTag, _card->getTags()) {
-            QLabel *tagLabel = new QLabel(strTag);
-            tagLabel->setObjectName("tagLabel");
-            tagLabel->setMinimumSize(QSize(50, 40));
-            tagLabel->setMaximumSize(QSize(200, 40));
-            tagLabel->setCursor(QCursor(Qt::PointingHandCursor));
+                foreach(QString
+                                strTag, _card->getTags()) {
+                QLabel *tagLabel = new QLabel(strTag);
+                tagLabel->setObjectName("tagLabel");
+                tagLabel->setMinimumSize(QSize(50, 40));
+                tagLabel->setMaximumSize(QSize(200, 40));
+                tagLabel->setCursor(QCursor(Qt::PointingHandCursor));
 
-            tagsLayout->addWidget(tagLabel);
-        }
+                tagsLayout->addWidget(tagLabel);
+            }
 
         tagsLayout->addItem(spacer);
 
@@ -435,6 +432,8 @@ CardWindow::CardWindow(CardWidget *_card, QWidget *parent)
                                     ""
                             )
             );
+
+    connect(deleteCardButton, &QPushButton::clicked, this, &CardWindow::deleteCardSlot);
 }
 
 

@@ -206,6 +206,10 @@ json PostgreDataBase::update(json request) {
         } else {
             query += std::to_string(it->get<int>());
         }
+        
+        if (it != std::prev(request["SET"].end())) {
+            query += ", ";
+        }
     }
 
     query += " WHERE ";

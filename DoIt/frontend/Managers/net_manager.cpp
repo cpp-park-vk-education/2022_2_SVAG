@@ -22,8 +22,6 @@ void NetManager::pingLoop(size_t user_id) {
 
             json resp = json::parse(response);
 
-            std::cout << "Ping got: " << resp << std::endl;
-
             if (resp["response"] == "has changes") {
                 updateDataSignal();
             }

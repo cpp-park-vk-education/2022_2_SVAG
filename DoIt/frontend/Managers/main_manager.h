@@ -51,9 +51,13 @@ public slots:
 
     void addUserSlot(User &user, const size_t boardId);
 
+    void showBoardsByIndexSlot(int index);
+
 signals:
 
     void showBoardsSignal();
+
+    void showBoardSignal(Board &board);
 
     void sendBoardsSignal(std::vector<Board> &boards);
 
@@ -86,4 +90,6 @@ private:
     UserManager _userManager;
 
     std::vector<Board> _boards;
+    Board _board;
+    size_t curBoardIdx = 0;
 };

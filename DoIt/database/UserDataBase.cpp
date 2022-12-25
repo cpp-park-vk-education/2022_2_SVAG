@@ -6,6 +6,19 @@
 UserDataBase::UserDataBase(std::shared_ptr<DataBase> cl): client(cl) {
 }
 
+json UserDataBase::getUsers() const {
+    json request = {{"SELECT", {"*"}},
+                    {"FROM", {userTableName}}};
+
+    json response = client->select(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS && !response["result"].size()) {
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Validation failed"}};
+    }
+
+    return response;
+}
+
 json UserDataBase::addUser(const json& info) const {
     json request = {{"INTO", userTableName},
                     {"columns", {"username", "email", "password", "avatar"}},

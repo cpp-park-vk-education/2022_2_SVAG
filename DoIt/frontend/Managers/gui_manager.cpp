@@ -6,6 +6,8 @@ GuiManager::GuiManager(QObject *parent) : QObject(parent) {
     // connections
     // from main window
     connect(&_mainWindow, &MainWindow::addObjectSignal, this, &GuiManager::addObjectSignal);
+    connect(&_mainWindow, &MainWindow::onCardClickedSignal, this, &GuiManager::openCardSlot);
+    connect(&_mainWindow, &MainWindow::showBoardSignal, this, &GuiManager::showBoardSignal);
 
     // from auth window
     connect(&_authWindow, &AuthWindow::authSignal, this, &GuiManager::authSignal);
@@ -23,13 +25,18 @@ GuiManager::~GuiManager() {
 }
 
 void GuiManager::showBoards(const std::vector<Board> &boards) {
+    std::cout << "RRR " << boards[0].columns.size() << std::endl;
     _mainWindow.showBoards(boards);
+}
+
+void GuiManager::deleteLoad() {
+    _mainWindow.deleteLoad();
 }
 
 void GuiManager::showLoadAllData() {
     _authWindow.close();
     _regWindow.close();
-    _mainWindow.show();
+    _mainWindow.showMaximized();
     _mainWindow.showLoadAllData();
 }
 

@@ -9,8 +9,15 @@ std::string DatabaseInteraction::on_login(json msg_json)
     return convert(result);
 }
 
-std::string DatabaseInteraction::analyze_msg(json msg_json)
+json DatabaseInteraction::getUsers() {
+    json resp = clUser.getUsers();
+    // std::cout << "Users" << resp << std::endl;
+    return resp["result"];
+}
+
+json DatabaseInteraction::analyze_msg(json msg_json)
     {
+        std::cout << "Got json:" << msg_json << std::endl;
         if (msg_json["cmd"] == "database_get") return on_get_content(msg_json);
         else if (msg_json["cmd"] == "database_create") return on_create_content(msg_json);
         else if (msg_json["cmd"] == "database_change") return on_change_content(msg_json);
@@ -18,7 +25,7 @@ std::string DatabaseInteraction::analyze_msg(json msg_json)
         else return on_invalid_msg();
     }
 
-std::string DatabaseInteraction::on_get_content(json msg_json) 
+json DatabaseInteraction::on_get_content(json msg_json) 
 {
     json result;
     if (msg_json["content"] == "board_info")
@@ -61,11 +68,12 @@ std::string DatabaseInteraction::on_get_content(json msg_json)
     {
         result = clCard.getCardColumn(msg_json["card_id"]);
     }
-    return convert(result);
+    return result;
 }
 
-std::string DatabaseInteraction::on_create_content(json msg_json)
+json DatabaseInteraction::on_create_content(json msg_json)
 {
+    std::cout << "on_create_content\n";
     json data = msg_json["data"];
     json result;
     if (msg_json["content"] == "board")
@@ -79,6 +87,8 @@ std::string DatabaseInteraction::on_create_content(json msg_json)
     else if (msg_json["content"] == "column")
     {
         result = cl.addColumn(data);
+        result["users_changed"] = cl.getBoardUsers(data["board_id"])["result"];
+        std::cout << "RESULT: "<<result["users_changed"] << std::endl;
     }
     else if (msg_json["content"] == "card")
     {
@@ -96,10 +106,10 @@ std::string DatabaseInteraction::on_create_content(json msg_json)
     {
         result = clCard.addCheckListItem(data);
     }
-    return convert(result);
+    return result;
 }
 
-std::string DatabaseInteraction::on_change_content(json msg_json)
+json DatabaseInteraction::on_change_content(json msg_json)
 {
     json data = msg_json["data"];
     json result;
@@ -113,44 +123,46 @@ std::string DatabaseInteraction::on_change_content(json msg_json)
     }
     else if (msg_json["content"] == "card")
     {
+        std::cout << "Update card\n";
         result = clCard.updateCard(data);
+        std::cout << "res =  " << result << std::endl;
     }
-    return convert(result);
+    return result;
 }
 
-std::string DatabaseInteraction::on_delete_content(json msg_json)
+json DatabaseInteraction::on_delete_content(json msg_json)
 {
     json result;
     if (msg_json["content"] == "board")
     {
-        result = cl.removeBoard(msg_json["board_id"]);
+        result = cl.removeBoard(msg_json["id"]);
     }
     else if (msg_json["content"] == "user")
     {
-        result = clUser.removeUser(msg_json["user_id"]);
+        result = clUser.removeUser(msg_json["id"]);
     }
     else if (msg_json["content"] == "card")
     {
-        result = clCard.removeCard(msg_json["card_id"]);
+        result = clCard.removeCard(msg_json["id"]);
     }
     else if (msg_json["content"] == "tag")
     {
-        result = clCard.removeTag(msg_json["tag_id"]);
+        result = clCard.removeTag(msg_json["id"]);
     }
     else if (msg_json["content"] == "checklist")
     {
-        result = clCard.removeCheckList(msg_json["checklist_id"]);
+        result = clCard.removeCheckList(msg_json["id"]);
     }
     else if (msg_json["content"] == "checklist")
     {
-        result = clCard.removeCheckListItem(msg_json["checklist_item_id"]);
+        result = clCard.removeCheckListItem(msg_json["id"]);
     }
-    return convert(result);
+    return result;
 }
 
-std::string DatabaseInteraction::on_invalid_msg()
+json DatabaseInteraction::on_invalid_msg()
 {
     json result;
     result["response"] = "invalid msg";
-    return convert(result);
+    return result;
 }

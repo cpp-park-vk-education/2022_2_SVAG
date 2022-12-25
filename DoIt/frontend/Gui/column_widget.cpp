@@ -11,7 +11,7 @@ ColumnWidget::ColumnWidget(size_t _ID) :
 
 ColumnWidget::ColumnWidget(size_t _ID, QString _name) :
         ID(_ID),
-        name(""),
+        name(_name),
         cardWidgets(QVector<CardWidget *>()) {
 
 }
@@ -56,11 +56,10 @@ QVector<CardWidget *> ColumnWidget::getCardWidgets() {
 
 
 CardWidget *ColumnWidget::getCardWidget(size_t _ID) {
-    foreach(CardWidget * cardWidget, cardWidgets)
-    {
-        if (cardWidget->getID() == _ID)
-            return cardWidget;
-    }
+            foreach(CardWidget *cardWidget, cardWidgets) {
+            if (cardWidget->getID() == _ID)
+                return cardWidget;
+        }
 
     return nullptr;
 }
@@ -103,21 +102,21 @@ void ColumnWidget::Draw() {
 
     QLineEdit *columnTitle = new QLineEdit();
     columnTitle->setObjectName("columnTitle");
-    columnTitle->setFixedSize(QSize(elementsWidth, titleHeight));
+    columnTitle->setFixedSize(QSize(elementsWidth - smallIconSize, titleHeight));
     columnTitle->setText(name);                                // Data
     columnTitle->setCursor(Qt::PointingHandCursor);
 
-    QComboBox *moreActions = new QComboBox();
-    moreActions->setObjectName("moreActions");
-    moreActions->setFixedSize(QSize(smallIconSize, smallIconSize));
-    moreActions->setCursor(QCursor(Qt::PointingHandCursor));
+//    QComboBox *moreActions = new QComboBox();
+//    moreActions->setObjectName("moreActions");
+//    moreActions->setFixedSize(QSize(smallIconSize, smallIconSize));
+//    moreActions->setCursor(QCursor(Qt::PointingHandCursor));
 
 
     // moreActions->addItems();
 
     // Add title
     columnTitleLayout->addWidget(columnTitle);
-    columnTitleLayout->addWidget(moreActions);
+//    columnTitleLayout->addWidget(moreActions);
 
 
     // Scroll for cards
@@ -143,13 +142,12 @@ void ColumnWidget::Draw() {
 
 
     // Add cards //
-    foreach(CardWidget * cardWidget, cardWidgets)
-    {
-        cardWidget->Draw();
+            foreach(CardWidget *cardWidget, cardWidgets) {
+            cardWidget->Draw();
 
-        cardsLayout->addWidget(cardWidget);
-        cardsLayout->setAlignment(cardWidget, Qt::AlignHCenter | Qt::AlignTop);
-    }
+            cardsLayout->addWidget(cardWidget);
+            cardsLayout->setAlignment(cardWidget, Qt::AlignHCenter | Qt::AlignTop);
+        }
 
     scrollAreaCards->setWidget(scrollAreaCardsContents);
     scrollAreaCards->setFixedSize(scrollAreaCards->sizeHint());
@@ -173,6 +171,7 @@ void ColumnWidget::Draw() {
 
     // Styles
     setStyles();
+
 }
 
 

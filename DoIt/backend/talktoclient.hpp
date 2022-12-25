@@ -11,20 +11,26 @@ using json = nlohmann::json;
 
 boost::asio::io_service service;
 
+struct UserUpdate {
+    size_t user_id;
+    bool hasChanges;
+};
+
 #define MEM_FN(x)       boost::bind(&self_type::x, shared_from_this())
 #define MEM_FN1(x,y)    boost::bind(&self_type::x, shared_from_this(),y)
 #define MEM_FN2(x,y,z)  boost::bind(&self_type::x, shared_from_this(),y,z)
 
-
 class TalkToClient : public boost::enable_shared_from_this<TalkToClient>, boost::noncopyable {
     typedef TalkToClient self_type;
-    TalkToClient() : sock_(service), started_(false), timer_(service), clients_changed_(false) {}
+    TalkToClient(DatabaseInteraction &di, std::vector<UserUpdate> &uu) : 
+    sock_(service), started_(false), timer_(service), clients_changed_(false), interactor(di), _userUpdates(uu) {
+    }
 public:
     typedef boost::system::error_code error_code;
     typedef boost::shared_ptr<TalkToClient> ptr;
 
-    static ptr new_() {
-        ptr new_(new TalkToClient);
+    static ptr new_(DatabaseInteraction &di, std::vector<UserUpdate> &uu) {
+        ptr new_(new TalkToClient(di, uu));
         return new_;
     }
     void start() 
@@ -59,7 +65,7 @@ private:
         std::string msg(read_buffer_, bytes);
         json msg_json = json::parse(msg);
         if (msg_json["cmd"] == "login") on_login(msg_json);
-        else if (msg_json["cmd"] == "ping") on_ping();
+        else if (msg_json["cmd"] == "ping") on_ping(msg_json);
         else on_work_with_database(msg_json);
     }
     void on_login(json msg_json) 
@@ -69,13 +75,40 @@ private:
     }
     void on_work_with_database(json msg_json)
     {
-        std::string response = interactor.analyze_msg(msg_json);
-        do_write(response);
+        json response = interactor.analyze_msg(msg_json);
+        if (response["users_changed"] != nullptr) {
+            std::cout << "There are other users that got updates\n";
+            json users = response["users_changed"];
+            std::cout << "here" << users << std::endl;
+            for (size_t i = 0; i < users.size(); ++i) {
+                for (auto &user : _userUpdates) {
+                    if (user.user_id == users[i]["user_id"]) {
+                        user.hasChanges = true;
+                        break;
+                    }
+                }
+            }
+            response["users_changed"] = nullptr;
+        }
+
+        do_write(convert(response));
     }
-    void on_ping() 
+    void on_ping(json rqst) 
     {
+        std::cout << "On Ping\n";
         json result;
-        result["response"] = "ping ok";
+
+        result["response"] = "no changes";  
+        for (auto &user : _userUpdates) {
+            if (user.hasChanges){
+                std::cout << user.user_id << " "<< user.hasChanges << std::endl;
+                }
+            if (user.user_id == rqst["user_id"] && user.hasChanges) {
+                result["response"] = "has changes"; 
+                user.hasChanges = false; 
+                break;
+            }
+        }
         do_write(convert(result));
     }
 
@@ -88,14 +121,14 @@ private:
     void on_check_ping() 
     {
         boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
-        if ((now - last_ping).total_milliseconds() > 30000) {
+        if ((now - last_ping).total_milliseconds() > 10000) {
             std::cout << "stopping " << username_ << " - no ping in time" << std::endl;
             stop();
         }
         last_ping = boost::posix_time::microsec_clock::local_time();
     }
     void post_check_ping() {
-        timer_.expires_from_now(boost::posix_time::millisec(30000));
+        timer_.expires_from_now(boost::posix_time::millisec(10000));
         timer_.async_wait(MEM_FN(on_check_ping));
     }
 
@@ -128,6 +161,7 @@ private:
     boost::asio::deadline_timer timer_;
     boost::posix_time::ptime last_ping;
     bool clients_changed_;
-    DatabaseInteraction interactor;
+    DatabaseInteraction &interactor;
+    std::vector<UserUpdate> &_userUpdates;
     json_to_string_response_convert convert;
 };

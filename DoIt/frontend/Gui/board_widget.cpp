@@ -153,15 +153,15 @@ void BoardWidget::Draw() {
     usersLayout->setContentsMargins(0, 0, 0, 0);
 
     // BoardWidget user icons
-    for (int i = 0; i < 4; ++i) {
-        QLabel *userIcon = new QLabel();
-        userIcon->setObjectName("userIcon");
-        userIcon->setFixedSize(QSize(mediumIconSize, mediumIconSize));
-        userIcon->setCursor(QCursor(Qt::PointingHandCursor));
-        userIcon->setStyleSheet("image: url(Gui/resources/icons/default_user.png)");
-
-        usersLayout->addWidget(userIcon);
-    }
+//    for (int i = 0; i < 0; ++i) {
+//        QLabel *userIcon = new QLabel();
+//        userIcon->setObjectName("userIcon");
+//        userIcon->setFixedSize(QSize(mediumIconSize, mediumIconSize));
+//        userIcon->setCursor(QCursor(Qt::PointingHandCursor));
+//        userIcon->setStyleSheet("image: url(Gui/resources/icons/default_user.png)");
+//
+//        usersLayout->addWidget(userIcon);
+//    }
 
     // Button to add users to BoardWidget
     QPushButton *addUsers = new QPushButton(QObject::tr("Добавить"));

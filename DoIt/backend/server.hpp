@@ -7,7 +7,14 @@ public:
     typedef Server self_type;
     typedef boost::shared_ptr<Server> ptr;
     Server() : acceptor(service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)), status(false)
-    {}
+    {   
+        json resp = interactor.getUsers();
+        // std::cout << "Count users: "<< resp.size() << std::endl;
+        _userUpdates.resize(resp.size());
+        for (size_t i = 0; i < resp.size(); ++i) {
+            _userUpdates[i] = {resp[i]["id"], false};
+        }
+    }
     static ptr new_() {
         ptr new_(new Server);
         return new_;
@@ -20,7 +27,7 @@ public:
     }
     void start_server()
     {
-        TalkToClient::ptr client = TalkToClient::new_();
+        TalkToClient::ptr client = TalkToClient::new_(interactor, _userUpdates);
         std::cout << "Server started\n";
         acceptor.async_accept(client->sock(), boost::bind(&Server::handle_accept, shared_from_this(), client, _1));
         service.run();
@@ -35,11 +42,14 @@ public:
     {
         std::cout << "Accepted\n";
         client->start();
-        TalkToClient::ptr new_client = TalkToClient::new_();
+        TalkToClient::ptr new_client = TalkToClient::new_(interactor, _userUpdates);
         acceptor.async_accept(new_client->sock(), boost::bind(&Server::handle_accept, shared_from_this(), new_client, _1));
     }
 private:
     const int port = 8001;
     boost::asio::ip::tcp::acceptor acceptor;
     bool status;
+
+    DatabaseInteraction interactor;
+    std::vector<UserUpdate> _userUpdates;
 };

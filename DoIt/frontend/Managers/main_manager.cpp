@@ -9,16 +9,20 @@ MainManager::MainManager(QObject *parent)
     connect(&_guiManager, &GuiManager::authSignal, this, &MainManager::authSlot);
     connect(&_guiManager, &GuiManager::regSignal, this, &MainManager::regSlot);
     connect(&_guiManager, &GuiManager::addObjectSignal, this, &MainManager::addObjectSlot);
+    connect(&_guiManager, &GuiManager::delObjectSignal, this, &MainManager::deleteObjectSlot);
+    connect(&_guiManager, &GuiManager::updateObjectSignal, this, &MainManager::updateObjectSlot);
 
     // from net manager
     connect(&_netManager, &NetManager::updateDataSignal, this, &MainManager::updateDataSlot);
+
+    connect(&_guiManager, &GuiManager::showBoardSignal, this, &MainManager::showBoardsByIndexSlot);
 }
 
 void MainManager::ping() {
     try {
         _netManager.pingLoop(_userManager.userId());
     } catch (boost::system::system_error &err) {
-        std::cout << "Failed to do ping\n";
+        std::cout << "Failed to ping\n";
         std::cout << "Try to reconnect\n";
         ping();
     }
@@ -116,9 +120,8 @@ void MainManager::authSlot(const User &user) {
     thr_first_get_boards.detach();
 
     // Также начинаем опрашивать сервер об изменениях
-    // TODO: implement ping
-//    std::thread thr_ping([&]() { ping(); });
-//    thr_ping.detach();
+    //    std::thread thr_ping([&]() { ping(); });
+    //    thr_ping.detach();
 }
 
 void MainManager::regSlot(const User &user) {
@@ -136,6 +139,7 @@ void MainManager::updateDataSlot() {
 }
 
 void MainManager::showBoardsSlot() {
+    _guiManager.deleteLoad();
     _guiManager.showBoards(_boards);
 }
 
@@ -156,6 +160,7 @@ void MainManager::addObjectSlot(Object &obj, ObjType objType) {
 
     obj.id = resp["result"][0]["id"];  // set id for new object
 
+    // также производим изменения локально
     if (objType == BOARD) {
         Board &board = dynamic_cast<Board &>(obj);
         _boards.push_back(board);
@@ -181,31 +186,63 @@ void MainManager::addObjectSlot(Object &obj, ObjType objType) {
 
 void MainManager::deleteObjectSlot(size_t id, ObjType objType) {
     json data;
-    data["cmd"] = "del " + _objType2Str(objType);
+    data["cmd"] = "database_delete";
+    data["content"] = _objType2Str(objType);
     data["id"] = id;
     std::string request = data.dump();
 
     int err = 0;
-    _netManager.sendMessage(request + '\n', err);
-    if (objType == BOARD) {
-        for (auto it = _boards.begin(); it != _boards.end(); ++it) {
-            if ((*it).id == id) {
-                _boards.erase(it);
-                break;
+    _netManager.connect();
+    _netManager.sendMessage(request + "\n", err);
+    std::string response = _netManager.getMessage(err);
+    json resp = json::parse(response);
+    _netManager.disconnect();
+
+    if (objType == CARD) {
+        for (auto &board: _boards) {
+            for (auto &column: board.columns) {
+                for (auto it = column.cards.begin(); it != column.cards.end(); ++it) {
+                    if (it->id == id) {
+                        column.cards.erase(it);
+                        break;
+                    }
+                }
             }
         }
-        emit sendBoardsSignal(_boards);
-    } else if (objType == COLUMN) {
     }
+    _guiManager.showBoards(_boards);
 }
 
 void MainManager::updateObjectSlot(Object &obj, ObjType objType) {
-    json data = obj.toJson();
-    data["cmd"] = "update " + _objType2Str(objType);
+    json data;
+    data["cmd"] = "database_change";
+    data["content"] = _objType2Str(objType);
+    json obj_json = obj.toJson();
+    data["data"]["id"] = obj_json["id"];
+    data["data"]["info"] = obj_json;
     std::string request = data.dump();
 
     int err = 0;
-    _netManager.sendMessage(request + '\n', err);
+    _netManager.connect();
+    _netManager.sendMessage(request + "\n", err);
+    std::string response = _netManager.getMessage(err);
+    json resp = json::parse(response);
+    _netManager.disconnect();
+
+    if (objType == CARD) {
+        Card &card = dynamic_cast<Card &>(obj);
+        for (auto &board: _boards) {
+            for (auto &column: board.columns) {
+                for (auto &c: column.cards) {
+                    if (card.id == c.id) {
+                        c = card;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    _guiManager.showBoards(_boards);
 }
 
 void MainManager::logoutSlot() {

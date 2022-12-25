@@ -1,14 +1,18 @@
 #pragma once
 
 #include <QDialog>
+#include <QObject>
 #include <QDateTimeEdit>
 
 #include "main_interfaces.h"
 #include "comment.h"
 #include "update.h"
 
+#include "card.h"
+
 
 class CardWidget : public QTextEdit, IDraw, IText {
+Q_OBJECT
 public:
     CardWidget(size_t _ID, size_t _columnID);
 
@@ -57,12 +61,20 @@ public:
 
     int getID() const;
 
+    int getColID() const {
+        return columnID;
+    }
+
 
     friend bool operator==(const CardWidget &l, const CardWidget &r);
 
     void Draw() override;
 
     void mouseReleaseEvent(QMouseEvent *event) override;
+
+signals:
+
+    void sSignal();
 
 private:
     void setStyles();
@@ -89,8 +101,36 @@ Q_OBJECT
 public:
     CardWindow(CardWidget *_card, QWidget *parent = nullptr);
 
+    CardWindow(QWidget *parent = nullptr) {}
+
     ~CardWindow();
+
+public slots:
+
+    void deleteCardSlot() {
+        delObjectSignal(card->getID(), CARD);
+        flag = false;
+        close();
+    }
+
+    void closeEvent(QCloseEvent *) override {
+        if (flag) {
+            Card c;
+            c.id = card->getID();
+            c.name = findChild<QLineEdit *>("cardNameEdit")->text().toStdString();
+            c.caption = "";
+            c.columnId = card->getColID();
+            updateObjectSignal(c, CARD);
+        }
+    }
+
+signals:
+
+    void delObjectSignal(size_t, ObjType);
+
+    void updateObjectSignal(Object &obj, ObjType);
 
 private:
     CardWidget *card;
+    bool flag = true;
 };
