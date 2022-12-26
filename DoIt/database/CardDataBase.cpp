@@ -25,7 +25,7 @@ json CardDataBase::removeCard(const size_t id) const {
         return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Card doesn't exist"}};
     }
 
-    json request = {{"FROM", cardsTableName}, {"WHERE", {"id=" + std::to_string(id)}}};
+    json request = {{"FROM", cardsTableName}, {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
     json response = client->remove(request);
     return response;
 }
@@ -34,7 +34,7 @@ bool CardDataBase::checkCardExists(const size_t id) const {
     json request = {{"SELECT", {"id"}},
                     {"FROM", {cardsTableName}},
                     {"JOIN ON", {}},
-                    {"WHERE", {"id=" + std::to_string(id)}}};
+                    {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
     json response = client->select(request);
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS) {
@@ -52,7 +52,7 @@ json CardDataBase::updateCard(const json& info) const {
     }
 
     json request = {
-        {"table", cardsTableName}, {"SET", info["info"]}, {"WHERE", {"id=" + std::to_string(id)}}};
+        {"table", cardsTableName}, {"SET", info["info"]}, {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
 
     json response = client->update(request);
 
@@ -67,7 +67,7 @@ json CardDataBase::getCardInfo(const size_t id) const {
     json request = {{"SELECT", {"*"}},
                     {"FROM", {cardsTableName}},
                     {"JOIN ON", {}},
-                    {"WHERE", {"id=" + std::to_string(id)}}};
+                    {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
 
     json response = client->select(request);
 
@@ -86,7 +86,7 @@ json CardDataBase::getCardCheckLists(const size_t id) const {
     json request = {{"SELECT", {"*"}},
                     {"FROM", {checkListTableName}},
                     {"JOIN ON", {}},
-                    {"WHERE", {"card_id=" + std::to_string(id)}}};
+                    {"WHERE", {{{"field", "card_id"}, {"value", std::to_string(id)}}}}};
 
     json response = client->select(request);
 
@@ -106,7 +106,8 @@ json CardDataBase::getCardCheckList(const size_t id, const size_t check_list_id)
     json request = {{"SELECT", {"*"}},
                     {"FROM", {checkListTableName}},
                     {"JOIN ON", {}},
-                    {"WHERE", {"id=" + std::to_string(check_list_id), "card_id=" + std::to_string(id)}}};
+                    {"WHERE", {{{"field", "id"}, {"value", std::to_string(check_list_id)}},
+                    {{"field", "card_id"}, {"value", std::to_string(id)}}}}};
 
     json response = client->select(request);
 
@@ -118,7 +119,7 @@ json CardDataBase::getCardCheckList(const size_t id, const size_t check_list_id)
         json nested_request = {{"SELECT", {"*"}},
                                {"FROM", {checkListItemTableName}},
                                {"JOIN ON", {}},
-                               {"WHERE", {"check_list_id=" + std::to_string(check_list_id)}}};
+                               {"WHERE", {{{"field", "check_list_id"}, {"value", std::to_string(check_list_id)}}}}};
 
         json nested_response = client->select(nested_request);
 
@@ -144,7 +145,7 @@ json CardDataBase::getCardTags(const size_t id) const {
     json request = {{"SELECT", {"*"}},
                     {"FROM", {tagsTableName}},
                     {"JOIN ON", {}},
-                    {"WHERE", {"card_id=" + std::to_string(id)}}};
+                    {"WHERE", {{{"field", "card_id"}, {"value", std::to_string(id)}}}}};
 
     json response = client->select(request);
 
@@ -164,7 +165,7 @@ json CardDataBase::getCardColumn(const size_t id) const {
     json request = {{"SELECT", {"column_id"}},
                     {"FROM", {cardsTableName}},
                     {"JOIN ON", {}},
-                    {"WHERE", {"id=" + std::to_string(id)}}};
+                    {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
 
     json response = client->select(request);
 
@@ -194,7 +195,7 @@ json CardDataBase::removeTag(const size_t id) const {
         return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Tag doesn't exist"}};
     }
 
-    json request = {{"FROM", tagsTableName}, {"WHERE", {"id=" + std::to_string(id)}}};
+    json request = {{"FROM", tagsTableName}, {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
     json response = client->remove(request);
     return response;
 }
@@ -203,7 +204,7 @@ bool CardDataBase::checkTagExists(const size_t id) const {
     json request = {{"SELECT", {"id"}},
                     {"FROM", {tagsTableName}},
                     {"JOIN ON", {}},
-                    {"WHERE", {"id=" + std::to_string(id)}}};
+                    {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
     json response = client->select(request);
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS) {
@@ -236,7 +237,7 @@ json CardDataBase::removeCheckList(const size_t id) const {
         return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Check list doesn't exist"}};
     }
 
-    json request = {{"FROM", checkListTableName}, {"WHERE", {"id=" + std::to_string(id)}}};
+    json request = {{"FROM", checkListTableName}, {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
     json response = client->remove(request);
     return response;
 }
@@ -245,7 +246,7 @@ bool CardDataBase::checkCheckListExists(const size_t id) const {
     json request = {{"SELECT", {"id"}},
                     {"FROM", {checkListTableName}},
                     {"JOIN ON", {}},
-                    {"WHERE", {"id=" + std::to_string(id)}}};
+                    {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
     json response = client->select(request);
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS) {
@@ -278,7 +279,7 @@ json CardDataBase::removeCheckListItem(const size_t id) const {
         return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Check list item doesn't exist"}};
     }
 
-    json request = {{"FROM", checkListItemTableName}, {"WHERE", {"id=" + std::to_string(id)}}};
+    json request = {{"FROM", checkListItemTableName}, {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
     json response = client->remove(request);
     return response;
 }
@@ -287,7 +288,7 @@ bool CardDataBase::checkCheckListItemExists(const size_t id) const {
     json request = {{"SELECT", {"id"}},
                     {"FROM", {checkListItemTableName}},
                     {"JOIN ON", {}},
-                    {"WHERE", {"id=" + std::to_string(id)}}};
+                    {"WHERE", {{{"field", "id"}, {"value", std::to_string(id)}}}}};
     json response = client->select(request);
 
     if (response[STATUS_FIELD] == SUCCESS_STATUS) {

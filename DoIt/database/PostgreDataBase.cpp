@@ -69,7 +69,23 @@ json PostgreDataBase::select(json request) {
     }
 
     for (size_t i = 0; i < request["WHERE"].size(); ++i) {
-        query += request["WHERE"][i].get<std::string>();
+        query += request["WHERE"][i]["field"].get<std::string>() + "=";
+        auto cur = request["WHERE"][i]["value"];
+        std::string value;
+
+        if (cur.is_string()) {
+            value = "\'" + con->esc(cur.get<std::string>()) + "\'";
+        } else if (cur.is_boolean()) {
+            if (cur.get<bool>()) {
+                value = "true";
+            } else {
+                value = "false";
+            }
+        } else {
+            value = std::to_string(cur.get<int>());
+        }
+
+        query += value;
 
         if (i != request["WHERE"].size() - 1) {
             query += " AND ";
@@ -130,7 +146,7 @@ json PostgreDataBase::insert(json request) {
         if (cur.is_null()) {
             value = "NULL";
         } else if (cur.is_string()) {
-            value = "\'" + cur.get<std::string>() + "\'";
+            value = "\'" + con->esc(cur.get<std::string>()) + "\'";
         } else if (cur.is_boolean()) {
             if (cur.get<bool>()) {
                 value = "true";
@@ -174,7 +190,23 @@ json PostgreDataBase::remove(json request) {
     std::string query = "DELETE FROM " + request["FROM"].get<std::string>() + " WHERE ";
 
     for (size_t i = 0; i < request["WHERE"].size(); ++i) {
-        query += request["WHERE"][i].get<std::string>();
+        query += request["WHERE"][i]["field"].get<std::string>() + "=";
+        auto cur = request["WHERE"][i]["value"];
+        std::string value;
+
+        if (cur.is_string()) {
+            value = "\'" + con->esc(cur.get<std::string>()) + "\'";
+        } else if (cur.is_boolean()) {
+            if (cur.get<bool>()) {
+                value = "true";
+            } else {
+                value = "false";
+            }
+        } else {
+            value = std::to_string(cur.get<int>());
+        }
+
+        query += value;
 
         if (i != request["WHERE"].size() - 1) {
             query += " AND ";
@@ -204,7 +236,7 @@ json PostgreDataBase::update(json request) {
         if (it->is_null()) {
             query += "NULL";
         } else if (it->is_string()) {
-            query += "\'" + it->get<std::string>() + "\'";
+            query += "\'" + con->esc(it->get<std::string>()) + "\'";
         } else {
             query += std::to_string(it->get<int>());
         }
@@ -217,7 +249,23 @@ json PostgreDataBase::update(json request) {
     query += " WHERE ";
 
     for (size_t i = 0; i < request["WHERE"].size(); ++i) {
-        query += request["WHERE"][i].get<std::string>();
+                query += request["WHERE"][i]["field"].get<std::string>() + "=";
+        auto cur = request["WHERE"][i]["value"];
+        std::string value;
+
+        if (cur.is_string()) {
+            value = "\'" + con->esc(cur.get<std::string>()) + "\'";
+        } else if (cur.is_boolean()) {
+            if (cur.get<bool>()) {
+                value = "true";
+            } else {
+                value = "false";
+            }
+        } else {
+            value = std::to_string(cur.get<int>());
+        }
+
+        query += value;
 
         if (i != request["WHERE"].size() - 1) {
             query += " AND ";

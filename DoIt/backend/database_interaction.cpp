@@ -13,6 +13,7 @@ json DatabaseInteraction::getUsers() {
 
 json DatabaseInteraction::analyze_msg(json msg_json)
     {
+        std::cout << "Got Json: " << msg_json << std::endl;
         if (msg_json["cmd"] == "database_get") return on_get_content(msg_json);
         else if (msg_json["cmd"] == "database_create") return on_create_content(msg_json);
         else if (msg_json["cmd"] == "database_change") return on_change_content(msg_json);
@@ -81,7 +82,6 @@ json DatabaseInteraction::on_create_content(json msg_json)
     else if (msg_json["content"] == "column")
     {
         result = cl.addColumn(data);
-        result["users_changed"] = cl.getBoardUsers(data["board_id"])["result"];
     }
     else if (msg_json["content"] == "card")
     {
