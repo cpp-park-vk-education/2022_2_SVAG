@@ -1,14 +1,12 @@
 #pragma once
 
-#include <QString>
-
 #include "check_list.h"
 #include "object.h"
 #include "tag.h"
 
 struct Card : public Object {
-    Card(const std::string &t = "", const std::string &d = "", size_t col_id = 0) : name(t), caption(d),
-                                                                                 columnId(col_id) {
+    Card(const std::string& t = "", const std::string& d = "", size_t col_id = 0)
+        : name(t), caption(d), columnId(col_id) {
     }
 
     json toJson() const override {
@@ -33,5 +31,5 @@ struct Card : public Object {
     size_t columnId;
 
     std::vector<QTag> tags;
-    std::vector<QCheckList> checkLists;
+    std::vector<CheckList> checkLists;
 };

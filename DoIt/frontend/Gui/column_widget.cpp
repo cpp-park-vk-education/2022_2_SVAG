@@ -1,87 +1,63 @@
 #include "column_widget.h"
 
-
-ColumnWidget::ColumnWidget(size_t _ID) :
-        ID(_ID),
-        name(""),
-        cardWidgets(QVector<CardWidget *>()) {
-
+ColumnWidget::ColumnWidget(size_t _ID): ID(_ID), name(""), cardWidgets(QVector<CardWidget*>()) {
 }
 
-
-ColumnWidget::ColumnWidget(size_t _ID, QString _name) :
-        ID(_ID),
-        name(_name),
-        cardWidgets(QVector<CardWidget *>()) {
-
+ColumnWidget::ColumnWidget(size_t _ID, QString _name)
+    : ID(_ID), name(_name), cardWidgets(QVector<CardWidget*>()) {
 }
 
-
-ColumnWidget::ColumnWidget(size_t _ID, QString _name, QVector<CardWidget *> _cardWidgets) :
-        ID(_ID),
-        name(_name),
-        cardWidgets(_cardWidgets) {
-
+ColumnWidget::ColumnWidget(size_t _ID, QString _name, QVector<CardWidget*> _cardWidgets)
+    : ID(_ID), name(_name), cardWidgets(_cardWidgets) {
 }
 
-
-void ColumnWidget::SetText(const QString &_name) {
+void ColumnWidget::SetText(const QString& _name) {
     name = _name;
 }
-
 
 QString ColumnWidget::GetText() const {
     return name;
 }
 
-
-void ColumnWidget::addCardWidget(CardWidget *_cardWidget) {
+void ColumnWidget::addCardWidget(CardWidget* _cardWidget) {
     cardWidgets.append(_cardWidget);
 }
 
-
-void ColumnWidget::deleteCardWidget(CardWidget *_cardWidget) {
+void ColumnWidget::deleteCardWidget(CardWidget* _cardWidget) {
     cardWidgets.removeOne(_cardWidget);
 }
 
-
-void ColumnWidget::swapCardWidgets(const int &first, const int &second) {
+void ColumnWidget::swapCardWidgets(const int& first, const int& second) {
     cardWidgets.swapItemsAt(first, second);
 }
 
-
-QVector<CardWidget *> ColumnWidget::getCardWidgets() {
+QVector<CardWidget*> ColumnWidget::getCardWidgets() {
     return cardWidgets;
 }
 
-
-CardWidget *ColumnWidget::getCardWidget(size_t _ID) {
-            foreach(CardWidget *cardWidget, cardWidgets) {
-            if (cardWidget->getID() == _ID)
-                return cardWidget;
-        }
+CardWidget* ColumnWidget::getCardWidget(size_t _ID) {
+    foreach (CardWidget* cardWidget, cardWidgets) {
+        if (cardWidget->getID() == _ID)
+            return cardWidget;
+    }
 
     return nullptr;
 }
-
 
 size_t ColumnWidget::getID() const {
     return ID;
 }
 
-
 size_t ColumnWidget::cardsCount() const {
     return cardWidgets.size();
 }
 
-
-bool operator==(const ColumnWidget &l, const ColumnWidget &r) {
+bool operator==(const ColumnWidget& l, const ColumnWidget& r) {
     if (l.name == r.name)
         return true;
 
     return false;
 }
-
 
 void ColumnWidget::Draw() {
     // Column //
@@ -89,24 +65,24 @@ void ColumnWidget::Draw() {
     setObjectName("columnWidget");
     setContentsMargins(0, 0, 0, 0);
 
-    QVBoxLayout *columnLayout = new QVBoxLayout(this);
+    QVBoxLayout* columnLayout = new QVBoxLayout(this);
     columnLayout->setObjectName("columnLayout");
     columnLayout->setContentsMargins(10, 10, 10, 10);
 
     // Column content //
 
     // Column title
-    QHBoxLayout *columnTitleLayout = new QHBoxLayout();
+    QHBoxLayout* columnTitleLayout = new QHBoxLayout();
     columnTitleLayout->setObjectName("columnTitleLayout");
     columnTitleLayout->setContentsMargins(0, 0, 0, 0);
 
-    QLineEdit *columnTitle = new QLineEdit();
+    QLineEdit* columnTitle = new QLineEdit();
     columnTitle->setObjectName("columnTitle");
     columnTitle->setFixedSize(QSize(elementsWidth - mediumIconSize, titleHeight));
-    columnTitle->setText(name);                                // Data
+    columnTitle->setText(name);  // Data
     columnTitle->setCursor(Qt::PointingHandCursor);
 
-    QPushButton *deleteColumn = new QPushButton();
+    QPushButton* deleteColumn = new QPushButton();
     deleteColumn->setObjectName("deleteColumn");
     deleteColumn->setFixedSize(QSize(mediumIconSize, mediumIconSize));
     deleteColumn->setIconSize(QSize(mediumIconSize, mediumIconSize));
@@ -117,9 +93,8 @@ void ColumnWidget::Draw() {
     columnTitleLayout->addWidget(columnTitle);
     columnTitleLayout->addWidget(deleteColumn);
 
-
     // Scroll for cards
-    QScrollArea *scrollAreaCards = new QScrollArea();
+    QScrollArea* scrollAreaCards = new QScrollArea();
     scrollAreaCards->setObjectName("scrollAreaCards");
     scrollAreaCards->setMinimumSize(QSize(elementsWidth, 0));
     scrollAreaCards->setContentsMargins(0, 0, 0, 0);
@@ -127,37 +102,33 @@ void ColumnWidget::Draw() {
     scrollAreaCards->setFrameShape(QFrame::NoFrame);
     scrollAreaCards->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    QWidget *scrollAreaCardsContents = new QWidget(scrollAreaCards);
+    QWidget* scrollAreaCardsContents = new QWidget(scrollAreaCards);
     scrollAreaCardsContents->setObjectName("scrollAreaCardsContents");
     scrollAreaCardsContents->setMinimumSize(QSize(elementsWidth, 0));
     scrollAreaCardsContents->setContentsMargins(0, 0, 0, 0);
 
-
     // Cards in column
-    QVBoxLayout *cardsLayout = new QVBoxLayout(scrollAreaCardsContents);
+    QVBoxLayout* cardsLayout = new QVBoxLayout(scrollAreaCardsContents);
     cardsLayout->setObjectName("cardsLayout");
     cardsLayout->setContentsMargins(0, 0, 0, 0);
     cardsLayout->setSpacing(5);
 
-
     // Add cards //
-            foreach(CardWidget *cardWidget, cardWidgets) {
-            cardWidget->Draw();
+    foreach (CardWidget* cardWidget, cardWidgets) {
+        cardWidget->Draw();
 
-            cardsLayout->addWidget(cardWidget);
-            cardsLayout->setAlignment(cardWidget, Qt::AlignHCenter | Qt::AlignTop);
-        }
+        cardsLayout->addWidget(cardWidget);
+        cardsLayout->setAlignment(cardWidget, Qt::AlignHCenter | Qt::AlignTop);
+    }
 
     scrollAreaCards->setWidget(scrollAreaCardsContents);
     scrollAreaCards->setFixedSize(scrollAreaCards->sizeHint());
 
-
     // Add card
-    QPushButton *addCardButton = new QPushButton(QObject::tr("Добавить карточку"));
+    QPushButton* addCardButton = new QPushButton(QObject::tr("Добавить карточку"));
     addCardButton->setObjectName("addCardButton");
     addCardButton->setFixedSize(QSize(elementsWidth, itemHeight));
     addCardButton->setIcon(QIcon("Gui/resources/icons/plus_black.png"));
-
 
     // Add content to layout //
     columnLayout->setAlignment(Qt::AlignTop);
@@ -165,26 +136,18 @@ void ColumnWidget::Draw() {
     columnLayout->addWidget(scrollAreaCards);
     columnLayout->addWidget(addCardButton);
 
-
     setFixedSize(Width, columnLayout->sizeHint().height());
 
     // Styles
     setStyles();
-
 }
 
-
-void ColumnWidget::mouseReleaseEvent(QMouseEvent *event) {
+void ColumnWidget::mouseReleaseEvent(QMouseEvent* event) {
     qInfo() << "Clicked on column with ID" << getID();
 }
 
-
 void ColumnWidget::setStyles() {
-    setStyleSheet
-            (
-                    QString::fromUtf8
-                            (
-                                    "#scrollAreaCards {\n"
+    setStyleSheet(QString::fromUtf8("#scrollAreaCards {\n"
                                     "   background: transparent;\n"
                                     "}\n"
                                     "\n"
@@ -233,7 +196,5 @@ void ColumnWidget::setStyles() {
                                     "   border-radius: 5px;\n"
                                     "}\n"
                                     "\n"
-                                    ""
-                            )
-            );
+                                    ""));
 }

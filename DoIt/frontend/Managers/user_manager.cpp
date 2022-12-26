@@ -1,8 +1,10 @@
 #include "user_manager.h"
 
-size_t UserManager::userId() const { return _userId; }
+size_t UserManager::userId() const {
+    return _userId;
+}
 
-void UserManager::authUser(const User &user) {
+void UserManager::authUser(const User& user) {
     json data;
     data["cmd"] = "login";
     data["data"] = user.toJson();
@@ -18,7 +20,7 @@ void UserManager::authUser(const User &user) {
     _userId = resp["result"][0]["id"];
 }
 
-void UserManager::regUser(const User &user) {
+void UserManager::regUser(const User& user) {
     json data = user.toJson();
     data["cmd"] = "register";
     std::string request = data.dump();

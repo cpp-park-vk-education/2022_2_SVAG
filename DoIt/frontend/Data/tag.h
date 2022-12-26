@@ -3,9 +3,8 @@
 #include "object.h"
 
 struct QTag : public Object {
-    QTag(const std::string &n, const std::string &c, size_t ci) : name(n), color(c), cardId(ci) {
+    QTag(const std::string& n, const std::string& c, size_t ci): name(n), color(c), cardId(ci) {
     }
-
 
     json toJson() const override {
         json result;
@@ -16,12 +15,14 @@ struct QTag : public Object {
         return result;
     }
 
-    void fromJson(json) override {
-
+    void fromJson(json jsTag) override {
+        id = jsTag["id"];
+        name = jsTag["name"];
+        color = jsTag["color"];
+        cardId = jsTag["card_id"];
     }
 
     std::string name;
     std::string color;
-
     size_t cardId;
 };

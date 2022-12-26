@@ -1,6 +1,6 @@
 #include "gui_manager.h"
 
-GuiManager::GuiManager(QObject *parent) : QObject(parent) {
+GuiManager::GuiManager(QObject* parent): QObject(parent) {
     _authWindow.show();
 
     // connections
@@ -12,10 +12,10 @@ GuiManager::GuiManager(QObject *parent) : QObject(parent) {
 
     // from auth window
     connect(&_authWindow, &AuthWindow::authSignal, this, &GuiManager::authSignal);
+    connect(&_authWindow, &AuthWindow::openRegSignal, this, &GuiManager::openRegSlot);
 
     // from reg window
     connect(&_regWindow, &RegWindow::regSignal, this, &GuiManager::regSignal);
-    connect(&_authWindow, &AuthWindow::openRegSignal, this, &GuiManager::openRegSlot);
     connect(&_regWindow, &RegWindow::openAuthSignal, this, &GuiManager::openAuthSlot);
 }
 
@@ -25,9 +25,12 @@ GuiManager::~GuiManager() {
     _regWindow.close();
 }
 
-void GuiManager::showBoards(const std::vector<Board> &boards) {
-    std::cout << "RRR " << boards[0].columns.size() << std::endl;
+void GuiManager::showBoards(const std::vector<Board>& boards) {
     _mainWindow.showBoards(boards);
+}
+
+void GuiManager::showBoard(const Board& board) {
+    _mainWindow.showBoard(board);
 }
 
 void GuiManager::deleteLoad() {
@@ -50,4 +53,14 @@ void GuiManager::openRegSlot() {
 void GuiManager::openAuthSlot() {
     _regWindow.close();
     _authWindow.show();
+}
+
+void GuiManager::openCardSlot(CardWidget* cw) {
+    _regWindow.close();
+    _authWindow.close();
+    _cardWindow = new CardWindow(cw);
+    _cardWindow->show();
+
+    connect(_cardWindow, &CardWindow::delObjectSignal, this, &GuiManager::delObjectSignal);
+    connect(_cardWindow, &CardWindow::updateObjectSignal, this, &GuiManager::updateObjectSignal);
 }

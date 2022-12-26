@@ -1,7 +1,7 @@
 #include "main_manager.h"
 
-MainManager::MainManager(QObject *parent)
-        : QObject(parent), _netManager(), _guiManager(), _userManager(_netManager) {
+MainManager::MainManager(QObject* parent)
+    : QObject(parent), _netManager(), _guiManager(), _userManager(_netManager) {
     // connections
     connect(this, &MainManager::showBoardsSignal, this, &MainManager::showBoardsSlot);
 
@@ -19,7 +19,7 @@ MainManager::MainManager(QObject *parent)
 void MainManager::ping() {
     try {
         _netManager.pingLoop(_userManager.userId());
-    } catch (boost::system::system_error &err) {
+    } catch (boost::system::system_error& err) {
         std::cout << "Failed to ping\n";
         std::cout << "Try to reconnect\n";
         ping();
@@ -28,6 +28,7 @@ void MainManager::ping() {
 
 void MainManager::getAllUserData() {
     _boards.clear();
+
     getUserBoards();
     getColumns();
     getCards();
@@ -51,9 +52,8 @@ void MainManager::getUserBoards() {
     json resp = json::parse(response);
 
     Board board;
-    for (auto jsBoard: resp["result"]) {
+    for (auto &jsBoard : resp["result"]) {
         jsBoard["id"] = jsBoard["board_id"];
-        jsBoard["board_id"] = nullptr;
         board.fromJson(jsBoard);
         _boards.push_back(board);
     }
@@ -63,7 +63,7 @@ void MainManager::getColumns() {
     json data;
     data["cmd"] = "database_get";
     data["content"] = "board_columns";
-    for (auto &board: _boards) {
+    for (auto& board : _boards) {
         data["board_id"] = board.id;
         std::string request = data.dump();
         int err = 0;
@@ -74,7 +74,7 @@ void MainManager::getColumns() {
         _netManager.disconnect();
 
         Column col;
-        for (auto jsCol: resp["result"]) {
+        for (const auto &jsCol : resp["result"]) {
             col.fromJson(jsCol);
             board.columns.push_back(col);
         }
@@ -85,8 +85,8 @@ void MainManager::getCards() {
     json data;
     data["cmd"] = "database_get";
     data["content"] = "board_column";
-    for (auto &board: _boards) {
-        for (auto &column: board.columns) {
+    for (auto& board : _boards) {
+        for (auto& column : board.columns) {
             data["board_id"] = board.id;
             data["column_id"] = column.id;
             std::string request = data.dump();
@@ -98,7 +98,7 @@ void MainManager::getCards() {
             _netManager.disconnect();
 
             Card card;
-            for (auto jsCard: resp["result"][0]["cards"]) {
+            for (const auto &jsCard : resp["result"][0]["cards"]) {
                 card.fromJson(jsCard);
                 column.cards.push_back(card);
             }
@@ -107,7 +107,7 @@ void MainManager::getCards() {
 }
 
 // public slots
-void MainManager::authSlot(const User &user) {
+void MainManager::authSlot(const User& user) {
     _userManager.authUser(user);
 
     // пользователь авторизовался, показываем на ui виджет загрузки данных пользователя
@@ -122,7 +122,7 @@ void MainManager::authSlot(const User &user) {
     //    thr_ping.detach();
 }
 
-void MainManager::regSlot(const User &user) {
+void MainManager::regSlot(const User& user) {
     _userManager.regUser(user);
 
     _guiManager.showLoadAllData();
@@ -141,7 +141,7 @@ void MainManager::showBoardsSlot() {
     _guiManager.showBoards(_boards);
 }
 
-void MainManager::addObjectSlot(Object &obj, ObjType objType) {
+void MainManager::addObjectSlot(Object& obj, ObjType objType) {
     json data;
     data["cmd"] = "database_create";
     data["content"] = _objType2Str(objType);
@@ -156,25 +156,23 @@ void MainManager::addObjectSlot(Object &obj, ObjType objType) {
     json resp = json::parse(response);
     _netManager.disconnect();
 
-    std::cout << "Got JSON: " << resp << std::endl;
-
     obj.id = resp["result"][0]["id"];  // set id for new object
 
     // также производим изменения локально
     if (objType == BOARD) {
-        Board &board = dynamic_cast<Board &>(obj);
+        Board& board = dynamic_cast<Board&>(obj);
         _boards.push_back(board);
     } else if (objType == COLUMN) {
-        Column &col = dynamic_cast<Column &>(obj);
-        for (auto &board: _boards) {
+        Column& col = dynamic_cast<Column&>(obj);
+        for (auto& board : _boards) {
             if (board.id == col.boardId) {
                 board.columns.push_back(col);
             }
         }
     } else if (objType == CARD) {
-        Card &card = dynamic_cast<Card &>(obj);
-        for (auto &board: _boards) {
-            for (auto &column: board.columns) {
+        Card& card = dynamic_cast<Card&>(obj);
+        for (auto& board : _boards) {
+            for (auto& column : board.columns) {
                 if (column.id == card.columnId) {
                     column.cards.push_back(card);
                 }
@@ -185,8 +183,6 @@ void MainManager::addObjectSlot(Object &obj, ObjType objType) {
 }
 
 void MainManager::deleteObjectSlot(size_t id, ObjType objType) {
-    std::cout << "deleteObjectSlot\n";
-    std::cout << "id = " << id << std::endl;
     json data;
     data["cmd"] = "database_delete";
     data["content"] = _objType2Str(objType);
@@ -200,6 +196,7 @@ void MainManager::deleteObjectSlot(size_t id, ObjType objType) {
     json resp = json::parse(response);
     _netManager.disconnect();
 
+    // производим изменения локально
     if (objType == BOARD) {
         for (auto it = _boards.begin(); it != _boards.end(); ++it) {
             if (it->id == id) {
@@ -208,7 +205,7 @@ void MainManager::deleteObjectSlot(size_t id, ObjType objType) {
             }
         }
     } else if (objType == COLUMN) {
-        for (auto &board: _boards) {
+        for (auto& board : _boards) {
             for (auto it = board.columns.begin(); it != board.columns.end(); ++it) {
                 if (it->id == id) {
                     board.columns.erase(it);
@@ -217,8 +214,8 @@ void MainManager::deleteObjectSlot(size_t id, ObjType objType) {
             }
         }
     } else if (objType == CARD) {
-        for (auto &board: _boards) {
-            for (auto &column: board.columns) {
+        for (auto& board : _boards) {
+            for (auto& column : board.columns) {
                 for (auto it = column.cards.begin(); it != column.cards.end(); ++it) {
                     if (it->id == id) {
                         column.cards.erase(it);
@@ -232,12 +229,13 @@ void MainManager::deleteObjectSlot(size_t id, ObjType objType) {
     _guiManager.showBoards(_boards);
 }
 
-void MainManager::updateObjectSlot(Object &obj, ObjType objType) {
+void MainManager::updateObjectSlot(Object& obj, ObjType objType) {
     json data;
     data["cmd"] = "database_change";
     data["content"] = _objType2Str(objType);
     json obj_json = obj.toJson();
     data["data"]["id"] = obj_json["id"];
+    obj_json.erase("id");
     data["data"]["info"] = obj_json;
     std::string request = data.dump();
 
@@ -248,11 +246,12 @@ void MainManager::updateObjectSlot(Object &obj, ObjType objType) {
     json resp = json::parse(response);
     _netManager.disconnect();
 
+    // производим изменения локально
     if (objType == CARD) {
-        Card &card = dynamic_cast<Card &>(obj);
-        for (auto &board: _boards) {
-            for (auto &column: board.columns) {
-                for (auto &c: column.cards) {
+        Card& card = dynamic_cast<Card&>(obj);
+        for (auto& board : _boards) {
+            for (auto& column : board.columns) {
+                for (auto& c : column.cards) {
                     if (card.id == c.id) {
                         c = card;
                         break;
@@ -270,10 +269,10 @@ void MainManager::logoutSlot() {
     std::string request = data.dump();
 
     int err = 0;
-    _netManager.sendMessage(request + '\n', err);
+    _netManager.sendMessage(request + "\n", err);
 }
 
-void MainManager::addUserSlot(User &user, const size_t boardId) {
+void MainManager::addUserSlot(User& user, const size_t boardId) {
     json data = user.toJson();
     data["cmd"] = "add user to board";
     data["board_id"] = boardId;

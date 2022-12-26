@@ -2,50 +2,47 @@
 
 #include "card_widget.h"
 
-
 class ColumnWidget : public QWidget, IText, IDraw {
-public:
+  public:
     ColumnWidget(size_t _ID);
 
     ColumnWidget(size_t _ID, QString _name);
 
-    ColumnWidget(size_t _ID, QString _name, QVector<CardWidget *> _cardWidgets);
+    ColumnWidget(size_t _ID, QString _name, QVector<CardWidget*> _cardWidgets);
 
     ~ColumnWidget() = default;
 
-    virtual void SetText(const QString &_name) override;
+    virtual void SetText(const QString& _name) override;
 
     virtual QString GetText() const override;
 
-    void addCardWidget(CardWidget *_cardWidget);
+    void addCardWidget(CardWidget* _cardWidget);
 
-    void deleteCardWidget(CardWidget *_cardWidget);
+    void deleteCardWidget(CardWidget* _cardWidget);
 
-    void swapCardWidgets(const int &first, const int &second);
+    void swapCardWidgets(const int& first, const int& second);
 
-    QVector<CardWidget *> getCardWidgets();
+    QVector<CardWidget*> getCardWidgets();
 
-    CardWidget *getCardWidget(size_t _ID);
+    CardWidget* getCardWidget(size_t _ID);
 
     size_t getID() const;
 
     size_t cardsCount() const;
 
-
-    friend bool operator==(const ColumnWidget &l, const ColumnWidget &r);
+    friend bool operator==(const ColumnWidget& l, const ColumnWidget& r);
 
     void Draw() override;
 
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
 
-private:
+  private:
     void setStyles();
 
     size_t ID;
 
     QString name;
-    QVector<CardWidget *> cardWidgets;
-
+    QVector<CardWidget*> cardWidgets;
 
     // Size Constants
     const size_t Width = 250;
@@ -58,4 +55,3 @@ private:
 
     const size_t mediumIconSize = 30;
 };
-

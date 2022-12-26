@@ -3,7 +3,7 @@
 #include "column_widget.h"
 
 class BoardWidget : public QWidget, IText, IDraw {
-public:
+  public:
     BoardWidget(size_t _ID);
     BoardWidget(size_t _ID, QString _name);
     BoardWidget(size_t _ID, QString _name, QVector<ColumnWidget*> _columns);
@@ -13,8 +13,8 @@ public:
     virtual void SetText(const QString& _name) override;
     virtual QString GetText() const override;
 
-    void addColumnWidget(ColumnWidget *_column);
-    void deleteColumnWidget(ColumnWidget *_column);
+    void addColumnWidget(ColumnWidget* _column);
+    void deleteColumnWidget(ColumnWidget* _column);
     void swapColumnWidgets(const int& first, const int& second);
 
     QVector<ColumnWidget*> getColumnWidgets();
@@ -31,14 +31,13 @@ public:
 
     void Draw() override;
 
-private:
+  private:
     size_t ID;
     QString name;
     QVector<ColumnWidget*> columnWidgets;
     QVector<UiUser> users;
     QVector<Update> history;
     // image
-
 
     // Size Constants
     const size_t minWidth = 600;
@@ -59,5 +58,4 @@ private:
     const size_t addColumnButtonHeight = 40;
 
     const size_t mediumIconSize = 20;
-
 };

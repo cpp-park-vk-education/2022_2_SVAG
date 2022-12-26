@@ -3,15 +3,14 @@
 #include "main_interfaces.h"
 
 class Menu : public QWidget, IDraw {
-public:
+  public:
     Menu() = default;
     ~Menu() = default;
 
     virtual void Draw() override;
 
-private:
+  private:
     void setStyles();
-
 
     // Size Constants
     const size_t Width = 200;

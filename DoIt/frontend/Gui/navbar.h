@@ -3,13 +3,13 @@
 #include "main_interfaces.h"
 
 class Navbar : public QWidget, IDraw {
-public:
+  public:
     Navbar() = default;
     ~Navbar() = default;
 
     virtual void Draw() override;
 
-private:
+  private:
     void setStyles();
 
     // Size Constants

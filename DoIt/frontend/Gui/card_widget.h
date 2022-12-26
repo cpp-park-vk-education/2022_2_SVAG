@@ -1,19 +1,20 @@
 #pragma once
 
+#include <QDateTimeEdit>
 #include <QDialog>
 #include <QObject>
-#include <QDateTimeEdit>
 
-#include "main_interfaces.h"
 #include "comment.h"
+#include "main_interfaces.h"
 #include "update.h"
+
+#include <iostream>
 
 #include "card.h"
 
-
 class CardWidget : public QTextEdit, IDraw, IText {
-Q_OBJECT
-public:
+    Q_OBJECT
+  public:
     CardWidget(size_t _ID, size_t _columnID);
 
     CardWidget(size_t _ID, size_t _columnID, QString _title);
@@ -29,11 +30,11 @@ public:
 
     ~CardWidget() = default;
 
-    virtual void SetText(const QString &_title) override;
+    virtual void SetText(const QString& _title) override;
 
     virtual QString GetText() const override;
 
-    void setCaption(const QString &_caption);
+    void setCaption(const QString& _caption);
 
     QString getCaption() const;
 
@@ -47,7 +48,7 @@ public:
 
     QVector<Update> getHistory() const;
 
-    void setDeadline(const QString &_deadline);
+    void setDeadline(const QString& _deadline);
 
     QString getDeadline() const;
 
@@ -57,7 +58,7 @@ public:
 
     QVector<Comment> getComments() const;
 
-    void setID(const int &_ID);
+    void setID(const int& _ID);
 
     int getID() const;
 
@@ -65,18 +66,17 @@ public:
         return columnID;
     }
 
-
-    friend bool operator==(const CardWidget &l, const CardWidget &r);
+    friend bool operator==(const CardWidget& l, const CardWidget& r);
 
     void Draw() override;
 
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
 
-signals:
+  signals:
 
     void sSignal();
 
-private:
+  private:
     void setStyles();
 
     size_t ID;
@@ -88,24 +88,23 @@ private:
     QString deadline;
     QVector<Comment> comments;
 
-
     // Size Constants
     const size_t Width = 230;  // Equal to column width
     const size_t Height = 60;
 };
 
-
 class CardWindow : public QDialog {
-Q_OBJECT
+    Q_OBJECT
 
-public:
-    CardWindow(CardWidget *_card, QWidget *parent = nullptr);
+  public:
+    CardWindow(CardWidget* _card, QWidget* parent = nullptr);
 
-    CardWindow(QWidget *parent = nullptr) {}
+    CardWindow(QWidget* parent = nullptr) {
+    }
 
     ~CardWindow();
 
-public slots:
+  public slots:
 
     void deleteCardSlot() {
         delObjectSignal(card->getID(), CARD);
@@ -113,24 +112,25 @@ public slots:
         close();
     }
 
-    void closeEvent(QCloseEvent *) override {
+    void closeEvent(QCloseEvent*) override {
+        std::cout << "closeEvent\n";
         if (flag) {
             Card c;
             c.id = card->getID();
-            c.name = findChild<QLineEdit *>("cardNameEdit")->text().toStdString();
+            c.name = findChild<QLineEdit*>("cardNameEdit")->text().toStdString();
             c.caption = "";
             c.columnId = card->getColID();
             updateObjectSignal(c, CARD);
         }
     }
 
-signals:
+  signals:
 
     void delObjectSignal(size_t, ObjType);
 
-    void updateObjectSignal(Object &obj, ObjType);
+    void updateObjectSignal(Object& obj, ObjType);
 
-private:
-    CardWidget *card;
+  private:
+    CardWidget* card;
     bool flag = true;
 };

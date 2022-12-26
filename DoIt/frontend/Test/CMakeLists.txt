@@ -22,6 +22,8 @@ endif ()
 
 find_package(GTest REQUIRED)
 find_package(Boost COMPONENTS system thread REQUIRED)
+find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 add_executable(${PROJECT_NAME}
         test_net_manager.cpp
@@ -36,6 +38,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_link_libraries(${PROJECT_NAME}
         GTest::gtest_main
         ${Boost_LIBRARIES}
+        Qt${QT_VERSION_MAJOR}::Widgets
         )
 
 gtest_discover_tests(${PROJECT_NAME})

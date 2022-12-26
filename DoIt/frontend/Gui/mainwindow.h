@@ -12,30 +12,30 @@
 #include <QMessageBox>
 
 class MainWindow : public QMainWindow, IDraw {
-Q_OBJECT
+    Q_OBJECT
 
-public:
-    MainWindow(QWidget *parent = nullptr);
+  public:
+    MainWindow(QWidget* parent = nullptr);
 
     ~MainWindow();
 
     void Draw() override;
 
-    void showBoard(const Board &board) {
+    void showBoard(const Board& board) {
     }
 
-    void showBoards(const std::vector<Board> &boards) {
-                foreach (BoardWidget *bw, boardManager.getBoardWidgets()) {
-                delete bw;
-            }
+    void showBoards(const std::vector<Board>& boards) {
+        foreach (BoardWidget* bw, boardManager.getBoardWidgets()) {
+            delete bw;
+        }
         boardManager.clear();
 
-        for (auto &board: boards) {
-            BoardWidget *boardW = new BoardWidget(board.id, QString(board.name.data()));
-            for (auto &column: board.columns) {
-                ColumnWidget *columnW = new ColumnWidget(column.id, QString(column.name.data()));
-                for (auto &card: column.cards) {
-                    CardWidget *cardW = new CardWidget(card.id, column.id, QString(card.name.data()),
+        for (auto& board : boards) {
+            BoardWidget* boardW = new BoardWidget(board.id, QString(board.name.data()));
+            for (auto& column : board.columns) {
+                ColumnWidget* columnW = new ColumnWidget(column.id, QString(column.name.data()));
+                for (auto& card : column.cards) {
+                    CardWidget* cardW = new CardWidget(card.id, column.id, QString(card.name.data()),
                                                        QString(card.caption.data()));
                     columnW->addCardWidget(cardW);
                 }
@@ -44,9 +44,9 @@ public:
             boardManager.addBoardWidget(boardW);
         }
 
-        QHBoxLayout *mainLayout = findChild<QHBoxLayout *>("mainLayout");
+        QHBoxLayout* mainLayout = findChild<QHBoxLayout*>("mainLayout");
 
-        QVector<BoardWidget *> boardWidgets = boardManager.getBoardWidgets();
+        QVector<BoardWidget*> boardWidgets = boardManager.getBoardWidgets();
         for (int i = 0; i < boardWidgets.size(); ++i) {
             boardWidgets[i]->Draw();
             if (i == curBoardIndex) {
@@ -57,70 +57,49 @@ public:
             boardWidgets[i]->hide();
             mainLayout->addWidget(boardWidgets[i], Qt::AlignLeft);
         }
+        BoardWidget* boardW = boardManager.getBoardWidgets()[curBoardIndex];
 
-        BoardWidget *boardW = boardManager.getBoardWidgets()[curBoardIndex];
         // connections
-        QVector<QPushButton *> addCardLabels =
-                boardW->findChildren<QPushButton *>("addCardButton");
+        QVector<QPushButton*> addCardLabels = boardW->findChildren<QPushButton*>("addCardButton");
 
-        for (auto columnW: boardW->getColumnWidgets()) {
-            for (auto cardW: columnW->getCardWidgets()) {
-                connect(cardW, &CardWidget::sSignal,
-                        [cardW, this] { onCardClicked(cardW); });
-                connect(cardW, &CardWidget::sSignal,
-                        [cardW, this] { onCardClicked(cardW); });
+        for (auto columnW : boardW->getColumnWidgets()) {
+            for (auto cardW : columnW->getCardWidgets()) {
+                connect(cardW, &CardWidget::sSignal, [cardW, this] { onCardClicked(cardW); });
             }
         }
 
         auto it = addCardLabels.begin();
-        for (auto columnW: boardW->getColumnWidgets()) {
-            connect(*it, &QPushButton::clicked,
-                    [columnW, this] { onAddCardClicked(columnW->getID()); });
+        for (auto columnW : boardW->getColumnWidgets()) {
+            connect(*it, &QPushButton::clicked, [columnW, this] { onAddCardClicked(columnW->getID()); });
             ++it;
         }
 
-        QVector<QPushButton *> deleteColumnBtns =
-                boardW->findChildren<QPushButton *>("deleteColumn");
+        QVector<QPushButton*> deleteColumnBtns = boardW->findChildren<QPushButton*>("deleteColumn");
         auto itDelCol = deleteColumnBtns.begin();
-        for (auto columnW: boardW->getColumnWidgets()) {
+        for (auto columnW : boardW->getColumnWidgets()) {
             connect(*itDelCol, &QPushButton::clicked,
                     [columnW, this] { onDelColumnClicked(columnW->getID()); });
             ++itDelCol;
         }
 
-        QPushButton *addColLabel = boardW->findChild<QPushButton *>("addColumnButton");
-        connect(addColLabel, &QPushButton::clicked,
-                [boardW, this] { onAddColumnClicked(boardW->getID()); });
+        QPushButton* addColLabel = boardW->findChild<QPushButton*>("addColumnButton");
+        connect(addColLabel, &QPushButton::clicked, [boardW, this] { onAddColumnClicked(boardW->getID()); });
 
         // For Navbar //
-        QComboBox *chooseBoard = findChild<QComboBox *>("chooseBoard");
+        QComboBox* chooseBoard = findChild<QComboBox*>("chooseBoard");
         chooseBoard->clear();
-        for (auto bW: boardManager.getBoardWidgets()) {
-            chooseBoard->addItem(QIcon("Gui/resources/background/default_board.jpg"),
-                                 bW->GetText());
+        for (auto bW : boardManager.getBoardWidgets()) {
+            chooseBoard->addItem(QIcon("Gui/resources/background/default_board.jpg"), bW->GetText());
         }
         chooseBoard->setIconSize(QSize(40, 40));
         chooseBoard->setCurrentIndex(curBoardIndex);
 
-        connect(chooseBoard, &QComboBox::activated, this,
-                &MainWindow::onBoardChanged);
-
-        // column edit connect
-        QVector<QLineEdit *> colTitles = boardW->findChildren<QLineEdit *>("columnTitle");
-        auto itCol = colTitles.begin();
-        QVector<ColumnWidget *> columnsW = boardW->getColumnWidgets();
-        for (int i = 0; i < columnsW.size() - 1; ++i) {
-            ColumnWidget *c = columnsW[i];
-            connect(*itCol, &QLineEdit::textChanged,
-                    [c, itCol, this] { renameColumnSlot(c->getID(), (*itCol)->text()); });
-            ++itCol;
-        }
-
+        connect(chooseBoard, &QComboBox::activated, this, &MainWindow::onBoardChanged);
         resize();
     }
 
     void showLoadAllData() {
-        QHBoxLayout *mainLayout = findChild<QHBoxLayout *>("mainLayout");
+        QHBoxLayout* mainLayout = findChild<QHBoxLayout*>("mainLayout");
 
         mainLayout->addWidget(curWidget);
     }
@@ -131,7 +110,7 @@ public:
 
     void resize();
 
-public slots:
+  public slots:
 
     void onAddBoardClicked() {
         QString name = QInputDialog::getText(this, "Добавление доски", "Название");
@@ -148,17 +127,14 @@ public slots:
         reply = QMessageBox::question(this, "Подтверждение удаления доски", "Удалить текущую доску?",
                                       QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) {
-            BoardWidget *boardW = boardManager.getBoardWidgets()[curBoardIndex];
+            BoardWidget* boardW = boardManager.getBoardWidgets()[curBoardIndex];
             curBoardIndex = 0;
             delObjectSignal(boardW->getID(), BOARD);
-        } else {
-            // nothing to do
         }
     }
 
     void onAddCardClicked(int col_id) {
-        QString name =
-                QInputDialog::getText(this, "Добавление карточки", "Название");
+        QString name = QInputDialog::getText(this, "Добавление карточки", "Название");
 
         Card card;
 
@@ -169,8 +145,7 @@ public slots:
     }
 
     void onAddColumnClicked(int board_id) {
-        QString name =
-                QInputDialog::getText(this, "Добавление колонки", "Название");
+        QString name = QInputDialog::getText(this, "Добавление колонки", "Название");
 
         Column col;
 
@@ -186,17 +161,15 @@ public slots:
                                       QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) {
             delObjectSignal(col_id, COLUMN);
-        } else {
-            // nothing to do
         }
     }
 
-    void onCardClicked(CardWidget *cw) {
+    void onCardClicked(CardWidget* cw) {
         emit onCardClickedSignal(cw);
     }
 
     void onBoardChanged(int index) {
-        QHBoxLayout *mainLayout = findChild<QHBoxLayout *>("mainLayout");
+        QHBoxLayout* mainLayout = findChild<QHBoxLayout*>("mainLayout");
 
         mainLayout->insertWidget(1, boardManager.getBoardWidgets()[curBoardIndex], Qt::AlignLeft);
 
@@ -205,60 +178,56 @@ public slots:
         curBoardIndex = index;
 
         resize();
-        BoardWidget *curBoard = boardManager.getBoardWidgets()[curBoardIndex];
-        QVector<QPushButton *> addCardLabels =
-                curBoard->findChildren<QPushButton *>("addCardButton");
+        BoardWidget* curBoard = boardManager.getBoardWidgets()[curBoardIndex];
+        QVector<QPushButton*> addCardLabels = curBoard->findChildren<QPushButton*>("addCardButton");
 
-        for (auto columnW: curBoard->getColumnWidgets()) {
-            for (auto cardW: columnW->getCardWidgets()) {
-                connect(cardW, &CardWidget::sSignal,
-                        [cardW, this] { onCardClicked(cardW); });
+        for (auto columnW : curBoard->getColumnWidgets()) {
+            for (auto cardW : columnW->getCardWidgets()) {
+                connect(cardW, &CardWidget::sSignal, [cardW, this] { onCardClicked(cardW); });
             }
         }
 
         // connections
         auto it = addCardLabels.begin();
-        for (auto columnW: curBoard->getColumnWidgets()) {
-            connect(*it, &QPushButton::clicked,
-                    [columnW, this] { onAddCardClicked(columnW->getID()); });
+        for (auto columnW : curBoard->getColumnWidgets()) {
+            connect(*it, &QPushButton::clicked, [columnW, this] { onAddCardClicked(columnW->getID()); });
             ++it;
         }
 
-        QPushButton *addColLabel = curBoard->findChild<QPushButton *>("addColumnButton");
+        QPushButton* addColLabel = curBoard->findChild<QPushButton*>("addColumnButton");
         connect(addColLabel, &QPushButton::clicked,
                 [curBoard, this] { onAddColumnClicked(curBoard->getID()); });
+
+        QVector<QPushButton*> deleteColumnBtns = curBoard->findChildren<QPushButton*>("deleteColumn");
+        auto itDelCol = deleteColumnBtns.begin();
+        for (auto columnW : curBoard->getColumnWidgets()) {
+            connect(*itDelCol, &QPushButton::clicked,
+                    [columnW, this] { onDelColumnClicked(columnW->getID()); });
+            ++itDelCol;
+        }
     }
 
-    void renameColumnSlot(size_t id, const QString &s) {
-        std::cout << "renameColumnSlot\n";
-        Column col;
-        col.id = id;
-        col.name = s.toStdString();
+  signals:
 
-        updateObjectSignal(col, COLUMN);
-    }
-
-signals:
-
-    void addObjectSignal(Object &, ObjType);
+    void addObjectSignal(Object&, ObjType);
 
     void delObjectSignal(size_t, ObjType);
 
-    void updateObjectSignal(Object &, ObjType);
+    void updateObjectSignal(Object&, ObjType);
 
-    void onCardClickedSignal(CardWidget *cw);
+    void onCardClickedSignal(CardWidget* cw);
 
     void showBoardSignal(int idx);
 
-private:
-    Navbar *navbar;
-    Menu *menu;
+  private:
+    Navbar* navbar;
+    Menu* menu;
     BoardWidgetManager boardManager;
 
     int curBoardIndex = 0;
-    QWidget *curWidget = new QLabel("Load Boards.....");
+    QWidget* curWidget = new QLabel("Load Boards.....");
 
-    void resizeEvent(QResizeEvent *event) override;
+    void resizeEvent(QResizeEvent* event) override;
 
     void setStyles();
 };

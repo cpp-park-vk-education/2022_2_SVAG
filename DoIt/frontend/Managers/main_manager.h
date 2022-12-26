@@ -15,9 +15,9 @@
 using json = nlohmann::json;
 
 class MainManager : public QObject {
-Q_OBJECT
-public:
-    explicit MainManager(QObject *parent = nullptr);
+    Q_OBJECT
+  public:
+    explicit MainManager(QObject* parent = nullptr);
 
     ~MainManager() override = default;
 
@@ -31,39 +31,39 @@ public:
 
     void getCards();
 
-public slots:
+  public slots:
 
-    void authSlot(const User &user);
+    void authSlot(const User& user);
 
-    void regSlot(const User &user);
+    void regSlot(const User& user);
 
     void updateDataSlot();
 
     void showBoardsSlot();
 
-    void addObjectSlot(Object &obj, ObjType objType);
+    void addObjectSlot(Object& obj, ObjType objType);
 
     void deleteObjectSlot(size_t id, ObjType objType);
 
-    void updateObjectSlot(Object &obj, ObjType objType);
+    void updateObjectSlot(Object& obj, ObjType objType);
 
     void logoutSlot();
 
-    void addUserSlot(User &user, const size_t boardId);
+    void addUserSlot(User& user, const size_t boardId);
 
-signals:
+  signals:
 
     void showBoardsSignal();
 
-    void showBoardSignal(Board &board);
+    void showBoardSignal(Board& board);
 
-    void sendBoardsSignal(std::vector<Board> &boards);
+    void sendBoardsSignal(std::vector<Board>& boards);
 
-    void sendColumnsSignal(std::vector<Column> &columns);
+    void sendColumnsSignal(std::vector<Column>& columns);
 
-    void sendCardsSignal(std::vector<Card> &cards);
+    void sendCardsSignal(std::vector<Card>& cards);
 
-private:
+  private:
     static std::string _objType2Str(ObjType objType) {
         switch (objType) {
             case BOARD:
@@ -82,12 +82,11 @@ private:
         return "";
     }
 
-private:
+  private:
     NetManager _netManager;
     GuiManager _guiManager;
     UserManager _userManager;
 
     std::vector<Board> _boards;
     Board _board;
-    size_t curBoardIdx = 0;
 };

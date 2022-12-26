@@ -2,22 +2,17 @@
 
 std::string DatabaseInteraction::on_login(json msg_json)
 {
-    std::cout << "on_login()\n";
-    std::cout << "Got json: " << msg_json << std::endl;
-    std::cout << "Got json data: " << msg_json["data"] << std::endl;
     json result = clUser.checkUserValidation(msg_json["data"]);
     return convert(result);
 }
 
 json DatabaseInteraction::getUsers() {
     json resp = clUser.getUsers();
-    // std::cout << "Users" << resp << std::endl;
     return resp["result"];
 }
 
 json DatabaseInteraction::analyze_msg(json msg_json)
     {
-        std::cout << "Got json:" << msg_json << std::endl;
         if (msg_json["cmd"] == "database_get") return on_get_content(msg_json);
         else if (msg_json["cmd"] == "database_create") return on_create_content(msg_json);
         else if (msg_json["cmd"] == "database_change") return on_change_content(msg_json);
@@ -73,7 +68,6 @@ json DatabaseInteraction::on_get_content(json msg_json)
 
 json DatabaseInteraction::on_create_content(json msg_json)
 {
-    std::cout << "on_create_content\n";
     json data = msg_json["data"];
     json result;
     if (msg_json["content"] == "board")
@@ -88,7 +82,6 @@ json DatabaseInteraction::on_create_content(json msg_json)
     {
         result = cl.addColumn(data);
         result["users_changed"] = cl.getBoardUsers(data["board_id"])["result"];
-        std::cout << "RESULT: "<<result["users_changed"] << std::endl;
     }
     else if (msg_json["content"] == "card")
     {
@@ -123,9 +116,7 @@ json DatabaseInteraction::on_change_content(json msg_json)
     }
     else if (msg_json["content"] == "card")
     {
-        std::cout << "Update card\n";
         result = clCard.updateCard(data);
-        std::cout << "res =  " << result << std::endl;
     }
     return result;
 }
@@ -140,6 +131,10 @@ json DatabaseInteraction::on_delete_content(json msg_json)
     else if (msg_json["content"] == "user")
     {
         result = clUser.removeUser(msg_json["id"]);
+    }
+    else if (msg_json["content"] == "column")
+    {
+        result = cl.removeColumn(msg_json["id"]);
     }
     else if (msg_json["content"] == "card")
     {

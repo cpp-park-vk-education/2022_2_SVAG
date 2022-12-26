@@ -3,10 +3,9 @@
 #include "check_list_item.h"
 #include "object.h"
 
-struct QCheckList : public Object {
-    QCheckList(const std::string &t, size_t ci) : title(t), cardId(ci) {
+struct CheckList : public Object {
+    CheckList(const std::string& t, size_t ci): title(t), cardId(ci) {
     }
-
 
     json toJson() const override {
         json result;
@@ -16,13 +15,13 @@ struct QCheckList : public Object {
         return result;
     }
 
-    void fromJson(json) override {
-
+    void fromJson(json jsCheckList) override {
+        id = jsCheckList["id"];
+        title = jsCheckList["name"];
+        cardId = jsCheckList["card_id"];
     }
 
     std::string title;
-
     std::vector<QCheckListItem> items;
-
     size_t cardId;
 };

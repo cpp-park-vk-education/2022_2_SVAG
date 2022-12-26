@@ -17,33 +17,33 @@
 #include <qt5/QtWidgets/QMessageBox>
 
 class RegWindow : public QDialog {
-  Q_OBJECT
+    Q_OBJECT
 
-public slots:
-  void regClickedSlot() {
-    QLineEdit *usernameEdit = findChild<QLineEdit *>("userNameEdit");
-    QLineEdit *emailEdit = findChild<QLineEdit *>("emaildEdit");
-    QLineEdit *passwordEdit = findChild<QLineEdit *>("passwordEdit");
-    QLineEdit *passwordRepEdit = findChild<QLineEdit *>("repeatPasswordEdit");
+  public slots:
+    void regClickedSlot() {
+        QLineEdit* usernameEdit = findChild<QLineEdit*>("userNameEdit");
+        QLineEdit* emailEdit = findChild<QLineEdit*>("emaildEdit");
+        QLineEdit* passwordEdit = findChild<QLineEdit*>("passwordEdit");
+        QLineEdit* passwordRepEdit = findChild<QLineEdit*>("repeatPasswordEdit");
 
-    if (passwordEdit->text() != passwordRepEdit->text()) {
-      std::cout << "Incorrect Passwords";
-      return;
+        if (passwordEdit->text() != passwordRepEdit->text()) {
+            std::cout << "Incorrect Passwords";
+            return;
+        }
+
+        User user;
+        user.username = usernameEdit->text().toStdString();
+        user.email = emailEdit->text().toStdString();
+        user.password = passwordEdit->text().toStdString();
+
+        emit regSignal(user);
     }
 
-    User user;
-    user.username = usernameEdit->text().toStdString();
-    user.email = emailEdit->text().toStdString();
-    user.password = passwordEdit->text().toStdString();
+  signals:
+    void regSignal(const User& user);
+    void openAuthSignal();
 
-    emit regSignal(user);
-  }
-
-signals:
-  void regSignal(const User &user);
-  void openAuthSignal();
-
-public:
-  explicit RegWindow(QWidget *parent = nullptr);
-  ~RegWindow();
+  public:
+    explicit RegWindow(QWidget* parent = nullptr);
+    ~RegWindow();
 };

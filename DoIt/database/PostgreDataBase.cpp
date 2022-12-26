@@ -201,7 +201,9 @@ json PostgreDataBase::update(json request) {
     for (json::const_iterator it = request["SET"].begin(); it != request["SET"].end(); ++it) {
         query += it.key() + "=";
 
-        if (it->is_string()) {
+        if (it->is_null()) {
+            query += "NULL";
+        } else if (it->is_string()) {
             query += "\'" + it->get<std::string>() + "\'";
         } else {
             query += std::to_string(it->get<int>());

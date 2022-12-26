@@ -39,9 +39,34 @@ json BoardDataBase::removeBoard(const size_t id) const {
     return response;
 }
 
+json BoardDataBase::removeColumn(const size_t id) const {
+    if (!checkColumnExists(id)) {
+        return {{STATUS_FIELD, ERROR_STATUS}, {"msg", "Column doesn't exist"}};
+    }
+
+    json request = {{"FROM", columnsTableName}, {"WHERE", {"id=" + std::to_string(id)}}};
+    json response = client->remove(request);
+    return response;
+}
+
 bool BoardDataBase::checkBoardExists(const size_t id) const {
     json request = {{"SELECT", {"id"}},
                     {"FROM", {boardTableName}},
+                    {"JOIN ON", {}},
+                    {"WHERE", {"id=" + std::to_string(id)}}};
+    json response = client->select(request);
+
+    if (response[STATUS_FIELD] == SUCCESS_STATUS) {
+        return !response["result"].size() == 0;
+    }
+
+    return false;
+}
+
+
+bool BoardDataBase::checkColumnExists(const size_t id) const {
+    json request = {{"SELECT", {"id"}},
+                    {"FROM", {columnsTableName}},
                     {"JOIN ON", {}},
                     {"WHERE", {"id=" + std::to_string(id)}}};
     json response = client->select(request);

@@ -7,11 +7,12 @@
 #include "object.h"
 
 struct User : public Object {
-  User(const std::string &un="", const std::string &p = "")
-            : username(un), password(p) {}
+    User(const std::string& un = "", const std::string& p = ""): username(un), password(p) {
+    }
 
-  User(const std::string &un, const std::string &p, const std::string &e, const std::string &ap)
-            : username(un), password(p), email(e), avatarPath(ap) {}
+    User(const std::string& un, const std::string& p, const std::string& e, const std::string& ap)
+        : username(un), password(p), email(e), avatar(ap) {
+    }
 
     json toJson() const override {
         json result;
@@ -19,16 +20,20 @@ struct User : public Object {
         result["username"] = username;
         result["password"] = password;
         result["email"] = email;
-        result["avatar"] = avatarPath;
+        result["avatar"] = avatar;
         return result;
     }
 
-    void fromJson(json) override {
-
+    void fromJson(json jsUser) override {
+        id = jsUser["id"];
+        username = jsUser["username"];
+        password = jsUser["password"];
+        email = jsUser["email"];
+        avatar = jsUser["avatar"];
     }
 
     std::string username;
     std::string password;
     std::string email;
-    std::string avatarPath;
+    std::string avatar;
 };

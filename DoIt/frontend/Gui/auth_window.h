@@ -1,34 +1,29 @@
 #pragma once
 
+#include <iostream>
+
 #include <QDialog>
-
-#include <QWidget>
-
 #include <QHBoxLayout>
-#include <QVBoxLayout>
-
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QVBoxLayout>
+#include <QValidator>
+#include <QWidget>
 
 #include "user.h"
-#include <QValidator>
-#include <iostream>
 
 class AuthWindow : public QDialog {
-Q_OBJECT
+    Q_OBJECT
 
-public slots:
+  public slots:
 
     void authClickedSlot() {
-        QLineEdit *username = findChild<QLineEdit *>("userNameEdit");
-        QLineEdit *password = findChild<QLineEdit *>("passwordEdit");
+        QLineEdit* username = findChild<QLineEdit*>("userNameEdit");
+        QLineEdit* password = findChild<QLineEdit*>("passwordEdit");
         User user;
-//        user.username = username->text().toStdString();
-//        user.password = password->text().toStdString();
-
-        user.username = "valera";
-        user.password = "12345678";
+        user.username = username->text().toStdString();
+        user.password = password->text().toStdString();
 
         emit authSignal(user);
     }
@@ -36,14 +31,14 @@ public slots:
     void openRegSlot() {
     }
 
-signals:
+  signals:
 
-    void authSignal(const User &user);
+    void authSignal(const User& user);
 
     void openRegSignal();
 
-public:
-    explicit AuthWindow(QWidget *parent = nullptr);
+  public:
+    explicit AuthWindow(QWidget* parent = nullptr);
 
     ~AuthWindow();
 };

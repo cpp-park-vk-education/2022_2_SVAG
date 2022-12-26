@@ -4,7 +4,8 @@
 #include "object.h"
 
 struct Column : public Object {
-    Column(std::string n = "", size_t di = 0) : name(n), boardId(di) {}
+    Column(std::string n = "", size_t di = 0): name(n), boardId(di) {
+    }
 
     json toJson() const override {
         json result;
@@ -21,8 +22,6 @@ struct Column : public Object {
     }
 
     std::string name;
-
     std::vector<Card> cards;
-
     size_t boardId;
 };

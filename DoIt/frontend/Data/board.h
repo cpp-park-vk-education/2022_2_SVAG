@@ -3,18 +3,18 @@
 #include <QString>
 
 #include <cstddef>
-#include <utility>
 #include <iostream>
+#include <utility>
 
 #include "column.h"
 #include "object.h"
 
 struct Board : public Object {
-    Board(const std::string &n = "", const std::string &desc = "", const std::string &bg = "") : name(n),
-                                                                                                  caption(desc),
-                                                                                                  background(bg) {}
+    Board(const std::string& n = "", const std::string& desc = "", const std::string& bg = "")
+        : name(n), caption(desc), background(bg) {
+    }
 
-    json toJson()const override {
+    json toJson() const override {
         json result;
         result["id"] = id;
         result["name"] = name;

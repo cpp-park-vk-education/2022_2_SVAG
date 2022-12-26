@@ -1,41 +1,35 @@
 #pragma once
 
-#include <QWidget>
-
-#include <QTime>
-
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-
-#include <QLabel>
-#include <QTextEdit>
-#include <QLineEdit>
-#include <QPushButton>
 #include <QComboBox>
 #include <QDateTimeEdit>
-
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QTextEdit>
+#include <QTime>
+#include <QVBoxLayout>
+#include <QWidget>
 
 class IDraw {
-public:
+  public:
     virtual ~IDraw() = default;
 
     virtual void Draw() = 0;
 };
 
-
 class IText {
-public:
+  public:
     virtual ~IText() = default;
 
     virtual void SetText(const QString& _text) = 0;
     virtual QString GetText() const = 0;
 };
 
-
 class IDate {
-public:
+  public:
     virtual ~IDate() = default;
 
     virtual void SetDate(QDateTime _date) = 0;
