@@ -16,15 +16,19 @@
 #include <iostream>
 
 class AuthWindow : public QDialog {
-    Q_OBJECT
+Q_OBJECT
 
-  public slots:
+public slots:
+
     void authClickedSlot() {
-        QLineEdit* username = findChild<QLineEdit*>("userNameEdit");
-        QLineEdit* password = findChild<QLineEdit*>("passwordEdit");
+        QLineEdit *username = findChild<QLineEdit *>("userNameEdit");
+        QLineEdit *password = findChild<QLineEdit *>("passwordEdit");
         User user;
-        user.username = username->text().toStdString();
-        user.password = password->text().toStdString();
+//        user.username = username->text().toStdString();
+//        user.password = password->text().toStdString();
+
+        user.username = "valera";
+        user.password = "12345678";
 
         emit authSignal(user);
     }
@@ -32,11 +36,14 @@ class AuthWindow : public QDialog {
     void openRegSlot() {
     }
 
-  signals:
-    void authSignal(const User& user);
+signals:
+
+    void authSignal(const User &user);
+
     void openRegSignal();
 
-  public:
-    explicit AuthWindow(QWidget* parent = nullptr);
+public:
+    explicit AuthWindow(QWidget *parent = nullptr);
+
     ~AuthWindow();
 };

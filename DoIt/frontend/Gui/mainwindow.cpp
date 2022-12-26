@@ -20,7 +20,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     userSettings->setCurrentIndex(-1);  // Не забыть сбрасывать при изменении
 
     QPushButton *createBoard = findChild<QPushButton *>("createBoard");
+    QPushButton *deleteBoard = findChild<QPushButton *>("deleteBoard");
     connect(createBoard, &QPushButton::clicked, this, &MainWindow::onAddBoardClicked);
+    connect(deleteBoard, &QPushButton::clicked, this, &MainWindow::onDelBoardClicked);
 }
 
 MainWindow::~MainWindow() {

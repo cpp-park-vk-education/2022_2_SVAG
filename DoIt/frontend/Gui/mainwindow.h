@@ -9,6 +9,7 @@
 
 #include <QInputDialog>
 #include <QMainWindow>
+#include <QMessageBox>
 
 class MainWindow : public QMainWindow, IDraw {
 Q_OBJECT
@@ -66,6 +67,8 @@ public:
             for (auto cardW: columnW->getCardWidgets()) {
                 connect(cardW, &CardWidget::sSignal,
                         [cardW, this] { onCardClicked(cardW); });
+                connect(cardW, &CardWidget::sSignal,
+                        [cardW, this] { onCardClicked(cardW); });
             }
         }
 
@@ -74,6 +77,15 @@ public:
             connect(*it, &QPushButton::clicked,
                     [columnW, this] { onAddCardClicked(columnW->getID()); });
             ++it;
+        }
+
+        QVector<QPushButton *> deleteColumnBtns =
+                boardW->findChildren<QPushButton *>("deleteColumn");
+        auto itDelCol = deleteColumnBtns.begin();
+        for (auto columnW: boardW->getColumnWidgets()) {
+            connect(*itDelCol, &QPushButton::clicked,
+                    [columnW, this] { onDelColumnClicked(columnW->getID()); });
+            ++itDelCol;
         }
 
         QPushButton *addColLabel = boardW->findChild<QPushButton *>("addColumnButton");
@@ -127,7 +139,21 @@ public slots:
         Board board;
         board.name = name.toStdString();
 
+        curBoardIndex = boardManager.getBoardWidgets().size();
         addObjectSignal(board, BOARD);
+    }
+
+    void onDelBoardClicked() {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Подтверждение удаления доски", "Удалить текущую доску?",
+                                      QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            BoardWidget *boardW = boardManager.getBoardWidgets()[curBoardIndex];
+            curBoardIndex = 0;
+            delObjectSignal(boardW->getID(), BOARD);
+        } else {
+            // nothing to do
+        }
     }
 
     void onAddCardClicked(int col_id) {
@@ -152,6 +178,17 @@ public slots:
         col.boardId = board_id;
 
         addObjectSignal(col, COLUMN);
+    }
+
+    void onDelColumnClicked(size_t col_id) {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Подтверждение удаления колонки", "Удалить текущую колонку?",
+                                      QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            delObjectSignal(col_id, COLUMN);
+        } else {
+            // nothing to do
+        }
     }
 
     void onCardClicked(CardWidget *cw) {
@@ -193,6 +230,7 @@ public slots:
     }
 
     void renameColumnSlot(size_t id, const QString &s) {
+        std::cout << "renameColumnSlot\n";
         Column col;
         col.id = id;
         col.name = s.toStdString();
@@ -203,6 +241,8 @@ public slots:
 signals:
 
     void addObjectSignal(Object &, ObjType);
+
+    void delObjectSignal(size_t, ObjType);
 
     void updateObjectSignal(Object &, ObjType);
 

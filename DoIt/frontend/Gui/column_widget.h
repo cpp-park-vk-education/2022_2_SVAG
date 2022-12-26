@@ -52,9 +52,10 @@ private:
 
     const size_t elementsWidth = 230;
 
+    const size_t titleWidth = elementsWidth - mediumIconSize;
     const size_t titleHeight = 30;
     const size_t itemHeight = 30;
 
-    const size_t smallIconSize = 20;
+    const size_t mediumIconSize = 30;
 };
 

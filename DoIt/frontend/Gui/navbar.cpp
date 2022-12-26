@@ -36,6 +36,11 @@ void Navbar::Draw() {
     createBoard->setFixedSize(QSize(createBoardWidth, elementsHeight));
     createBoard->setCursor(QCursor(Qt::PointingHandCursor));
 
+    QPushButton *deleteBoard = new QPushButton(QObject::tr("Удалить"));
+    deleteBoard->setObjectName("deleteBoard");
+    deleteBoard->setFixedSize(QSize(createBoardWidth, elementsHeight));
+    deleteBoard->setCursor(QCursor(Qt::PointingHandCursor));
+
     QSpacerItem *spacer_2 = new QSpacerItem(spacerWidth, spacerHeight, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
     QComboBox *userSettings = new QComboBox();
@@ -50,6 +55,8 @@ void Navbar::Draw() {
     navbarLayout->addWidget(chooseBoard);
     navbarLayout->addItem(spacer_1);
     navbarLayout->addWidget(createBoard);
+    navbarLayout->addItem(spacer_1);
+    navbarLayout->addWidget(deleteBoard);
     navbarLayout->addItem(spacer_2);
     navbarLayout->addWidget(userSettings);
 
@@ -133,11 +140,11 @@ void Navbar::setStyles() {
                     "	color: black;\n"
                     "}\n"
                     "\n"
-                    "#createBoard {\n"
+                    "#createBoard, #deleteBoard {\n"
                     "	background-color:  hsl(194, 4%, 53%);\n"
                     "}\n"
                     "\n"
-                    "#createBoard:hover {\n"
+                    "#createBoard:hover, #deleteBoard:hover {\n"
                     "	background-color: hsl(194, 10%, 60%);\n"
                     "}\n"
                     "\n"

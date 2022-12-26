@@ -102,21 +102,20 @@ void ColumnWidget::Draw() {
 
     QLineEdit *columnTitle = new QLineEdit();
     columnTitle->setObjectName("columnTitle");
-    columnTitle->setFixedSize(QSize(elementsWidth - smallIconSize, titleHeight));
+    columnTitle->setFixedSize(QSize(elementsWidth - mediumIconSize, titleHeight));
     columnTitle->setText(name);                                // Data
     columnTitle->setCursor(Qt::PointingHandCursor);
 
-//    QComboBox *moreActions = new QComboBox();
-//    moreActions->setObjectName("moreActions");
-//    moreActions->setFixedSize(QSize(smallIconSize, smallIconSize));
-//    moreActions->setCursor(QCursor(Qt::PointingHandCursor));
-
-
-    // moreActions->addItems();
+    QPushButton *deleteColumn = new QPushButton();
+    deleteColumn->setObjectName("deleteColumn");
+    deleteColumn->setFixedSize(QSize(mediumIconSize, mediumIconSize));
+    deleteColumn->setIconSize(QSize(mediumIconSize, mediumIconSize));
+    deleteColumn->setIcon(QIcon("Gui/resources/icons/delete.png"));
+    deleteColumn->setCursor(Qt::PointingHandCursor);
 
     // Add title
     columnTitleLayout->addWidget(columnTitle);
-//    columnTitleLayout->addWidget(moreActions);
+    columnTitleLayout->addWidget(deleteColumn);
 
 
     // Scroll for cards
@@ -210,28 +209,14 @@ void ColumnWidget::setStyles() {
                                     "	background-color: white;\n"
                                     "}\n"
                                     "\n"
-                                    "#moreActions {\n"
-                                    "   background: transparent;\n"
-                                    "	image: url(Gui/resources/icons/more.png);\n"
+                                    "#deleteColumn {\n"
+                                    "  background: transparent;\n"
+                                    "   border: 0px;\n"
+                                    "   border-radius: 5px;\n"
                                     "}\n"
                                     "\n"
-                                    "#moreActions::drop-down {\n"
-                                    "	border: 0px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "#moreActions QListView {\n"
-                                    "	min-width: 100px;\n"
-                                    "	background-color: white;\n"
-                                    "}\n"
-                                    "\n"
-                                    "#moreActions QListView::item {\n"
-                                    "    width: 100px;\n"
-                                    "    height: 30px;\n"
-                                    "}\n"
-                                    "\n"
-                                    "#moreActions QListView::item:focus, #moreActions QListView::item:hover {\n"
-                                    "	color: black;\n"
-                                    "	background-color: silver;\n"
+                                    "#deleteColumn:hover {\n"
+                                    "  background: rgb(255, 0, 0);\n"
                                     "}\n"
                                     "\n"
                                     "#addCardButton {\n"

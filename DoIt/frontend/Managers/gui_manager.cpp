@@ -6,6 +6,7 @@ GuiManager::GuiManager(QObject *parent) : QObject(parent) {
     // connections
     // from main window
     connect(&_mainWindow, &MainWindow::addObjectSignal, this, &GuiManager::addObjectSignal);
+    connect(&_mainWindow, &MainWindow::delObjectSignal, this, &GuiManager::delObjectSignal);
     connect(&_mainWindow, &MainWindow::onCardClickedSignal, this, &GuiManager::openCardSlot);
     connect(&_mainWindow, &MainWindow::showBoardSignal, this, &GuiManager::showBoardSignal);
 

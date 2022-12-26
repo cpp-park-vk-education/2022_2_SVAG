@@ -51,8 +51,6 @@ public slots:
 
     void addUserSlot(User &user, const size_t boardId);
 
-    void showBoardsByIndexSlot(int index);
-
 signals:
 
     void showBoardsSignal();

@@ -14,8 +14,6 @@ MainManager::MainManager(QObject *parent)
 
     // from net manager
     connect(&_netManager, &NetManager::updateDataSignal, this, &MainManager::updateDataSlot);
-
-    connect(&_guiManager, &GuiManager::showBoardSignal, this, &MainManager::showBoardsByIndexSlot);
 }
 
 void MainManager::ping() {
@@ -158,6 +156,8 @@ void MainManager::addObjectSlot(Object &obj, ObjType objType) {
     json resp = json::parse(response);
     _netManager.disconnect();
 
+    std::cout << "Got JSON: " << resp << std::endl;
+
     obj.id = resp["result"][0]["id"];  // set id for new object
 
     // также производим изменения локально
@@ -185,6 +185,8 @@ void MainManager::addObjectSlot(Object &obj, ObjType objType) {
 }
 
 void MainManager::deleteObjectSlot(size_t id, ObjType objType) {
+    std::cout << "deleteObjectSlot\n";
+    std::cout << "id = " << id << std::endl;
     json data;
     data["cmd"] = "database_delete";
     data["content"] = _objType2Str(objType);
@@ -198,7 +200,23 @@ void MainManager::deleteObjectSlot(size_t id, ObjType objType) {
     json resp = json::parse(response);
     _netManager.disconnect();
 
-    if (objType == CARD) {
+    if (objType == BOARD) {
+        for (auto it = _boards.begin(); it != _boards.end(); ++it) {
+            if (it->id == id) {
+                _boards.erase(it);
+                break;
+            }
+        }
+    } else if (objType == COLUMN) {
+        for (auto &board: _boards) {
+            for (auto it = board.columns.begin(); it != board.columns.end(); ++it) {
+                if (it->id == id) {
+                    board.columns.erase(it);
+                    break;
+                }
+            }
+        }
+    } else if (objType == CARD) {
         for (auto &board: _boards) {
             for (auto &column: board.columns) {
                 for (auto it = column.cards.begin(); it != column.cards.end(); ++it) {
@@ -210,6 +228,7 @@ void MainManager::deleteObjectSlot(size_t id, ObjType objType) {
             }
         }
     }
+
     _guiManager.showBoards(_boards);
 }
 
