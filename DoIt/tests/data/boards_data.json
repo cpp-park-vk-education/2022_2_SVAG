@@ -1,0 +1,14 @@
+[
+    {
+        "name": "projects",
+        "caption": "my_projects"
+    },
+    {
+        "name": "business",
+        "caption": "my_business"
+    },
+    {
+        "name": "team",
+        "caption": "out_team"
+    }
+]

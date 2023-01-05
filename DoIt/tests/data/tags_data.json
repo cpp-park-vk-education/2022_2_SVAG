@@ -1,0 +1,37 @@
+[
+    {
+        "name": "my",
+        "color": "blue",
+        "card_id": 2
+    },
+    {
+        "name": "own",
+        "color": "red",
+        "card_id": 2
+    },
+    {
+        "name": "hw",
+        "color": "purple",
+        "card_id": 1
+    },
+    {
+        "name": "Instagram",
+        "color": "orange",
+        "card_id": 3
+    },
+    {
+        "name": "VK",
+        "color": "green",
+        "card_id": 5
+    },
+    {
+        "name": "work",
+        "color": "blue",
+        "card_id": 8
+    },
+    {
+        "name": "school",
+        "color": "white",
+        "card_id": 4
+    }
+]
