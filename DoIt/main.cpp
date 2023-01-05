@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include "database.h"
+#include "PostgreDataBase.h"
+#include "UserDataBase.h"
 
 int main() {
     std::cout << "DoIt App" << std::endl;
-    print();
     return 0;
 }
